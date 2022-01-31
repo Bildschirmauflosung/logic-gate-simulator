@@ -2,12 +2,40 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="src/style.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
   </head>
   <body>
-    <div id="app"></div>
+    <nav class="navbar">
+      <a class="navbar__btn">
+        <object data="" type="image/svg+xml"></object>
+        <p>New</p>
+      </a>
+      <a class="navbar__btn">
+        <object data="" type="image/svg+xml"></object>
+        <p>Open</p>
+      </a>
+      <a class="navbar__btn">
+        <object data="" type="image/svg+xml"></object>
+        <p>Save</p>
+      </a>
+      <div class="navbar__spacer"></div>
+      <p class="navbar__title">
+        (untitled)
+      </p>
+      <div class="navbar__spacer"></div>
+    </nav>
+
+    <main class="content">
+      <canvas id="canvas">
+  
+      </canvas>
+    </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

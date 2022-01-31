@@ -1,8 +1,5 @@
-import './style.css'
+let cv : HTMLCanvasElement = document.querySelector("#canvas")!;
+let ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
 
-const app = document.querySelector<HTMLDivElement>('#app')!
-
-app.innerHTML = `
-  <h1>Hello Vite!</h1>
-  <a href="https://vitejs.dev/guide/features.html" target="_blank">Documentation</a>
-`
+ctx.fillStyle = "#000";
+ctx.fillRect(0, 0, 1900, 1200);

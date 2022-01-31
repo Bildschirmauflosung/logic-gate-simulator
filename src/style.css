@@ -1,8 +1,49 @@
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Lato', sans-serif;
+}
+
+.navbar {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+}
+
+.navbar__btn {
+  margin: 0.5em;
+  padding: 0.5em;
+  border-radius: 0.5em;
+}
+
+.navbar__btn:hover {
+  /* background-color: #fff; */
+  background-color: #dfdfdf;
+  cursor: pointer;
+}
+
+.navbar__btn:active {
+  background-color: #bfbfbf;
+}
+
+.navbar__btn * {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+.navbar__spacer {
+  flex-grow: 1;
+}
+
+.navbar__title {
+  margin: 0.5em;
+  font-size: 1.3em;
+}
+
+#canvas {
+  width: 100%;
+  height: 100%;
 }
