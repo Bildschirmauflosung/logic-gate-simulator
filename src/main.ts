@@ -1,5 +1,15 @@
-let cv : HTMLCanvasElement = document.querySelector("#canvas")!;
-let ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
+const nav: HTMLElement = document.querySelector(".navbar")!;
+const cv : HTMLCanvasElement = document.querySelector("#canvas")!;
+const ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
 
+cv.width = document.body.clientWidth;
+cv.height = window.innerHeight - nav.offsetHeight;
 ctx.fillStyle = "#000";
-ctx.fillRect(0, 0, 1900, 1200);
+ctx.fillRect(0, 0, cv.width, cv.height);
+
+window.addEventListener("resize", () => {
+  cv.width = window.innerWidth;
+  cv.height = window.innerHeight - nav.offsetHeight;
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 0, cv.width, cv.height);
+});
