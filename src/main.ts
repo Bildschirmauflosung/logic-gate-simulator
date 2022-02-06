@@ -1,3 +1,5 @@
+import "./css/main.scss";
+
 const nav: HTMLElement = document.querySelector(".navbar")!;
 const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 const ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
