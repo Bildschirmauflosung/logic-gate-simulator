@@ -37,3 +37,6 @@
   .navbar__title {
     margin: 0.5em;
     font-size: 1.3em; }
+
+.content__canvas {
+  display: block; }
