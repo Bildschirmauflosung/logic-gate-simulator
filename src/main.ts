@@ -1,5 +1,5 @@
 const nav: HTMLElement = document.querySelector(".navbar")!;
-const cv : HTMLCanvasElement = document.querySelector("#canvas")!;
+const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 const ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
 
 function resizeCanvas() {
