@@ -19,9 +19,6 @@ function resizeCanvas() {
 
 resizeCanvas();
 
-const gate: Gate = new Gate(64, 64, 100, 50, maxId++, "AA");
-gates.push(gate);
-
 function render() {
   ctx.clearRect(0, 0, cv.width, cv.height);
   for (const i of gates) {

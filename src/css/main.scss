@@ -1,4 +1,5 @@
 @import 'variables';
+@import 'mixin';
 
 * {
   margin: 0;
@@ -14,23 +15,7 @@
   justify-content: left;
 
   &__btn {
-    margin: 0.5em;
-    padding: 0.5em;
-    text-decoration: none;
-    color: $fg-color;
-    border-radius: 0.5em;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    
-    &:hover {
-      background-color: $hover-bg-color;
-      cursor: pointer;
-    }
-
-    &:active {
-      background-color: $active-bg-color;
-    }
+    @include btn;
 
     * {
       margin: 0 0.2em;
@@ -56,6 +41,24 @@
   }
 }
 
-.content__canvas {
-  display: block;
+.content {
+  display: flex;
+  flex-direction: row;
+
+  &__sidebar {
+    display: flex;
+    flex-direction: column;
+    
+    &-btn {
+      @include btn;
+      justify-content: center;
+      margin: 0.2em 0.5em;
+      min-width: 4em;
+    }
+  }
+
+  &__canvas {
+    display: block;
+  }
 }
+

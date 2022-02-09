@@ -1,0 +1,19 @@
+@mixin btn {
+  margin: 0.5em;
+  padding: 0.5em;
+  text-decoration: none;
+  color: $fg-color;
+  border-radius: 0.5em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  
+  &:hover {
+    background-color: $hover-bg-color;
+    cursor: pointer;
+  }
+
+  &:active {
+    background-color: $active-bg-color;
+  }
+}
