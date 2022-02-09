@@ -1,3 +1,4 @@
+import { gates } from "../main";
 import { IRenderable } from "./IRenderable";
 
 export class Gate implements IRenderable, EventListenerObject {
@@ -7,13 +8,15 @@ export class Gate implements IRenderable, EventListenerObject {
   height: number;
   top: number;
   left: number;
+  id: number;
   name: string;
 
-  constructor(width: number, height: number, left: number, top: number, name: string) {
+  constructor(width: number, height: number, left: number, top: number, id: number, name: string) {
     this.width = width;
     this.height = height;
     this.left = left;
     this.top = top;
+    this.id = id;
     this.name = name;
   }
 
@@ -21,8 +24,18 @@ export class Gate implements IRenderable, EventListenerObject {
     switch (object.type) {
       case "mousemove":
         if (this._grabbed) {
-          this.left += object.movementX;
-          this.top += object.movementY;
+          let max = 0;
+          for (const i of gates) {
+            if (i._grabbed) {
+              if (i.id > max) {
+                max = i.id;
+              }
+            }
+          }
+          if (this.id == max) {
+            this.left += object.movementX;
+            this.top += object.movementY;
+          }
         }
         break;
       case "mousedown":
