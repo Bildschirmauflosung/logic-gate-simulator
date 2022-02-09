@@ -2,6 +2,8 @@ import { gates } from "../main";
 import { IRenderable } from "./IRenderable";
 
 export class Gate implements IRenderable, EventListenerObject {
+  private menu: HTMLDivElement = document.querySelector("#gate-menu")!;
+
   private _grabbed: boolean = false;
 
   width: number;
@@ -18,6 +20,10 @@ export class Gate implements IRenderable, EventListenerObject {
     this.top = top;
     this.id = id;
     this.name = name;
+  }
+
+  private isMouseOver(e: MouseEvent): boolean {
+    return e.offsetX > this.left && e.offsetX < this.left + this.width && e.offsetY > this.top && e.offsetY < this.top + this.height;
   }
 
   handleEvent(object: MouseEvent): void {
@@ -39,11 +45,22 @@ export class Gate implements IRenderable, EventListenerObject {
         }
         break;
       case "mousedown":
-        this._grabbed = (object.offsetX > this.left && object.offsetX < this.left + this.width && object.offsetY > this.top && object.offsetY < this.top + this.height);
+        if (object.button == 0) {
+          if (this.menu.style.display == "inline-flex") {
+            this.menu.style.display = "none";
+          }
+          this._grabbed = this.isMouseOver(object);
+        }
         break;
       case "mouseup":
         this._grabbed = false;
         break;
+      case "contextmenu":
+        if (this.isMouseOver(object)) {
+          this.menu.style.display = "inline-flex";
+          this.menu.style.left = object.clientX + "px";
+          this.menu.style.top = object.clientY + "px";
+        }
       default:
         break;
     } 

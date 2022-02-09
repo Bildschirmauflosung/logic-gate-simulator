@@ -56,5 +56,6 @@ renderable.push(toolbar);
 cv.addEventListener("mousemove", (e) => handle(e));
 cv.addEventListener("mousedown", (e) => handle(e));
 cv.addEventListener("mouseup", (e) => handle(e));
+cv.addEventListener("contextmenu", (e) => handle(e));
 
 requestAnimationFrame(render);

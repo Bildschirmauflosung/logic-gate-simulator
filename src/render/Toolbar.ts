@@ -1,3 +1,4 @@
+import { IGrid } from "./IGrid";
 import { IOButton } from "./IOButton";
 import { IRenderable } from "./IRenderable";
 
@@ -6,7 +7,7 @@ export enum ToolbarSide {
   RIGHT,
 }
 
-export class Toolbar implements IRenderable {
+export class Toolbar implements IRenderable, IGrid<IOButton> {
   width: number;
   height: number;
   left: number;
