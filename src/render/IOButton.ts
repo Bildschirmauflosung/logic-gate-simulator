@@ -50,15 +50,23 @@ export class IOButton implements IRenderable, IWithMouseEvent {
       this._grabbed = isMouseOver(e, this.width, this.height, this._left, this._top);
     }
   }
-
+  
   handleMouseUp(_e: MouseEvent) {
     this._grabbed = false;
   }
-
+  
   handleMouseContextMenu(e: MouseEvent) {
     if (isMouseOver(e, this.width, this.height, this._left, this._top)) {
       this._menu.show(e.clientX, e.clientY);
     }
+  }
+
+  handleMouseEnter(_e: MouseEvent): void {
+    
+  }
+
+  handleMouseLeave(_e: MouseEvent): void {
+    
   }
 
   render(ctx: CanvasRenderingContext2D): void {

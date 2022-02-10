@@ -15,8 +15,6 @@ export const withMouseEvent: IWithMouseEvent[] = [];
 export const renderable: IRenderable[] = [];
 export const gates: Gate[] = [];
 
-let maxId = 0;
-
 function resizeCanvas() {
   cv.width = window.innerWidth - sidebar.offsetWidth;
   cv.height = window.innerHeight - nav.offsetHeight;
@@ -59,13 +57,25 @@ function handleMouseContextMenu(e: MouseEvent) {
   }
 }
 
+function handleMouseEnter(e: MouseEvent) {
+  for (const i of withMouseEvent) {
+    i.handleMouseEnter(e);
+  }
+}
+
+function handleMouseLeave(e: MouseEvent) {
+  for (const i of withMouseEvent) {
+    i.handleMouseLeave(e);
+  }
+}
+
 document.addEventListener("contextmenu", (e) => e.preventDefault());
 
 window.addEventListener("resize", resizeCanvas);
 
 sidebarBtn.forEach((v) => {
   v.addEventListener("click", () => {
-    const g: Gate = new Gate(64, 64, 200, 100, maxId++, v.innerText);
+    const g: Gate = new Gate(64, 64, 200, 100, gates.length, v.innerText);
     gates.push(g);
     renderable.push(g);
     withMouseEvent.push(g);
@@ -82,5 +92,7 @@ cv.addEventListener("mousemove", (e) => handleMouseMove(e));
 cv.addEventListener("mousedown", (e) => handleMouseDown(e));
 cv.addEventListener("mouseup", (e) => handleMouseUp(e));
 cv.addEventListener("contextmenu", (e) => handleMouseContextMenu(e));
+cv.addEventListener("mouseenter", (e) => handleMouseEnter(e));
+cv.addEventListener("mouseleave", (e) => handleMouseLeave(e));
 
 requestAnimationFrame(render);

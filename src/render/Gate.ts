@@ -7,6 +7,7 @@ import { ItemType, MenuItem } from "./MenuItem";
 
 export class Gate implements IRenderable, IWithMouseEvent {
   private _grabbed: boolean = false;
+  private _enterred: boolean = false;
   private _menu: Menu;
 
   width: number;
@@ -33,17 +34,32 @@ export class Gate implements IRenderable, IWithMouseEvent {
     }, ItemType.RED));
   }
 
-  handleMouseMove(e: MouseEvent) {
-    if (this._grabbed) {
-      let max = 0;
-      for (const i of gates) {
-        if (i._grabbed) {
-          if (i.id > max) {
-            max = i.id;
+  private isMaxId(onEnter: boolean = false): boolean {
+    let max = -1;
+    for (let i = 0; i < gates.length; i++) {
+      if (onEnter) {
+        if (gates[i]._enterred) {
+          if (i > max) {
+            max = i;
+          }
+        }
+      } else {
+        if (gates[i]._grabbed) {
+          if (i > max) {
+            max = i;
           }
         }
       }
-      if (this.id == max) {
+    }
+    if (max === -1) {
+      return true;
+    }
+    return this.id === max;
+  }
+
+  handleMouseMove(e: MouseEvent) {
+    if (this._grabbed) {
+      if (this.isMaxId()) {
         this.left += e.movementX;
         this.top += e.movementY;
       }
@@ -62,9 +78,17 @@ export class Gate implements IRenderable, IWithMouseEvent {
   }
 
   handleMouseContextMenu(e: MouseEvent) {
-    if (isMouseOver(e, this.width, this.height, this.left, this.top)) {
+    if (isMouseOver(e, this.width, this.height, this.left, this.top) && this.isMaxId(true)) {
       this._menu.show(e.clientX, e.clientY);
     }
+  }
+
+  handleMouseEnter(_e: MouseEvent): void {
+    this._enterred = true;
+  }
+
+  handleMouseLeave(_e: MouseEvent): void {
+    this._enterred = false;
   }
 
   render(ctx: CanvasRenderingContext2D): void {
