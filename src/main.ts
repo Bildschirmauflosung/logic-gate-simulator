@@ -8,7 +8,7 @@ const nav: HTMLElement = document.querySelector(".navbar")!;
 const sidebar: HTMLElement = document.querySelector(".content__sidebar")!;
 const sidebarBtn: NodeListOf<HTMLElement> = document.querySelectorAll(".content__sidebar-btn")!;
 const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
-const renderable: IRenderable[] = [];
+export const renderable: IRenderable[] = [];
 export const gates: Gate[] = [];
 let ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
 
@@ -24,6 +24,7 @@ function resizeCanvas() {
 resizeCanvas();
 
 function render() {
+  ctx.fillStyle = "#fff";
   ctx.clearRect(0, 0, cv.width, cv.height);
   for (const i of renderable) {
     i.render(ctx);
@@ -50,7 +51,7 @@ sidebarBtn.forEach((v) => {
 });
 
 const toolbar: Toolbar = new Toolbar(32, ToolbarSide.LEFT);
-toolbar.items.push(new IOButton(48, "ABC", IOType.INPUT));
+toolbar.items.push(new IOButton(48, "ABC", IOType.INPUT, toolbar));
 renderable.push(toolbar);
 
 cv.addEventListener("mousemove", (e) => handle(e));

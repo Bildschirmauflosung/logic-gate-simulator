@@ -1,11 +1,12 @@
-import { gates } from "../main";
+import { gates, renderable } from "../main";
 import { isMouseOver } from "../utils/Helpers";
 import { IRenderable } from "./IRenderable";
+import { Menu } from "./Menu";
+import { ItemType, MenuItem } from "./MenuItem";
 
 export class Gate implements IRenderable, EventListenerObject {
-  private menu: HTMLDivElement = document.querySelector("#gate-menu")!;
-
   private _grabbed: boolean = false;
+  private _menu: Menu;
 
   width: number;
   height: number;
@@ -21,6 +22,13 @@ export class Gate implements IRenderable, EventListenerObject {
     this.top = top;
     this.id = id;
     this.name = name;
+    this._menu = new Menu();
+    this._menu.addItem(new MenuItem("Edit", () => {console.log("edit on", id)}));
+    this._menu.addItem(new MenuItem("Delete", () => {
+      this._menu.hide();
+      gates.splice(gates.findIndex((v) => v == this), 1);
+      renderable.splice(renderable.findIndex((v) => v == this), 1);
+    }, ItemType.RED));
   }
 
   handleEvent(object: MouseEvent): void {
@@ -43,9 +51,7 @@ export class Gate implements IRenderable, EventListenerObject {
         break;
       case "mousedown":
         if (object.button == 0) {
-          if (this.menu.style.display == "inline-flex") {
-            this.menu.style.display = "none";
-          }
+          this._menu.hide();
           this._grabbed = isMouseOver(object, this.width, this.height, this.left, this.top);
         }
         break;
@@ -54,9 +60,7 @@ export class Gate implements IRenderable, EventListenerObject {
         break;
       case "contextmenu":
         if (isMouseOver(object, this.width, this.height, this.left, this.top)) {
-          this.menu.style.display = "inline-flex";
-          this.menu.style.left = object.clientX + "px";
-          this.menu.style.top = object.clientY + "px";
+          this._menu.show(object.clientX, object.clientY);
         }
       default:
         break;
