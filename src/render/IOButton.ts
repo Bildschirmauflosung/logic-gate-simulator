@@ -1,5 +1,7 @@
+import { withMouseEvent } from "../main";
 import { isMouseOver } from "../utils/Helpers";
 import { IRenderable } from "./IRenderable";
+import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./Menu";
 import { ItemType, MenuItem } from "./MenuItem";
 import { Toolbar } from "./Toolbar";
@@ -9,7 +11,7 @@ export enum IOType {
   OUTPUT,
 }
 
-export class IOButton implements IRenderable, EventListenerObject {
+export class IOButton implements IRenderable, IWithMouseEvent {
   readonly margin: number = 8;
 
   private _left: number = 0;
@@ -31,31 +33,31 @@ export class IOButton implements IRenderable, EventListenerObject {
     this._parent = parent;
     this._menu = new Menu();
     this._menu.addItem(new MenuItem("Rename", () => {console.log("rename on", name)}));
-    this._menu.addItem(new MenuItem("Delete", () => { this._parent.items.splice(this._parent.items.findIndex((v) => v == this), 1); this._menu.hide() }, ItemType.RED));
+    this._menu.addItem(new MenuItem("Delete", () => {
+      this._menu.hide();
+      this._parent.items.splice(this._parent.items.findIndex((v) => v == this), 1);
+      withMouseEvent.splice(withMouseEvent.findIndex((v) => v == this), 1);
+    }, ItemType.RED));
   }
 
-  handleEvent(object: MouseEvent): void {
-    switch (object.type) {
-      case "mousemove":
-        if (this._grabbed) {
-          
-        }
-        break;
-      case "mousedown":
-        if (object.button == 0) {
-          this._menu.hide();
-          this._grabbed = isMouseOver(object, this.width, this.height, this._left, this._top);
-        }
-        break;
-      case "mouseup":
-        this._grabbed = false;
-        break;
-      case "contextmenu":
-        if (isMouseOver(object, this.width, this.height, this._left, this._top)) {
-          this._menu.show(object.clientX, object.clientY);
-        }
-      default:
-        break;
+  handleMouseMove(_e: MouseEvent) {
+    
+  }
+
+  handleMouseDown(e: MouseEvent) {
+    if (e.button == 0) {
+      this._menu.hide();
+      this._grabbed = isMouseOver(e, this.width, this.height, this._left, this._top);
+    }
+  }
+
+  handleMouseUp(_e: MouseEvent) {
+    this._grabbed = false;
+  }
+
+  handleMouseContextMenu(e: MouseEvent) {
+    if (isMouseOver(e, this.width, this.height, this._left, this._top)) {
+      this._menu.show(e.clientX, e.clientY);
     }
   }
 
