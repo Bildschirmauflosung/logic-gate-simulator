@@ -50,7 +50,7 @@ sidebarBtn.forEach((v) => {
 });
 
 const toolbar: Toolbar = new Toolbar(32, ToolbarSide.LEFT);
-toolbar.items.push(new IOButton(48, 16, "ABC", IOType.INPUT));
+toolbar.items.push(new IOButton(48, "ABC", IOType.INPUT));
 renderable.push(toolbar);
 
 cv.addEventListener("mousemove", (e) => handle(e));
