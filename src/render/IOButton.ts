@@ -1,10 +1,9 @@
-import { withMouseEvent } from "../main";
+import { cv, withMouseEvent } from "../main";
 import { isMouseOver } from "../utils/Helpers";
 import { IRenderable } from "./IRenderable";
 import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./Menu";
 import { ItemType, MenuItem } from "./MenuItem";
-import { Toolbar } from "./Toolbar";
 
 export enum IOType {
   INPUT = 0,
@@ -18,25 +17,20 @@ export class IOButton implements IRenderable, IWithMouseEvent {
   private _grabbed: boolean = false;
   private _entered: boolean = false;
   private _enteredDown: boolean = false;
-  private _parent: Toolbar;
 
-  width: number;
-  height: number;
+  width: number = 48;
+  height: number = 48;
   name: string;
   type: IOType;
   enabled: boolean = false;
 
-  constructor(width: number, name: string, type: IOType, parent: Toolbar) {
-    this.width = width;
-    this.height = width;
+  constructor(name: string, type: IOType) {
     this.name = name;
     this.type = type;
-    this._parent = parent;
     this._menu = new Menu();
     this._menu.addItem(new MenuItem("Rename", () => {console.log("rename on", name)}));
     this._menu.addItem(new MenuItem("Delete", () => {
       this._menu.hide();
-      this._parent.items.splice(this._parent.items.findIndex((v) => v == this), 1);
       withMouseEvent.splice(withMouseEvent.findIndex((v) => v == this), 1);
     }, ItemType.RED));
   }
