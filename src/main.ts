@@ -64,7 +64,7 @@ window.addEventListener("resize", resizeCanvas);
 
 sidebarBtn.forEach((v) => {
   v.addEventListener("click", () => {
-    const g: Gate = new Gate(64, 64, 200, 100, maxId++, v.innerText);
+    const g: Gate = new Gate(64, 64, 64, 64, maxId++, v.innerText);
     gates.push(g);
     renderable.push(g);
     withMouseEvent.push(g);

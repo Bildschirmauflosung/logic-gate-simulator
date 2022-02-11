@@ -60,8 +60,8 @@ export class Gate implements IRenderable, IWithMouseEvent {
   handleMouseMove(e: MouseEvent) {
     if (this._grabbed) {
       if (this.isMaxId()) {
-        this.left += e.movementX;
-        this.top += e.movementY;
+        this.left = Math.floor(e.offsetX / 32) * 32 > 32 ? Math.floor(e.offsetX / 32) * 32 : 64;
+        this.top = Math.floor(e.offsetY / 32) * 32;
       }
     }
 
@@ -69,9 +69,8 @@ export class Gate implements IRenderable, IWithMouseEvent {
   }
 
   handleMouseDown(e: MouseEvent) {
+    this._menu.hide();
     if (e.button == 0) {
-      this._menu.hide();
-      // this._grabbed = isMouseOver(e, this.width, this.height, this.left, this.top);
       this._grabbed = e.offsetX > this.left && e.offsetX < this.left + this.width && e.offsetY > this.top && e.offsetY < this.top + this.height;
     }
   }
