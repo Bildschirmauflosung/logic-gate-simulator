@@ -18,12 +18,15 @@ export class IOButton implements IRenderable, IWithMouseEvent {
   private _top: number = 0;
   private _menu: Menu;
   private _grabbed: boolean = false;
+  private _entered: boolean = false;
+  private _enteredDown: boolean = false;
   private _parent: Toolbar;
 
   width: number;
   height: number;
   name: string;
   type: IOType;
+  enabled: boolean = false;
 
   constructor(width: number, name: string, type: IOType, parent: Toolbar) {
     this.width = width;
@@ -40,18 +43,25 @@ export class IOButton implements IRenderable, IWithMouseEvent {
     }, ItemType.RED));
   }
 
-  handleMouseMove(_e: MouseEvent) {
-    
+  handleMouseMove(e: MouseEvent) {
+    this._entered = isMouseOver(e, this.width, this.height, this._left, this._top)
+    if (!isMouseOver(e, this.width, this.height, this._left, this._top)) {
+      this._enteredDown = false;
+    }
   }
 
   handleMouseDown(e: MouseEvent) {
     if (e.button == 0) {
+      this._enteredDown = true;
       this._menu.hide();
       this._grabbed = isMouseOver(e, this.width, this.height, this._left, this._top);
     }
   }
   
-  handleMouseUp(_e: MouseEvent) {
+  handleMouseUp(e: MouseEvent) {
+    if (this._entered && this._enteredDown && e.button == 0) {
+      this.enabled = !this.enabled;
+    }
     this._grabbed = false;
   }
   
@@ -61,23 +71,19 @@ export class IOButton implements IRenderable, IWithMouseEvent {
     }
   }
 
-  handleMouseEnter(_e: MouseEvent): void {
-    
-  }
-
-  handleMouseLeave(_e: MouseEvent): void {
-    
-  }
-
   render(ctx: CanvasRenderingContext2D): void {
-    ctx.fillStyle = "#bfbfbf";
+    ctx.strokeStyle = "#000";
     ctx.beginPath();
     ctx.moveTo(this.margin + this.width / 2, this.margin);
     ctx.arcTo(this.margin + this.width, this.margin, this.margin + this.width, this.margin + this.height / 2, this.width / 2);
     ctx.arcTo(this.margin + this.width, this.margin + this.height, this.margin + this.width / 2, this.margin + this.height, this.width / 2);
     ctx.arcTo(this.margin, this.margin + this.height, this.margin, this.margin + this.height / 2, this.width / 2);
     ctx.arcTo(this.margin, this.margin, this.margin + this.width / 2, this.margin, this.width / 2);
-    ctx.fill();
+    ctx.stroke();
+    if (this.enabled) {
+      ctx.fillStyle = "#ff3f3f";
+      ctx.fill();
+    }
     ctx.fillStyle = "#000";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";

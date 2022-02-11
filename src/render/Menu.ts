@@ -25,7 +25,6 @@ export class Menu {
     this._html.style.display = "inline-flex";
     this._html.style.left = left + "px";
     this._html.style.top = top + "px";
-    console.log("kurde");
   }
 
   hide() {

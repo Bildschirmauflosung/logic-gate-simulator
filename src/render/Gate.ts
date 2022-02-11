@@ -28,25 +28,25 @@ export class Gate implements IRenderable, IWithMouseEvent {
     this._menu.addItem(new MenuItem("Edit", () => {console.log("edit on", id)}));
     this._menu.addItem(new MenuItem("Delete", () => {
       this._menu.hide();
-      gates.splice(gates.findIndex((v) => v == this), 1);
-      renderable.splice(renderable.findIndex((v) => v == this), 1);
-      withMouseEvent.splice(gates.findIndex((v) => v == this), 1);
+      renderable.splice(renderable.findIndex((v) => v === this), 1);
+      withMouseEvent.splice(withMouseEvent.findIndex((v) => v === this), 1);
+      gates.splice(gates.findIndex((v) => v === this), 1);
     }, ItemType.RED));
   }
 
   private isMaxId(onEnter: boolean = false): boolean {
     let max = -1;
-    for (let i = 0; i < gates.length; i++) {
+    for (const i of gates) {
       if (onEnter) {
-        if (gates[i]._enterred) {
-          if (i > max) {
-            max = i;
+        if (i._enterred) {
+          if (i.id > max) {
+            max = i.id;
           }
         }
       } else {
-        if (gates[i]._grabbed) {
-          if (i > max) {
-            max = i;
+        if (i._grabbed) {
+          if (i.id > max) {
+            max = i.id;
           }
         }
       }
@@ -64,12 +64,15 @@ export class Gate implements IRenderable, IWithMouseEvent {
         this.top += e.movementY;
       }
     }
+
+    this._enterred = isMouseOver(e, this.width, this.height, this.left, this.top);
   }
 
   handleMouseDown(e: MouseEvent) {
     if (e.button == 0) {
       this._menu.hide();
-      this._grabbed = isMouseOver(e, this.width, this.height, this.left, this.top);
+      // this._grabbed = isMouseOver(e, this.width, this.height, this.left, this.top);
+      this._grabbed = e.offsetX > this.left && e.offsetX < this.left + this.width && e.offsetY > this.top && e.offsetY < this.top + this.height;
     }
   }
 
@@ -81,14 +84,6 @@ export class Gate implements IRenderable, IWithMouseEvent {
     if (isMouseOver(e, this.width, this.height, this.left, this.top) && this.isMaxId(true)) {
       this._menu.show(e.clientX, e.clientY);
     }
-  }
-
-  handleMouseEnter(_e: MouseEvent): void {
-    this._enterred = true;
-  }
-
-  handleMouseLeave(_e: MouseEvent): void {
-    this._enterred = false;
   }
 
   render(ctx: CanvasRenderingContext2D): void {
