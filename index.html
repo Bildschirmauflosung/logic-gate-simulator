@@ -1,57 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-  </head>
-  <body>
-    <div id="gate-menu" class="context-menu">
-      <div class="context-menu__item">
-        Edit
-      </div>
-      <div class="context-menu__item context-menu__item--red">
-        Delete
-      </div>
-    </div>
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Lato&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vite App</title>
+	</head>
+	<body class="body">
+		<div id="gate-menu" class="context-menu">
+			<div class="context-menu__item">Edit</div>
+			<div class="context-menu__item context-menu__item--red">Delete</div>
+		</div>
 
-    <nav class="navbar">
-      <a href="#" class="navbar__btn">
-        <img class="navbar__btn-icon" src="img/icon-new.svg" alt="add">
-        New
-      </a>
-      <a href="#" class="navbar__btn">
-        <img class="navbar__btn-icon" src="img/icon-open.svg" alt="open">
-        Open
-      </a>
-      <a href="#" class="navbar__btn">
-        <img class="navbar__btn-icon" src="img/icon-save.svg" alt="save">
-        Save
-      </a>
-      <div class="navbar__spacer"></div>
-      <p class="navbar__title">
-        (untitled)
-      </p>
-      <div class="navbar__spacer"></div>
-    </nav>
+		<nav class="navbar">
+			<a href="#" class="navbar__btn">
+				<img class="navbar__btn-icon" src="img/icon-new.svg" alt="add" />
+				New
+			</a>
+			<a href="#" class="navbar__btn">
+				<img class="navbar__btn-icon" src="img/icon-open.svg" alt="open" />
+				Open
+			</a>
+			<a href="#" class="navbar__btn">
+				<img class="navbar__btn-icon" src="img/icon-save.svg" alt="save" />
+				Save
+			</a>
+			<div class="navbar__spacer"></div>
+			<p class="navbar__title">(untitled)</p>
+			<div class="navbar__spacer"></div>
+		</nav>
 
-    <main class="content">
-      <section class="content__sidebar">
-        <a href="#" class="content__sidebar-btn">
-          AND
-        </a>
-        <a href="#" class="content__sidebar-btn">
-          NOT
-        </a>
-      </section>
-      <canvas class="content__canvas">
-  
-      </canvas>
-    </main>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+		<main class="content">
+			<section class="content__sidebar">
+				<a href="#" class="content__sidebar-btn"> AND </a>
+				<a href="#" class="content__sidebar-btn"> NOT </a>
+			</section>
+			<canvas class="content__canvas"> </canvas>
+		</main>
+		<script type="module" src="/src/main.ts"></script>
+	</body>
 </html>

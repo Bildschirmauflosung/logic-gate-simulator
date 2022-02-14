@@ -1,20 +1,22 @@
 import "./css/main.scss";
 import { Gate } from "./render/Gate";
-import { IOButton, IOType } from "./render/IOButton";
+import { IOAddButton } from "./render/IOAddButton";
+import { IOButton } from "./render/IOButton";
+import { IOType } from "./render/IOType";
 import { IRenderable } from "./render/IRenderable";
 import { IWithMouseEvent } from "./render/IWithMouseEvent";
-import { Toolbar, ToolbarSide } from "./render/Toolbar";
 
+export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 const nav: HTMLElement = document.querySelector(".navbar")!;
 const sidebar: HTMLElement = document.querySelector(".content__sidebar")!;
 const sidebarBtn: NodeListOf<HTMLElement> = document.querySelectorAll(".content__sidebar-btn")!;
-const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 let ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
 let maxId: number = 0;
 
 export const withMouseEvent: IWithMouseEvent[] = [];
 export const renderable: IRenderable[] = [];
 export const gates: Gate[] = [];
+export const ioButtons: IOButton[] = [];
 
 function resizeCanvas() {
   cv.width = window.innerWidth - sidebar.offsetWidth;
@@ -71,11 +73,20 @@ sidebarBtn.forEach((v) => {
   });
 });
 
-const toolbar: Toolbar = new Toolbar(32, ToolbarSide.LEFT);
-const test = new IOButton(48, "ABC", IOType.INPUT, toolbar)
-withMouseEvent.push(test);
-toolbar.items.push(test);
-renderable.push(toolbar);
+const test1 = new IOButton("I", IOType.INPUT)
+const test2 = new IOButton("O", IOType.OUTPUT)
+const addInput = new IOAddButton(IOType.INPUT)
+const addOutput = new IOAddButton(IOType.OUTPUT)
+withMouseEvent.push(test1);
+renderable.push(test1);
+ioButtons.push(test1);
+withMouseEvent.push(test2);
+renderable.push(test2);
+ioButtons.push(test2);
+withMouseEvent.push(addInput);
+renderable.push(addInput);
+withMouseEvent.push(addOutput);
+renderable.push(addOutput);
 
 cv.addEventListener("mousemove", (e) => handleMouseMove(e));
 cv.addEventListener("mousedown", (e) => handleMouseDown(e));

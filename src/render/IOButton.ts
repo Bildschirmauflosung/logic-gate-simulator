@@ -1,22 +1,17 @@
-import { cv, withMouseEvent } from "../main";
+import { cv, ioButtons, renderable, withMouseEvent } from "../main";
 import { isMouseOver } from "../utils/Helpers";
-import { IRenderable } from "./IRenderable";
+import { IOType } from "./IOType";
 import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./Menu";
 import { ItemType, MenuItem } from "./MenuItem";
 
-export enum IOType {
-  INPUT = 0,
-  OUTPUT,
-}
-
-export class IOButton implements IRenderable, IWithMouseEvent {
-  private _left: number = 8;
-  private _top: number = 8;
+export class IOButton implements IWithMouseEvent {
+  private _left: number;
+  private _top: number;
   private _menu: Menu;
   private _grabbed: boolean = false;
-  private _entered: boolean = false;
-  private _enteredDown: boolean = false;
+  private _hovered: boolean = false;
+  private _pressed: boolean = false;
 
   width: number = 48;
   height: number = 48;
@@ -31,30 +26,40 @@ export class IOButton implements IRenderable, IWithMouseEvent {
     this._menu.addItem(new MenuItem("Rename", () => {console.log("rename on", name)}));
     this._menu.addItem(new MenuItem("Delete", () => {
       this._menu.hide();
+      ioButtons.splice(ioButtons.findIndex((v) => v == this), 1);
       withMouseEvent.splice(withMouseEvent.findIndex((v) => v == this), 1);
+      renderable.splice(renderable.findIndex((v) => v == this), 1);
     }, ItemType.RED));
+
+    if (type == IOType.INPUT) {
+      this._left = 8;
+      this._top = 8;  
+    } else {
+      this._left = cv.width - this.width - 8;
+      this._top = 8;
+    }
   }
 
   handleMouseMove(e: MouseEvent) {
-    this._entered = isMouseOver(e, this.width, this.height, this._left, this._top);
+    this._hovered = isMouseOver(e, this.width, this.height, this._left, this._top);
     if (this._grabbed) {
       this._top = Math.floor(e.offsetY / 32) * 32 + 8;
     }
     if (!isMouseOver(e, this.width, this.height, this._left, this._top)) {
-      this._enteredDown = false;
+      this._pressed = false;
     }
   }
 
   handleMouseDown(e: MouseEvent) {
     this._menu.hide();
     if (e.button == 0) {
-      this._enteredDown = true;
+      this._pressed = true;
       this._grabbed = isMouseOver(e, this.width, this.height, this._left, this._top);
     }
   }
   
   handleMouseUp(e: MouseEvent) {
-    if (this._entered && this._enteredDown && e.button == 0) {
+    if (this._hovered && this._pressed && e.button == 0) {
       this.enabled = !this.enabled;
     }
     this._grabbed = false;
@@ -77,8 +82,10 @@ export class IOButton implements IRenderable, IWithMouseEvent {
     ctx.stroke();
     if (this.enabled) {
       ctx.fillStyle = "#ff3f3f";
-      ctx.fill();
+    } else {
+      ctx.fillStyle = "#fff";
     }
+    ctx.fill();
     ctx.fillStyle = "#000";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
