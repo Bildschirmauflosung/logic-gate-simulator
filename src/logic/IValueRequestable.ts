@@ -1,3 +1,3 @@
 export interface IValueRequestable {
-    requestValue(): boolean
+    requestValue(): boolean[]
 }
