@@ -1,8 +1,7 @@
 import {ResolutionFunction} from "./Types";
 import {assertArity} from "../utils/Assert";
-import {LogicGate} from "./LogicGate";
 
-export class Deserialier {
+export class Deserialiser {
   public static readonly basicResolutionFuncs: Map<string, ResolutionFunction> = new Map([
     [
       "and",
