@@ -1,1 +1,1 @@
-# ts_logic-gate-simulator
+# logic-gate-simulator
