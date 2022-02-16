@@ -1,4 +1,5 @@
 import "./css/main.scss";
+import { IConnectionMap } from "./logic/IConnectionMap";
 import { Simulator } from "./logic/Simulator";
 import { Gate } from "./render/Gate";
 import { IOAddButton } from "./render/IOAddButton";
@@ -18,8 +19,9 @@ export const withMouseEvent: IWithMouseEvent[] = [];
 export const renderable: IRenderable[] = [];
 export const gates: Gate[] = [];
 export const ioButtons: IOButton[] = [];
+const connections: IConnectionMap[] = [];
 
-export const simulator: Simulator = new Simulator(gates, ioButtons);
+export const simulator: Simulator = new Simulator(connections);
 
 function resizeCanvas() {
   cv.width = window.innerWidth - sidebar.offsetWidth;
