@@ -1,5 +1,6 @@
 import "./css/main.scss";
 import { IConnectionMap } from "./logic/IConnectionMap";
+import { LogicGate } from "./logic/LogicGate";
 import { Simulator } from "./logic/Simulator";
 import { Gate } from "./render/Gate";
 import { IOAddButton } from "./render/IOAddButton";
@@ -7,6 +8,7 @@ import { IOButton } from "./render/IOButton";
 import { IOType } from "./render/IOType";
 import { IRenderable } from "./render/IRenderable";
 import { IWithMouseEvent } from "./render/IWithMouseEvent";
+import { Deserialiser } from './logic/Deserialiser'
 
 export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 const nav: HTMLElement = document.querySelector(".navbar")!;
@@ -70,8 +72,16 @@ document.addEventListener("contextmenu", (e) => e.preventDefault());
 window.addEventListener("resize", resizeCanvas);
 
 sidebarBtn.forEach((v) => {
+  const gateName = v.innerText.toLowerCase();
+  let inputNum: number;
+  if (gateName.toUpperCase() === "AND") {
+    inputNum = 2;
+  } else {
+    inputNum = 1;
+  }
   v.addEventListener("click", () => {
-    const g: Gate = new Gate(64, 64, 64, 64, maxId++, v.innerText);
+    const lg: LogicGate = new LogicGate([], inputNum, 1, Deserialiser.basicResolutionFuncs.get(gateName)!);
+    const g: Gate = new Gate(64, 64, maxId++, gateName, lg);
     gates.push(g);
     renderable.push(g);
     withMouseEvent.push(g);
