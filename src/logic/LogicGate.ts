@@ -1,29 +1,21 @@
 import { IValueRequestable } from "./IValueRequestable";
 import {assert} from "../utils/Assert";
+import {ResolutionFunction} from "./Types";
 
 export class LogicGate implements IValueRequestable {
   private defined: boolean = false;
   private visited: boolean = false;
-  private value:   boolean = false;
+  private value: boolean[] = [false];
 
-  inputs: IValueRequestable[];
-  arity: number;
-  resolutionFunc: (arity: number, values: boolean[]) => boolean;
+  constructor(public inputs: IValueRequestable[], public arity: number, public outputCount: number, public resolutionFunc: ResolutionFunction) { }
 
-  constructor(inputs: IValueRequestable[], arity: number, resolutionFunc: (arity: number, values: boolean[]) => boolean) {
-    this.inputs = inputs;
-    this.arity = arity;
-    this.resolutionFunc = resolutionFunc;
-  }
-
-  requestValue(): boolean {
+  requestValue(): boolean[] {
     if(!this.visited) {
       assert(!this.defined /* !== true*/, "Unreachable: Gate cannot have a defined state before being visited");
 
       this.visited = true;
       this.value = this.resolutionFunc(
-        this.arity, // this is optional, non-me made functions may just ignore this
-        this.inputs.map((gate: IValueRequestable) => gate.requestValue())
+        this.inputs.map((gate: IValueRequestable) => gate.requestValue()).flat()
       )
     } else {
       this.defined = true;
