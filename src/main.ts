@@ -1,4 +1,5 @@
 import "./css/main.scss";
+import { Simulator } from "./logic/Simulator";
 import { Gate } from "./render/Gate";
 import { IOAddButton } from "./render/IOAddButton";
 import { IOButton } from "./render/IOButton";
@@ -17,6 +18,8 @@ export const withMouseEvent: IWithMouseEvent[] = [];
 export const renderable: IRenderable[] = [];
 export const gates: Gate[] = [];
 export const ioButtons: IOButton[] = [];
+
+export const simulator: Simulator = new Simulator(gates, ioButtons);
 
 function resizeCanvas() {
   cv.width = window.innerWidth - sidebar.offsetWidth;
