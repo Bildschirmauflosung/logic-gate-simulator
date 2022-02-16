@@ -8,21 +8,21 @@ export class Deserialier {
       "and",
       (values: boolean[]) => {
         assertArity(2, values.length);
-        return values[0] && values[1];
+        return [values[0] && values[1]];
       }
     ],
     [
       "or",
       (values: boolean[]) => {
         assertArity(2, values.length);
-        return values[0] || values[1];
+        return [values[0] || values[1]];
       }
     ],
     [
       "not",
       (values: boolean[]) => {
         assertArity(1, values.length);
-        return !values[0]
+        return [!values[0]];
       }
     ]
   ]);
