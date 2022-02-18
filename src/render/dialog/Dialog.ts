@@ -71,6 +71,9 @@ export class Dialog {
         const input = document.createElement("input");
         input.className = "modal-bg__dialog-input";
         input.type = "text";
+        input.addEventListener("change", () => {
+          field.value = input.value;
+        });
         this._html.appendChild(input);
         break;
       case FieldType.COLOUR:
@@ -78,6 +81,11 @@ export class Dialog {
         break;
     }
     this._fields.push(field);
+  }
+
+  getValueFromField(label: string): string | undefined {
+    const field = this._fields.find((v) => v.label == label);
+    return field?.value;
   }
 
   show() {

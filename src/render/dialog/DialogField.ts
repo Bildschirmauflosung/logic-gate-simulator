@@ -4,5 +4,7 @@ export enum FieldType {
 }
 
 export class DialogField {
+  public value: string = "";
+
   constructor(public label: string, public type: FieldType) { }
 }

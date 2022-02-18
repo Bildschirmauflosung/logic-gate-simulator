@@ -35,7 +35,7 @@ export class IOButton implements IWithMouseEvent {
           type: DialogButtons.BTN_OK,
           handler: (_) => {
             // TODO: rename button
-            console.log("ok");
+            console.log("ok with", dialog.getValueFromField("Name"));
             dialog.hide();
           }
         },
