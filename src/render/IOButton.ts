@@ -1,5 +1,8 @@
 import { cv, ioButtons, renderable, withMouseEvent } from "../main";
 import { clamp, isMouseOver } from "../utils/Helpers";
+import { Dialog } from "./dialog/Dialog";
+import { DialogButtons } from "./dialog/DialogButtons";
+import { DialogField, FieldType } from "./dialog/DialogField";
 import { IOType } from "./IOType";
 import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./Menu";
@@ -25,7 +28,27 @@ export class IOButton implements IWithMouseEvent {
     this.name = name;
     this.type = type;
     this._menu = new Menu();
-    this._menu.addItem(new MenuItem("Rename", () => {console.log("rename on", name)}));
+    this._menu.addItem(new MenuItem("Rename", () => {
+      this._menu.hide();
+      const dialog: Dialog = new Dialog("Rename", DialogButtons.BTN_OK | DialogButtons.BTN_CANCEL,
+        {
+          type: DialogButtons.BTN_OK,
+          handler: (_) => {
+            // TODO: rename button
+            console.log("ok");
+            dialog.hide();
+          }
+        },
+        {
+          type: DialogButtons.BTN_CANCEL,
+          handler: (_) => {
+            console.log("cancel");
+            dialog.hide();
+          }
+        });
+      dialog.addField(new DialogField("Name", FieldType.INPUT));
+      dialog.show();
+    }));
     this._menu.addItem(new MenuItem("Delete", () => {
       this._menu.hide();
       ioButtons.splice(ioButtons.findIndex((v) => v == this), 1);
