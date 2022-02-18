@@ -1,6 +1,6 @@
 import { LogicGate } from "../logic/LogicGate";
-import { gates, renderable, withMouseEvent } from "../main";
-import { isMouseOver } from "../utils/Helpers";
+import { cv, gates, renderable, withMouseEvent } from "../main";
+import { clamp, isMouseOver } from "../utils/Helpers";
 import { IRenderable } from "./IRenderable";
 import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./Menu";
@@ -60,8 +60,8 @@ export class Gate implements IRenderable, IWithMouseEvent {
     if (this._grabbed) {
       if (this.isMaxId()) {
         console.log(this._xOffset, this._yOffset);
-        this.left = Math.max(Math.round((e.offsetX - this._xOffset) / 16) * 16, 64);
-        this.top = Math.max(Math.round((e.offsetY - this._yOffset) / 16) * 16, 0);
+        this.left = clamp(Math.round((e.offsetX - this._xOffset) / 16) * 16, 64, cv.width - 64 - this._width);
+        this.top = clamp(Math.round((e.offsetY - this._yOffset) / 16) * 16 + 4, 4, cv.height - 64 - this._height);
       }
     }
 
@@ -93,6 +93,7 @@ export class Gate implements IRenderable, IWithMouseEvent {
     const rad: number = 8;
     ctx.beginPath();
     ctx.strokeStyle = "#000";
+    ctx.fillStyle = "#fff";
     ctx.moveTo(this.left + rad, this.top);
     ctx.lineTo(this.left + this._width - rad, this.top);
     ctx.arcTo(this.left + this._width, this.top, this.left + this._width, this.top + rad, rad);
@@ -103,6 +104,7 @@ export class Gate implements IRenderable, IWithMouseEvent {
     ctx.lineTo(this.left, this.top + rad);
     ctx.arcTo(this.left, this.top, this.left + rad, this.top, rad);
     ctx.stroke();
+    ctx.fill();
     for (let i = 0; i < this.gate.arity; i++) {
       const a = this._height / (this.gate.arity + 1);
       ctx.beginPath();

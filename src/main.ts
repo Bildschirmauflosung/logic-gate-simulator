@@ -101,7 +101,7 @@ sidebarBtn.forEach((v) => {
   }
   v.addEventListener("click", () => {
     const lg: LogicGate = new LogicGate([], inputNum, 1, Deserialiser.basicResolutionFuncs.get(gateName)!);
-    const g: Gate = new Gate(64, 64, maxId++, gateName, lg);
+    const g: Gate = new Gate(64, 68, maxId++, gateName, lg);
     gates.push(g);
     renderable.push(g);
     withMouseEvent.push(g);

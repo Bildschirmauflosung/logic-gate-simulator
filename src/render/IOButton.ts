@@ -1,5 +1,5 @@
 import { cv, ioButtons, renderable, withMouseEvent } from "../main";
-import { isMouseOver } from "../utils/Helpers";
+import { clamp, isMouseOver } from "../utils/Helpers";
 import { IOType } from "./IOType";
 import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./Menu";
@@ -45,7 +45,7 @@ export class IOButton implements IWithMouseEvent {
   handleMouseMove(e: MouseEvent) {
     this._hovered = isMouseOver(e, this.width, this.height, this._left, this._top);
     if (this._grabbed) {
-      this._top = Math.round((e.offsetY + this._yOffset) / 32) * 32 + 8;
+      this._top = clamp(Math.round((e.offsetY + this._yOffset) / 32) * 32 + 8, 8, cv.height - 64 - this.height);
     }
     if (!isMouseOver(e, this.width, this.height, this._left, this._top)) {
       this._pressed = false;
