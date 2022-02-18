@@ -25,11 +25,31 @@ const connections: IConnectionMap[] = [];
 
 export const simulator: Simulator = new Simulator(connections);
 
+const test1 = new IOButton("I", IOType.INPUT)
+const test2 = new IOButton("O", IOType.OUTPUT)
+const addInput = new IOAddButton(IOType.INPUT)
+const addOutput = new IOAddButton(IOType.OUTPUT)
+withMouseEvent.push(test1);
+renderable.push(test1);
+ioButtons.push(test1);
+withMouseEvent.push(test2);
+renderable.push(test2);
+ioButtons.push(test2);
+withMouseEvent.push(addInput);
+renderable.push(addInput);
+withMouseEvent.push(addOutput);
+renderable.push(addOutput);
+
 function resizeCanvas() {
   cv.width = window.innerWidth - sidebar.offsetWidth;
   cv.height = window.innerHeight - nav.offsetHeight;
   ctx.fillStyle = "#fff";
   ctx.fillRect(0, 0, cv.width, cv.height);
+  for (const i of ioButtons) {
+    i.align();
+  }
+  addInput.align();
+  addOutput.align();
 }
 
 resizeCanvas();
@@ -87,21 +107,6 @@ sidebarBtn.forEach((v) => {
     withMouseEvent.push(g);
   });
 });
-
-const test1 = new IOButton("I", IOType.INPUT)
-const test2 = new IOButton("O", IOType.OUTPUT)
-const addInput = new IOAddButton(IOType.INPUT)
-const addOutput = new IOAddButton(IOType.OUTPUT)
-withMouseEvent.push(test1);
-renderable.push(test1);
-ioButtons.push(test1);
-withMouseEvent.push(test2);
-renderable.push(test2);
-ioButtons.push(test2);
-withMouseEvent.push(addInput);
-renderable.push(addInput);
-withMouseEvent.push(addOutput);
-renderable.push(addOutput);
 
 cv.addEventListener("mousemove", (e) => handleMouseMove(e));
 cv.addEventListener("mousedown", (e) => handleMouseDown(e));

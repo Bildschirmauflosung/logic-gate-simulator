@@ -13,6 +13,8 @@ export class IOButton implements IWithMouseEvent {
   private _hovered: boolean = false;
   private _pressed: boolean = false;
 
+  private _yOffset: number = 0;
+
   width: number = 48;
   height: number = 48;
   name: string;
@@ -43,7 +45,7 @@ export class IOButton implements IWithMouseEvent {
   handleMouseMove(e: MouseEvent) {
     this._hovered = isMouseOver(e, this.width, this.height, this._left, this._top);
     if (this._grabbed) {
-      this._top = Math.floor(e.offsetY / 32) * 32 + 8;
+      this._top = Math.round((e.offsetY + this._yOffset) / 32) * 32 + 8;
     }
     if (!isMouseOver(e, this.width, this.height, this._left, this._top)) {
       this._pressed = false;
@@ -55,6 +57,9 @@ export class IOButton implements IWithMouseEvent {
     if (e.button == 0) {
       this._pressed = true;
       this._grabbed = isMouseOver(e, this.width, this.height, this._left, this._top);
+      if (this._grabbed) {
+        this._yOffset = this._top - e.offsetY;
+      }
     }
   }
   
@@ -68,6 +73,12 @@ export class IOButton implements IWithMouseEvent {
   handleMouseContextMenu(e: MouseEvent) {
     if (isMouseOver(e, this.width, this.height, this._left, this._top)) {
       this._menu.show(e.clientX, e.clientY);
+    }
+  }
+
+  align(): void {
+    if (this.type == IOType.OUTPUT) {
+      this._left = cv.width - this.width - 8;
     }
   }
 

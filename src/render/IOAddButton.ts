@@ -52,6 +52,13 @@ export class IOAddButton implements IRenderable, IWithMouseEvent {
 
   handleMouseContextMenu(_e: MouseEvent): void { }
 
+  align(): void {
+    if (this.type == IOType.OUTPUT) {
+      this._left = cv.width - this.width - 8;
+    }
+    this._top = cv.height - this.height - 8;
+  }
+
   render(ctx: CanvasRenderingContext2D): void {
     ctx.strokeStyle = "#000";
     ctx.lineWidth = 1;

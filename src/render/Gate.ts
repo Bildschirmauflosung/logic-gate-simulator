@@ -13,6 +13,9 @@ export class Gate implements IRenderable, IWithMouseEvent {
   private _width: number;
   private _height: number;
 
+  private _xOffset: number = 0;
+  private _yOffset: number = 0;
+
   public readonly name: string;
 
   constructor(public left: number, public top: number, public readonly id: number, name: string, public readonly gate: LogicGate) {
@@ -56,8 +59,9 @@ export class Gate implements IRenderable, IWithMouseEvent {
   handleMouseMove(e: MouseEvent) {
     if (this._grabbed) {
       if (this.isMaxId()) {
-        this.left = Math.max(Math.floor(e.offsetX / 16) * 16, 64);
-        this.top = Math.floor(e.offsetY / 16) * 16;
+        console.log(this._xOffset, this._yOffset);
+        this.left = Math.max(Math.round((e.offsetX - this._xOffset) / 16) * 16, 64);
+        this.top = Math.max(Math.round((e.offsetY - this._yOffset) / 16) * 16, 0);
       }
     }
 
@@ -67,7 +71,11 @@ export class Gate implements IRenderable, IWithMouseEvent {
   handleMouseDown(e: MouseEvent) {
     this._menu.hide();
     if (e.button == 0) {
-      this._grabbed = e.offsetX > this.left && e.offsetX < this.left + this._width && e.offsetY > this.top && e.offsetY < this.top + this._height;
+      this._grabbed = isMouseOver(e, this._width, this._height, this.left, this.top);
+      if (this._grabbed) {
+        this._xOffset = e.offsetX - this.left;
+        this._yOffset = e.offsetY - this.top;
+      }
     }
   }
 
