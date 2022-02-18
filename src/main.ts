@@ -25,16 +25,8 @@ const connections: IConnectionMap[] = [];
 
 export const simulator: Simulator = new Simulator(connections);
 
-const test1 = new IOButton("I", IOType.INPUT)
-const test2 = new IOButton("O", IOType.OUTPUT)
-const addInput = new IOAddButton(IOType.INPUT)
-const addOutput = new IOAddButton(IOType.OUTPUT)
-withMouseEvent.push(test1);
-renderable.push(test1);
-ioButtons.push(test1);
-withMouseEvent.push(test2);
-renderable.push(test2);
-ioButtons.push(test2);
+const addInput = new IOAddButton(IOType.INPUT);
+const addOutput = new IOAddButton(IOType.OUTPUT);
 withMouseEvent.push(addInput);
 renderable.push(addInput);
 withMouseEvent.push(addOutput);
