@@ -1,5 +1,6 @@
 import { cv, ioButtons, renderable, withMouseEvent } from "../main";
 import { clamp, isMouseOver } from "../utils/Helpers";
+import { ConnectionPoint } from "./ConnectionPoint";
 import { Dialog } from "./dialog/Dialog";
 import { ButtonType, DialogButton } from "./dialog/DialogButton";
 import { DialogField, FieldType } from "./dialog/DialogField";
@@ -15,6 +16,7 @@ export class IOButton implements IWithMouseEvent {
   private _grabbed: boolean = false;
   private _hovered: boolean = false;
   private _pressed: boolean = false;
+  private _point: ConnectionPoint;
 
   private _yOffset: number = 0;
 
@@ -56,12 +58,20 @@ export class IOButton implements IWithMouseEvent {
       this._left = cv.width - this.width - 8;
       this._top = 4;
     }
+
+    if (type === IOType.INPUT) {
+      this._point = new ConnectionPoint(IOType.OUTPUT, this._left + this.width, this._top + this.height / 2);
+    } else {
+      this._point = new ConnectionPoint(IOType.INPUT, this._left, this._top + this.height / 2);
+    }
+    withMouseEvent.push(this._point);
   }
 
   handleMouseMove(e: MouseEvent) {
     this._hovered = isMouseOver(e, this.width, this.height, this._left, this._top);
     if (this._grabbed) {
       this._top = clamp(Math.round((e.offsetY + this._yOffset) / 32) * 32 + 4, 4, cv.height - 64 - this.height);
+      this._point.top = this._top + this.height / 2;
     }
     if (!isMouseOver(e, this.width, this.height, this._left, this._top)) {
       this._pressed = false;
@@ -71,6 +81,10 @@ export class IOButton implements IWithMouseEvent {
   handleMouseDown(e: MouseEvent) {
     this._menu.hide();
     if (e.button == 0) {
+      if (isMouseOver(e, 8, 8, this._point.left - 4, this._point.top - 4)) {
+        return;
+      }
+
       this._pressed = true;
       this._grabbed = isMouseOver(e, this.width, this.height, this._left, this._top);
       if (this._grabbed) {
@@ -87,6 +101,10 @@ export class IOButton implements IWithMouseEvent {
   }
   
   handleMouseContextMenu(e: MouseEvent) {
+    if (isMouseOver(e, 8, 8, this._point.left - 4, this._point.top - 4)) {
+      return;
+    }
+
     if (isMouseOver(e, this.width, this.height, this._left, this._top)) {
       this._menu.show(e.clientX, e.clientY);
     }
@@ -114,16 +132,7 @@ export class IOButton implements IWithMouseEvent {
     }
     ctx.fill();
 
-    const a = this.type == IOType.INPUT ? this.width : 0;
-    ctx.beginPath();
-    ctx.fillStyle = "#000";
-    ctx.moveTo(this._left + a, this._top + this.height / 2 - 4);
-    ctx.arcTo(this._left + a + 4, this._top + this.height / 2 - 4, this._left + a + 4, this._top + this.height / 2, 4);
-    ctx.arcTo(this._left + a + 4, this._top + this.height / 2 + 4, this._left + a, this._top + this.height / 2 + 4, 4);
-    ctx.arcTo(this._left + a - 4, this._top + this.height / 2 + 4, this._left + a - 4, this._top + this.height / 2, 4);
-    ctx.arcTo(this._left + a - 4, this._top + this.height / 2 - 4, this._left + a, this._top + this.height / 2 - 4, 4);
-    ctx.stroke();
-    ctx.fill();
+    this._point.render(ctx);
     
     ctx.fillStyle = "#000";
     ctx.textAlign = "center";

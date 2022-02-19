@@ -1,6 +1,8 @@
 import { LogicGate } from "../logic/LogicGate";
 import { cv, gates, renderable, withMouseEvent } from "../main";
 import { clamp, isMouseOver } from "../utils/Helpers";
+import { ConnectionPoint } from "./ConnectionPoint";
+import { IOType } from "./IOType";
 import { IRenderable } from "./IRenderable";
 import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./Menu";
@@ -12,6 +14,7 @@ export class Gate implements IRenderable, IWithMouseEvent {
   private _menu: Menu;
   private _width: number;
   private _height: number;
+  private _points: ConnectionPoint[] = [];
 
   private _xOffset: number = 0;
   private _yOffset: number = 0;
@@ -31,6 +34,17 @@ export class Gate implements IRenderable, IWithMouseEvent {
       withMouseEvent.splice(withMouseEvent.findIndex((v) => v === this), 1);
       gates.splice(gates.findIndex((v) => v === this), 1);
     }, ItemType.RED));
+
+    for (let i = 0; i < gate.arity; i++) {
+      const point = new ConnectionPoint(IOType.INPUT, this.left, this.top + this._height / (gate.arity + 1) * (i + 1));
+      this._points.push(point);
+      withMouseEvent.push(point);
+    }
+    for (let i = 0; i < gate.outputCount; i++) {
+      const point = new ConnectionPoint(IOType.OUTPUT, this.left + this._width, this.top + this._height / (gate.outputCount + 1) * (i + 1));
+      this._points.push(point);
+      withMouseEvent.push(point);
+    }
   }
 
   private isMaxId(onEnter: boolean = false): boolean {
@@ -59,9 +73,17 @@ export class Gate implements IRenderable, IWithMouseEvent {
   handleMouseMove(e: MouseEvent) {
     if (this._grabbed) {
       if (this.isMaxId()) {
-        console.log(this._xOffset, this._yOffset);
         this.left = clamp(Math.round((e.offsetX - this._xOffset) / 16) * 16, 64, cv.width - 64 - this._width);
         this.top = clamp(Math.round((e.offsetY - this._yOffset) / 16) * 16 + 4, 4, cv.height - 64 - this._height);
+
+        for (let i = 0; i < this.gate.arity; i++) {
+          this._points[i].left = this.left;
+          this._points[i].top = this.top + this._height / (this.gate.arity + 1) * (i + 1);
+        }
+        for (let i = 0; i < this.gate.outputCount; i++) {
+          this._points[i + this.gate.arity].left = this.left + this._width;
+          this._points[i + this.gate.arity].top = this.top + this._height / (this.gate.outputCount + 1) * (i + 1);
+        }
       }
     }
 
@@ -71,6 +93,12 @@ export class Gate implements IRenderable, IWithMouseEvent {
   handleMouseDown(e: MouseEvent) {
     this._menu.hide();
     if (e.button == 0) {
+      for (const i of this._points) {
+        if (isMouseOver(e, 8, 8, i.left - 4, i.top - 4)) {
+          return;
+        }
+      }
+
       this._grabbed = isMouseOver(e, this._width, this._height, this.left, this.top);
       if (this._grabbed) {
         this._xOffset = e.offsetX - this.left;
@@ -84,6 +112,12 @@ export class Gate implements IRenderable, IWithMouseEvent {
   }
 
   handleMouseContextMenu(e: MouseEvent) {
+    for (const i of this._points) {
+      if (isMouseOver(e, 8, 8, i.left - 4, i.top - 4)) {
+        return;
+      }
+    }
+
     if (isMouseOver(e, this._width, this._height, this.left, this.top) && this.isMaxId(true)) {
       this._menu.show(e.clientX, e.clientY);
     }
@@ -105,30 +139,11 @@ export class Gate implements IRenderable, IWithMouseEvent {
     ctx.arcTo(this.left, this.top, this.left + rad, this.top, rad);
     ctx.stroke();
     ctx.fill();
-    for (let i = 0; i < this.gate.arity; i++) {
-      const a = this._height / (this.gate.arity + 1);
-      ctx.beginPath();
-      ctx.fillStyle = "#000";
-      ctx.moveTo(this.left, this.top + a * (i + 1) - 4);
-      ctx.arcTo(this.left + 4, this.top + a * (i + 1) - 4, this.left + 4, this.top + a * (i + 1), 4);
-      ctx.arcTo(this.left + 4, this.top + a * (i + 1) + 4, this.left, this.top + a * (i + 1) + 4, 4);
-      ctx.arcTo(this.left - 4, this.top + a * (i + 1) + 4, this.left - 4, this.top + a * (i + 1), 4);
-      ctx.arcTo(this.left - 4, this.top + a * (i + 1) - 4, this.left, this.top + a * (i + 1) - 4, 4);
-      ctx.stroke();
-      ctx.fill();
+
+    for (const i of this._points) {
+      i.render(ctx);
     }
-    for (let i = 0; i < this.gate.outputCount; i++) {
-      const a = this._height / (this.gate.outputCount + 1);
-      ctx.beginPath();
-      ctx.fillStyle = "#000";
-      ctx.moveTo(this.left + this._width, this.top + a * (i + 1) - 4);
-      ctx.arcTo(this.left + this._width + 4, this.top + a * (i + 1) - 4, this.left + this._width + 4, this.top + a * (i + 1), 4);
-      ctx.arcTo(this.left + this._width + 4, this.top + a * (i + 1) + 4, this.left + this._width, this.top + a * (i + 1) + 4, 4);
-      ctx.arcTo(this.left + this._width - 4, this.top + a * (i + 1) + 4, this.left + this._width - 4, this.top + a * (i + 1), 4);
-      ctx.arcTo(this.left + this._width - 4, this.top + a * (i + 1) - 4, this.left + this._width, this.top + a * (i + 1) - 4, 4);
-      ctx.stroke();
-      ctx.fill();
-    }
+    
     ctx.fillStyle = "#000";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";

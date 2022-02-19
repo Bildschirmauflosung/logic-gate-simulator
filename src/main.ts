@@ -12,7 +12,7 @@ import { Deserialiser } from './logic/Deserialiser'
 
 export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 const nav: HTMLElement = document.querySelector(".navbar")!;
-const sidebar: HTMLElement = document.querySelector(".content__sidebar")!;
+export const sidebar: HTMLElement = document.querySelector(".content__sidebar")!;
 const sidebarBtn: NodeListOf<HTMLElement> = document.querySelectorAll(".content__sidebar-btn")!;
 let ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
 let maxId: number = 0;
@@ -23,7 +23,7 @@ export const gates: Gate[] = [];
 export const ioButtons: IOButton[] = [];
 const connections: IConnectionMap[] = [];
 
-export const simulator: Simulator = new Simulator(connections);
+// export const simulator: Simulator = new Simulator(connections);
 
 const addInput = new IOAddButton(IOType.INPUT);
 const addOutput = new IOAddButton(IOType.OUTPUT);
