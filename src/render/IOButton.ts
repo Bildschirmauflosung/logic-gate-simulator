@@ -33,12 +33,12 @@ export class IOButton implements IWithMouseEvent {
       const dialog: Dialog = new Dialog("Rename");
       dialog.addField(new DialogField("Name", FieldType.INPUT));
       dialog.addButton(new DialogButton("Cancel", ButtonType.NORMAL, () => {
-        dialog.hide();
+        dialog.close();
       }));
       dialog.addButton(new DialogButton("Rename", ButtonType.NORMAL, () => {
         // TODO: Rename button
         console.log("rename", dialog.getValueFromField("Name"));
-        dialog.hide();
+        dialog.close();
       }));
       dialog.show();
     }));

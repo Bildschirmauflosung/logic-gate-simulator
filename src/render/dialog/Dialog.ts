@@ -73,8 +73,8 @@ export class Dialog {
     this._html.style.left = document.body.offsetWidth / 2 - this._html.offsetWidth / 2 + "px";
   }
   
-  hide() {
+  close() {
     this._modalBg.style.display = "none";
-    this._html.style.display = "none";
+    this._html.remove();
   }
 }
