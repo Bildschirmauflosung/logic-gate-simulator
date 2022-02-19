@@ -51,17 +51,17 @@ export class IOButton implements IWithMouseEvent {
 
     if (type == IOType.INPUT) {
       this._left = 8;
-      this._top = 8;  
+      this._top = 4;  
     } else {
       this._left = cv.width - this.width - 8;
-      this._top = 8;
+      this._top = 4;
     }
   }
 
   handleMouseMove(e: MouseEvent) {
     this._hovered = isMouseOver(e, this.width, this.height, this._left, this._top);
     if (this._grabbed) {
-      this._top = clamp(Math.round((e.offsetY + this._yOffset) / 32) * 32 + 8, 8, cv.height - 64 - this.height);
+      this._top = clamp(Math.round((e.offsetY + this._yOffset) / 32) * 32 + 4, 4, cv.height - 64 - this.height);
     }
     if (!isMouseOver(e, this.width, this.height, this._left, this._top)) {
       this._pressed = false;
@@ -113,6 +113,18 @@ export class IOButton implements IWithMouseEvent {
       ctx.fillStyle = "#fff";
     }
     ctx.fill();
+
+    const a = this.type == IOType.INPUT ? this.width : 0;
+    ctx.beginPath();
+    ctx.fillStyle = "#000";
+    ctx.moveTo(this._left + a, this._top + this.height / 2 - 4);
+    ctx.arcTo(this._left + a + 4, this._top + this.height / 2 - 4, this._left + a + 4, this._top + this.height / 2, 4);
+    ctx.arcTo(this._left + a + 4, this._top + this.height / 2 + 4, this._left + a, this._top + this.height / 2 + 4, 4);
+    ctx.arcTo(this._left + a - 4, this._top + this.height / 2 + 4, this._left + a - 4, this._top + this.height / 2, 4);
+    ctx.arcTo(this._left + a - 4, this._top + this.height / 2 - 4, this._left + a, this._top + this.height / 2 - 4, 4);
+    ctx.stroke();
+    ctx.fill();
+    
     ctx.fillStyle = "#000";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
