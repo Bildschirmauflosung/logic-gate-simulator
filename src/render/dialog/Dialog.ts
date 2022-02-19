@@ -1,15 +1,14 @@
-import { DialogButtons } from "./DialogButtons";
+import { DialogButton } from "./DialogButton";
 import { DialogField, FieldType } from "./DialogField";
 
 export class Dialog {
   private _modalBg: HTMLDivElement = document.querySelector(".modal-bg")!;
   private _html = document.createElement("div");
   private _fields: DialogField[] = [];
+  private _buttons: DialogButton[] = [];
   private _areBtnsCreated: boolean = false;
-  private _handlers: {type: DialogButtons, handler: (e: Event) => void}[];
   
-  constructor(title: string, private _buttons: DialogButtons, ...handlers: {type: DialogButtons, handler: (e: Event) => void}[]) {
-    this._handlers = handlers;
+  constructor(title: string) {
     const hTitle = document.createElement("p");
     hTitle.className = "modal-bg__dialog-title";
     hTitle.innerText = title;
@@ -22,42 +21,17 @@ export class Dialog {
     const btns = document.createElement("div");
     btns.className = "modal-bg__dialog-btns";
     this._html.appendChild(btns);
-    if (this._buttons & DialogButtons.BTN_CANCEL) {
+    for (const i of this._buttons) {
       const btn = document.createElement("div");
       btn.className = "modal-bg__dialog-btns-btn";
-      btn.innerText = "Cancel";
-      this._handlers.filter((v) => v.type & DialogButtons.BTN_CANCEL).forEach(({handler}) => {
-        btn.addEventListener("click", handler);
-      });
+      btn.innerText = i.label;
+      btn.addEventListener("click", i.onClick);
       btns.appendChild(btn);
     }
-    if (this._buttons & DialogButtons.BTN_NO) {
-      const btn = document.createElement("div");
-      btn.className = "modal-bg__dialog-btns-btn";
-      btn.innerText = "No";
-      this._handlers.filter((v) => v.type & DialogButtons.BTN_NO).forEach(({handler}) => {
-        btn.addEventListener("click", handler);
-      });
-      btns.appendChild(btn);
-    }
-    if (this._buttons & DialogButtons.BTN_OK) {
-      const btn = document.createElement("div");
-      btn.className = "modal-bg__dialog-btns-btn";
-      btn.innerText = "OK";
-      this._handlers.filter((v) => v.type & DialogButtons.BTN_OK).forEach(({handler}) => {
-        btn.addEventListener("click", handler);
-      });
-      btns.appendChild(btn);
-    }
-    if (this._buttons & DialogButtons.BTN_YES) {
-      const btn = document.createElement("div");
-      btn.className = "modal-bg__dialog-btns-btn";
-      btn.innerText = "Yes";
-      this._handlers.filter((v) => v.type & DialogButtons.BTN_YES).forEach(({handler}) => {
-        btn.addEventListener("click", handler);
-      });
-      btns.appendChild(btn);
-    }
+  }
+
+  addButton(button: DialogButton) {
+    this._buttons.push(button);
   }
 
   addField(field: DialogField) {
