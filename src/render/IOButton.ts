@@ -5,11 +5,12 @@ import { Dialog } from "./dialog/Dialog";
 import { ButtonType, DialogButton } from "./dialog/DialogButton";
 import { DialogField, FieldType } from "./dialog/DialogField";
 import { IOType } from "./IOType";
+import { IWithID } from "./IWithID";
 import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./Menu";
 import { ItemType, MenuItem } from "./MenuItem";
 
-export class IOButton implements IWithMouseEvent {
+export class IOButton implements IWithMouseEvent, IWithID {
   private _left: number;
   private _top: number;
   private _menu: Menu;
@@ -26,7 +27,7 @@ export class IOButton implements IWithMouseEvent {
   type: IOType;
   enabled: boolean = false;
 
-  constructor(name: string, type: IOType) {
+  constructor(public id: number, name: string, type: IOType) {
     this.name = name;
     this.type = type;
     this._menu = new Menu();
@@ -49,6 +50,9 @@ export class IOButton implements IWithMouseEvent {
       ioButtons.splice(ioButtons.findIndex((v) => v == this), 1);
       withMouseEvent.splice(withMouseEvent.findIndex((v) => v == this), 1);
       renderable.splice(renderable.findIndex((v) => v == this), 1);
+      for (const i of ioButtons) {
+        i.updateId();
+      }
     }, ItemType.RED));
 
     if (type == IOType.INPUT) {
@@ -114,6 +118,10 @@ export class IOButton implements IWithMouseEvent {
     if (this.type == IOType.OUTPUT) {
       this._left = cv.width - this.width - 8;
     }
+  }
+
+  updateId(): void {
+    this.id = ioButtons.findIndex((v) => v === this);
   }
 
   render(ctx: CanvasRenderingContext2D): void {

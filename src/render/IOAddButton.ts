@@ -41,7 +41,7 @@ export class IOAddButton implements IRenderable, IWithMouseEvent {
 
   handleMouseUp(e: MouseEvent): void {
     if (this._hovered && this._pressed && e.button == 0) {
-      const io = new IOButton("x", this.type);
+      const io = new IOButton(ioButtons.length, "x", this.type);
       ioButtons.push(io);
       withMouseEvent.push(io);
       renderable.push(io);
@@ -51,6 +51,10 @@ export class IOAddButton implements IRenderable, IWithMouseEvent {
   }
 
   handleMouseContextMenu(_e: MouseEvent): void { }
+
+  updateId() {
+
+  }
 
   align(): void {
     if (this.type == IOType.OUTPUT) {

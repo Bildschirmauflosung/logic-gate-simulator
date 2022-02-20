@@ -15,7 +15,6 @@ const nav: HTMLElement = document.querySelector(".navbar")!;
 export const sidebar: HTMLElement = document.querySelector(".content__sidebar")!;
 const sidebarBtn: NodeListOf<HTMLElement> = document.querySelectorAll(".content__sidebar-btn")!;
 let ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
-let maxId: number = 0;
 
 export const withMouseEvent: IWithMouseEvent[] = [];
 export const renderable: IRenderable[] = [];
@@ -23,7 +22,7 @@ export const gates: Gate[] = [];
 export const ioButtons: IOButton[] = [];
 const connections: IConnectionMap[] = [];
 
-// export const simulator: Simulator = new Simulator(connections);
+export const simulator: Simulator = new Simulator(gates, ioButtons, connections);
 
 const addInput = new IOAddButton(IOType.INPUT);
 const addOutput = new IOAddButton(IOType.OUTPUT);
@@ -93,7 +92,7 @@ sidebarBtn.forEach((v) => {
   }
   v.addEventListener("click", () => {
     const lg: LogicGate = new LogicGate([], inputNum, 1, Deserialiser.basicResolutionFuncs.get(gateName)!);
-    const g: Gate = new Gate(64, 68, maxId++, gateName, lg);
+    const g: Gate = new Gate(64, 68, gates.length, gateName, lg);
     gates.push(g);
     renderable.push(g);
     withMouseEvent.push(g);

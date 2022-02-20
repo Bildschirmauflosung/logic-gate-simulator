@@ -4,11 +4,12 @@ import { clamp, isMouseOver } from "../utils/Helpers";
 import { ConnectionPoint } from "./ConnectionPoint";
 import { IOType } from "./IOType";
 import { IRenderable } from "./IRenderable";
+import { IWithID } from "./IWithID";
 import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./Menu";
 import { ItemType, MenuItem } from "./MenuItem";
 
-export class Gate implements IRenderable, IWithMouseEvent {
+export class Gate implements IRenderable, IWithMouseEvent, IWithID {
   private _grabbed: boolean = false;
   private _enterred: boolean = false;
   private _menu: Menu;
@@ -21,7 +22,7 @@ export class Gate implements IRenderable, IWithMouseEvent {
 
   public readonly name: string;
 
-  constructor(public left: number, public top: number, public readonly id: number, name: string, public readonly gate: LogicGate) {
+  constructor(public left: number, public top: number, public id: number, name: string, public readonly gate: LogicGate) {
     const max = gate.arity > gate.outputCount ? gate.arity : gate.outputCount;
     this._width = 64;
     this._height = 64 + (max - 1) * 32;
@@ -33,6 +34,9 @@ export class Gate implements IRenderable, IWithMouseEvent {
       renderable.splice(renderable.findIndex((v) => v === this), 1);
       withMouseEvent.splice(withMouseEvent.findIndex((v) => v === this), 1);
       gates.splice(gates.findIndex((v) => v === this), 1);
+      for (const i of gates) {
+        i.updateId();
+      }
     }, ItemType.RED));
 
     for (let i = 0; i < gate.arity; i++) {
@@ -121,6 +125,10 @@ export class Gate implements IRenderable, IWithMouseEvent {
     if (isMouseOver(e, this._width, this._height, this.left, this.top) && this.isMaxId(true)) {
       this._menu.show(e.clientX, e.clientY);
     }
+  }
+
+  updateId(): void {
+    this.id = gates.findIndex((v) => v === this);
   }
 
   render(ctx: CanvasRenderingContext2D): void {
