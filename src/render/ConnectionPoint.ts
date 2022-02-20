@@ -57,12 +57,14 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
     ctx.fill();
 
     if (this._pressed) {
-      ctx.beginPath();
-      ctx.moveTo(this.left, this.top);
-      ctx.lineTo((this._xPos + this.left - sidebar.offsetWidth) / 2, this.top);
-      ctx.lineTo((this._xPos + this.left - sidebar.offsetWidth) / 2, this._yOffset);
-      ctx.lineTo(this._xOffset, this._yOffset);
-      ctx.stroke();
+      if (this.type === IOType.INPUT && this._xOffset < this.left || this.type === IOType.OUTPUT && this._xOffset > this.left) {
+        ctx.beginPath();
+        ctx.moveTo(this.left, this.top);
+        ctx.lineTo((this._xPos + this.left - sidebar.offsetWidth) / 2, this.top);
+        ctx.lineTo((this._xPos + this.left - sidebar.offsetWidth) / 2, this._yOffset);
+        ctx.lineTo(this._xOffset, this._yOffset);
+        ctx.stroke();
+      }
     }
   }
 }
