@@ -1,3 +1,4 @@
+import { cv, sidebar } from "../../main";
 import { ItemType, MenuItem } from "./MenuItem";
 
 export class Menu {
@@ -39,8 +40,8 @@ export class Menu {
 
   show(left: number, top: number) {
     this._html.style.display = "inline-flex";
-    this._html.style.left = left + "px";
-    this._html.style.top = top + "px";
+    this._html.style.left = left > (this._html.offsetWidth + cv.width - sidebar.offsetWidth) ? left - this._html.offsetWidth + "px" : left + "px";
+    this._html.style.top = top > (this._html.offsetHeight + cv.height - sidebar.offsetHeight) ? top - this._html.offsetHeight + "px" : top + "px";
   }
 
   hide() {
