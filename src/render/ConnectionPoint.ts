@@ -46,6 +46,12 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
         if (StaticConnectionData.pointFrom.type === IOType.OUTPUT) {
           StaticConnectionData.swap();
         }
+
+        const i = connectedPoints.findIndex((v) => v.pointFrom === StaticConnectionData.pointFrom && v.pointTo === StaticConnectionData.pointTo);
+        if (i !== -1) {
+          connectedPoints.splice(i, 1);
+          return;
+        }
         
         const conn = new ConnectionData(StaticConnectionData.pointFrom, StaticConnectionData.pointTo);
         const pos = connectedPoints.findIndex((v) => v.pointFrom === conn.pointFrom);
