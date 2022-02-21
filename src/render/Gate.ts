@@ -6,8 +6,8 @@ import { IOType } from "./IOType";
 import { IRenderable } from "./IRenderable";
 import { IWithID } from "./IWithID";
 import { IWithMouseEvent } from "./IWithMouseEvent";
-import { Menu } from "./Menu";
-import { ItemType, MenuItem } from "./MenuItem";
+import { Menu } from "./menu/Menu";
+import { ItemType, MenuItem } from "./menu/MenuItem";
 
 export class Gate implements IRenderable, IWithMouseEvent, IWithID {
   private _grabbed: boolean = false;

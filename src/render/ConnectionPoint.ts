@@ -4,8 +4,8 @@ import { ConnectionData } from "./ConnectionData";
 import { IOType } from "./IOType";
 import { IRenderable } from "./IRenderable";
 import { IWithMouseEvent } from "./IWithMouseEvent";
-import { Menu } from "./Menu";
-import { ItemType, MenuItem } from "./MenuItem";
+import { Menu } from "./menu/Menu";
+import { ItemType, MenuItem } from "./menu/MenuItem";
 import { StaticConnectionData } from "./StaticConnectionData";
 
 export class ConnectionPoint implements IRenderable, IWithMouseEvent {

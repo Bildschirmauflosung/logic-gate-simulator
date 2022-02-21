@@ -7,8 +7,8 @@ import { DialogField, FieldType } from "./dialog/DialogField";
 import { IOType } from "./IOType";
 import { IWithID } from "./IWithID";
 import { IWithMouseEvent } from "./IWithMouseEvent";
-import { Menu } from "./Menu";
-import { ItemType, MenuItem } from "./MenuItem";
+import { Menu } from "./menu/Menu";
+import { ItemType, MenuItem } from "./menu/MenuItem";
 
 export class IOButton implements IWithMouseEvent, IWithID {
   private _left: number;
