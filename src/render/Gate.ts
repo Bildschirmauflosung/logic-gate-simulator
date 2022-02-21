@@ -30,7 +30,10 @@ export class Gate implements IRenderable, IWithMouseEvent, IWithID {
     this._menu = new Menu();
     this._menu.addItem(new MenuItem("Edit", () => {console.log("edit on", id)}));
     this._menu.addItem(new MenuItem("Delete", () => {
-      this._menu.hide();
+      this._menu.destroy();
+      for (const i of this._points) {
+        i.destroyMenu();
+      }
       renderable.splice(renderable.findIndex((v) => v === this), 1);
       withMouseEvent.splice(withMouseEvent.findIndex((v) => v === this), 1);
       gates.splice(gates.findIndex((v) => v === this), 1);

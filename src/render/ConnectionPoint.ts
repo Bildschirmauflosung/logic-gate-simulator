@@ -63,6 +63,10 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
     }
   }
 
+  destroyMenu() {
+    this._menu.destroy();
+  }
+
   render(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
     if (this._hovered) {

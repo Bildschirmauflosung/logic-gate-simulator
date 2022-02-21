@@ -46,4 +46,8 @@ export class Menu {
   hide() {
     this._html.style.display = "none";
   }
+
+  destroy() {
+    this._html.remove();
+  }
 }
