@@ -98,7 +98,7 @@ export class IOButton implements IWithMouseEvent, IWithID {
   }
   
   handleMouseUp(e: MouseEvent) {
-    if (this._hovered && this._pressed && e.button == 0) {
+    if (this._hovered && this._pressed && e.button == 0 && this.type === IOType.INPUT) {
       this.enabled = !this.enabled;
     }
     this._grabbed = false;
