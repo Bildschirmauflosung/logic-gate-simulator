@@ -62,8 +62,13 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
 
   render(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
-    ctx.strokeStyle = "#000";
-    ctx.fillStyle = "#000";
+    if (this._hovered) {
+      ctx.strokeStyle = "#7f7f7f";
+      ctx.fillStyle = "#7f7f7f";
+    } else {
+      ctx.strokeStyle = "#000";
+      ctx.fillStyle = "#000";
+    }
     ctx.moveTo(this.left, this.top - 4);
     ctx.arcTo(this.left + 4, this.top - 4, this.left + 4, this.top, 4);
     ctx.arcTo(this.left + 4, this.top + 4, this.left, this.top + 4, 4);
@@ -75,6 +80,7 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
     if (this._pressed) {
       if (this.type === IOType.INPUT && this._xOffset < this.left || this.type === IOType.OUTPUT && this._xOffset > this.left) {
         ctx.beginPath();
+        ctx.strokeStyle = "#000";
         ctx.moveTo(this.left, this.top);
         ctx.lineTo((this._xPos + this.left - sidebar.offsetWidth) / 2, this.top);
         ctx.lineTo((this._xPos + this.left - sidebar.offsetWidth) / 2, this._yOffset);
