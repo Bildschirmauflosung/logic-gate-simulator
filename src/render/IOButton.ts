@@ -50,7 +50,7 @@ export class IOButton implements IWithMouseEvent, IWithID {
         i.updateId();
       }
       updateConnectionData([this._point]);
-    }, ItemType.RED));
+    }, ItemType.DANGER));
 
     if (type == IOType.INPUT) {
       this._left = 8;

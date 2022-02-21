@@ -1,6 +1,8 @@
 export enum ItemType {
-  DEFAULT = 0,
-  RED,
+  NORMAL = 0,
+  DANGER,
+  DISABLED,
+  SEPARATOR,
 }
 
 export class MenuItem {

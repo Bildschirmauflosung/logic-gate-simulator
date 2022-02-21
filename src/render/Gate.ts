@@ -38,7 +38,7 @@ export class Gate implements IRenderable, IWithMouseEvent, IWithID {
         i.updateId();
       }
       updateConnectionData(this._points);
-    }, ItemType.RED));
+    }, ItemType.DANGER));
 
     for (let i = 0; i < gate.arity; i++) {
       const point = new ConnectionPoint(IOType.INPUT, this.left, this.top + this._height / (gate.arity + 1) * (i + 1));

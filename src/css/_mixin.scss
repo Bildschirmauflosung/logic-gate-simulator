@@ -17,3 +17,14 @@
     background-color: $active-bg-color;
   }
 }
+
+@mixin btn-disabled {
+  @include btn;
+  margin: 0;
+
+  &:hover,
+  &:active {
+    background-color: initial;
+    cursor: initial;
+  }
+}

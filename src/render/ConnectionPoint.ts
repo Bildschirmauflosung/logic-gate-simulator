@@ -19,7 +19,8 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
 
   constructor(public type: IOType, public left: number, public top: number) {
     this._menu = new Menu();
-    this._menu.addItem(new MenuItem("Type", () => {}, ItemType.DEFAULT));
+    this._menu.addItem(new MenuItem("Type", () => {}, ItemType.DISABLED));
+    this._menu.addItem(new MenuItem("---", () => {}, ItemType.SEPARATOR));
   }
 
   handleMouseMove(e: MouseEvent): void {
@@ -37,20 +38,22 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
     }
   }
 
-  handleMouseUp(_e: MouseEvent): void {
+  handleMouseUp(e: MouseEvent): void {
     this._pressed = false;
-    if (this._hovered && StaticConnectionData.pointFrom !== this && StaticConnectionData.pointFrom.type !== this.type) {
-      StaticConnectionData.pointTo = this;
-      if (StaticConnectionData.pointFrom.type === IOType.OUTPUT) {
-        StaticConnectionData.swap();
+    if (e.button === 0) {
+      if (this._hovered && StaticConnectionData.pointFrom !== this && StaticConnectionData.pointFrom.type !== this.type) {
+        StaticConnectionData.pointTo = this;
+        if (StaticConnectionData.pointFrom.type === IOType.OUTPUT) {
+          StaticConnectionData.swap();
+        }
+        
+        const conn = new ConnectionData(StaticConnectionData.pointFrom, StaticConnectionData.pointTo);
+        const pos = connectedPoints.findIndex((v) => v.pointFrom === conn.pointFrom);
+        if (pos !== -1) {
+          return;
+        }
+        connectedPoints.push(conn);
       }
-      
-      const conn = new ConnectionData(StaticConnectionData.pointFrom, StaticConnectionData.pointTo);
-      const pos = connectedPoints.findIndex((v) => v.pointFrom === conn.pointFrom);
-      if (pos !== -1) {
-        return;
-      }
-      connectedPoints.push(conn);
     }
   }
 
