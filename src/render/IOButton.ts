@@ -35,9 +35,11 @@ export class IOButton implements IWithMouseEvent, IWithID {
         dialog.close();
       }));
       dialog.addButton(new DialogButton("Rename", ButtonType.NORMAL, () => {
-        // TODO: Rename button
-        console.log("rename", dialog.getValueFromField("Name"));
-        dialog.close();
+        const a = dialog.getValueFromField("Name")!;
+        if (a !== "") {
+          this.name = a;
+          dialog.close();
+        }
       }));
       dialog.show();
     }));
