@@ -1,10 +1,12 @@
-import { sidebar } from "../main";
+import { connectedPoints, sidebar } from "../main";
 import { isMouseOver } from "../utils/Helpers";
+import { ConnectionData } from "./ConnectionData";
 import { IOType } from "./IOType";
 import { IRenderable } from "./IRenderable";
 import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./Menu";
 import { ItemType, MenuItem } from "./MenuItem";
+import { StaticConnectionData } from "./StaticConnectionData";
 
 export class ConnectionPoint implements IRenderable, IWithMouseEvent {
   private _hovered: boolean = false;
@@ -31,11 +33,25 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
     this._menu.hide();
     if (this._hovered && e.button === 0) {
       this._pressed = true;
+      StaticConnectionData.pointFrom = this;
     }
   }
 
   handleMouseUp(_e: MouseEvent): void {
     this._pressed = false;
+    if (this._hovered && StaticConnectionData.pointFrom !== this && StaticConnectionData.pointFrom.type !== this.type) {
+      StaticConnectionData.pointTo = this;
+      if (StaticConnectionData.pointFrom.type === IOType.OUTPUT) {
+        StaticConnectionData.swap();
+      }
+      
+      const conn = new ConnectionData(StaticConnectionData.pointFrom, StaticConnectionData.pointTo);
+      const pos = connectedPoints.findIndex((v) => v.pointFrom === conn.pointFrom);
+      if (pos !== -1) {
+        return;
+      }
+      connectedPoints.push(conn);
+    }
   }
 
   handleMouseContextMenu(e: MouseEvent): void {

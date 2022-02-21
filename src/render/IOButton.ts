@@ -1,5 +1,5 @@
 import { cv, ioButtons, renderable, withMouseEvent } from "../main";
-import { clamp, isMouseOver } from "../utils/Helpers";
+import { clamp, isMouseOver, updateConnectionData } from "../utils/Helpers";
 import { ConnectionPoint } from "./ConnectionPoint";
 import { Dialog } from "./dialog/Dialog";
 import { ButtonType, DialogButton } from "./dialog/DialogButton";
@@ -53,6 +53,7 @@ export class IOButton implements IWithMouseEvent, IWithID {
       for (const i of ioButtons) {
         i.updateId();
       }
+      updateConnectionData([this._point]);
     }, ItemType.RED));
 
     if (type == IOType.INPUT) {

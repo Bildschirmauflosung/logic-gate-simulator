@@ -1,6 +1,6 @@
 import { LogicGate } from "../logic/LogicGate";
 import { cv, gates, renderable, withMouseEvent } from "../main";
-import { clamp, isMouseOver } from "../utils/Helpers";
+import { clamp, isMouseOver, updateConnectionData } from "../utils/Helpers";
 import { ConnectionPoint } from "./ConnectionPoint";
 import { IOType } from "./IOType";
 import { IRenderable } from "./IRenderable";
@@ -37,6 +37,7 @@ export class Gate implements IRenderable, IWithMouseEvent, IWithID {
       for (const i of gates) {
         i.updateId();
       }
+      updateConnectionData(this._points);
     }, ItemType.RED));
 
     for (let i = 0; i < gate.arity; i++) {

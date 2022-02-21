@@ -9,6 +9,7 @@ import { IOType } from "./render/IOType";
 import { IRenderable } from "./render/IRenderable";
 import { IWithMouseEvent } from "./render/IWithMouseEvent";
 import { Deserialiser } from './logic/Deserialiser'
+import { ConnectionData } from "./render/ConnectionData";
 
 export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 const nav: HTMLElement = document.querySelector(".navbar")!;
@@ -20,6 +21,7 @@ export const withMouseEvent: IWithMouseEvent[] = [];
 export const renderable: IRenderable[] = [];
 export const gates: Gate[] = [];
 export const ioButtons: IOButton[] = [];
+export const connectedPoints: ConnectionData[] = [];
 const connections: IConnectionMap[] = [];
 
 export const simulator: Simulator = new Simulator(gates, ioButtons, connections);
@@ -48,6 +50,9 @@ resizeCanvas();
 function render() {
   ctx.fillStyle = "#fff";
   ctx.clearRect(0, 0, cv.width, cv.height);
+  for (const i of connectedPoints) {
+    i.render(ctx);
+  }
   for (const i of renderable) {
     i.render(ctx);
   }
