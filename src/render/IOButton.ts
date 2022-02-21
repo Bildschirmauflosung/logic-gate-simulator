@@ -23,13 +23,9 @@ export class IOButton implements IWithMouseEvent, IWithID {
 
   width: number = 48;
   height: number = 48;
-  name: string;
-  type: IOType;
   enabled: boolean = false;
 
-  constructor(public id: number, name: string, type: IOType) {
-    this.name = name;
-    this.type = type;
+  constructor(public id: number, public name: string, public type: IOType) {
     this._menu = new Menu();
     this._menu.addItem(new MenuItem("Rename", () => {
       this._menu.hide();
