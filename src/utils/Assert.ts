@@ -8,6 +8,6 @@ export function assertNotNull(expression: unknown, errorMessage?: string): void 
   if(expression === null) throw new AssertionError(errorMessage);
 }
 
-export function assertArity(expected: number, actual: number): void {
+export function assertEqual<T>(expected: T, actual: T): void {
   if(expected !== actual) throw new AssertionError(`Assertion failed: ${expected} expected, ${actual} got`);
 }

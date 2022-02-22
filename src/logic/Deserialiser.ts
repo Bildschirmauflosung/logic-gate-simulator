@@ -1,26 +1,26 @@
 import {ResolutionFunction} from "./Types";
-import {assertArity} from "../utils/Assert";
+import {assertEqual} from "../utils/Assert";
 
 export class Deserialiser {
   public static readonly basicResolutionFuncs: Map<string, ResolutionFunction> = new Map([
     [
       "and",
       (values: boolean[]) => {
-        assertArity(2, values.length);
+        assertEqual(2, values.length);
         return [values[0] && values[1]];
       }
     ],
     [
       "or",
       (values: boolean[]) => {
-        assertArity(2, values.length);
+        assertEqual(2, values.length);
         return [values[0] || values[1]];
       }
     ],
     [
       "not",
       (values: boolean[]) => {
-        assertArity(1, values.length);
+        assertEqual(1, values.length);
         return [!values[0]];
       }
     ]
