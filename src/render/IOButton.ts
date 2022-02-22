@@ -3,12 +3,12 @@ import { clamp, isMouseOver, updateConnectionData } from "../utils/Helpers";
 import { ConnectionPoint } from "./ConnectionPoint";
 import { Dialog } from "./dialog/Dialog";
 import { ButtonType, DialogButton } from "./dialog/DialogButton";
-import { DialogField, FieldType } from "./dialog/DialogField";
 import { IOType } from "./IOType";
 import { IConnectable } from "./IConnectable";
 import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
+import { DialogInputField } from "./dialog/DialogInputField";
 
 export class IOButton implements IWithMouseEvent, IConnectable {
   private _left: number;
@@ -30,12 +30,12 @@ export class IOButton implements IWithMouseEvent, IConnectable {
     this._menu.addItem(new MenuItem("Rename", () => {
       this._menu.hide();
       const dialog: Dialog = new Dialog("Rename");
-      dialog.addField(new DialogField("Name", FieldType.INPUT));
+      dialog.addField(new DialogInputField("name", "Name", 2));
       dialog.addButton(new DialogButton("Cancel", ButtonType.NORMAL, () => {
         dialog.close();
       }));
       dialog.addButton(new DialogButton("Rename", ButtonType.NORMAL, () => {
-        const a = dialog.getValueFromField("Name")!;
+        const a: string = dialog.getValueFromField("name") as string;
         if (a !== "") {
           this.name = a;
           dialog.close();

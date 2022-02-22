@@ -1,10 +1,13 @@
 import { DialogButton } from "./DialogButton";
-import { DialogField, FieldType } from "./DialogField";
+import { DialogCheckField } from "./DialogCheckField";
+import { DialogFieldType } from "./DialogFieldType";
+import { DialogInputField } from "./DialogInputField";
+import { IDialogField } from "./IDialogField";
 
 export class Dialog {
   private _modalBg: HTMLDivElement = document.querySelector(".modal-bg")!;
   private _html = document.createElement("div");
-  private _fields: DialogField[] = [];
+  private _fields: IDialogField[] = [];
   private _buttons: DialogButton[] = [];
   private _areBtnsCreated: boolean = false;
   
@@ -34,32 +37,42 @@ export class Dialog {
     this._buttons.push(button);
   }
 
-  addField(field: DialogField) {
+  addField(field: IDialogField) {
     const label = document.createElement("p");
     label.className = "modal-bg__dialog-label";
-    label.innerText = field.label;
+    label.innerText = field.getLabel();
     this._html.appendChild(label);
-
-    switch (field.type) {
-      case FieldType.INPUT:
+    switch (field.getType()) {
+      case DialogFieldType.CHECK:
+        const check = document.createElement("input");
+        check.className = "modal-bg__dialog-check";
+        check.type = "checkbox";
+        check.addEventListener("change", () => {
+          (field as DialogCheckField).value = check.checked;
+        })
+        this._html.appendChild(check);
+        break;
+      case DialogFieldType.COLOUR:
+        // TODO
+        break;
+      case DialogFieldType.INPUT:
         const input = document.createElement("input");
         input.className = "modal-bg__dialog-input";
         input.type = "text";
+        input.maxLength = (field as DialogInputField).maxLength;
         input.addEventListener("change", () => {
-          field.value = input.value;
+          (field as DialogInputField).value = input.value;
         });
         this._html.appendChild(input);
         break;
-      case FieldType.COLOUR:
-        // TODO
-        break;
     }
+    
     this._fields.push(field);
   }
 
-  getValueFromField(label: string): string | undefined {
-    const field = this._fields.find((v) => v.label == label);
-    return field?.value;
+  getValueFromField(name: string): unknown {
+    const field = this._fields.find((v) => v.getName() == name);
+    return field?.getValue();
   }
 
   show() {
