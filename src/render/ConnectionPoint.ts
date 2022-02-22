@@ -1,12 +1,16 @@
-import { connectedPoints, sidebar } from "../main";
+import { connectedPoints, connections, ioButtons, sidebar } from "../main";
 import { isMouseOver } from "../utils/Helpers";
 import { ConnectionData } from "./ConnectionData";
+import { IOButton } from "./IOButton";
 import { IOType } from "./IOType";
 import { IRenderable } from "./IRenderable";
+import { IConnectable } from "./IConnectable";
 import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
 import { StaticConnectionData } from "./StaticConnectionData";
+import { StaticMap } from "./StaticMap";
+import { IConnectionMap } from "../logic/IConnectionMap";
 
 export class ConnectionPoint implements IRenderable, IWithMouseEvent {
   private _hovered: boolean = false;
@@ -17,7 +21,7 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
   private _yOffset: number = 0;
   private _xPos: number = 0;
 
-  constructor(public type: IOType, public left: number, public top: number) {
+  constructor(public type: IOType, public left: number, public top: number, private _parent: IConnectable) {
     this._menu = new Menu();
     this._menu.addItem(new MenuItem("Type", () => {}, ItemType.DISABLED));
     this._menu.addItem(new MenuItem("---", () => {}, ItemType.SEPARATOR));
@@ -35,16 +39,31 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
     if (this._hovered && e.button === 0) {
       this._pressed = true;
       StaticConnectionData.pointFrom = this;
+
+      if (typeof(this._parent) === typeof(IOButton)) {
+        StaticMap.inputIndex = 0;
+        StaticMap.inputGateIndex = -(ioButtons.findIndex((v) => v === this._parent as unknown as IOButton) + 1);
+      } else {
+        StaticMap.inputIndex = this._parent.getPoints()[0].findIndex((v) => v === this);
+      }
     }
   }
-
+  
   handleMouseUp(e: MouseEvent): void {
     this._pressed = false;
     if (e.button === 0) {
       if (this._hovered && StaticConnectionData.pointFrom !== this && StaticConnectionData.pointFrom.type !== this.type) {
         StaticConnectionData.pointTo = this;
+        if (typeof(this._parent) === typeof(IOButton)) {
+          StaticMap.outputIndex = 0;
+          StaticMap.outputGateIndex = -(ioButtons.findIndex((v) => v === this._parent as unknown as IOButton) + 1);
+        } else {
+          StaticMap.outputIndex = this._parent.getPoints()[1].findIndex((v) => v === this);
+        }
+
         if (StaticConnectionData.pointFrom.type === IOType.OUTPUT) {
           StaticConnectionData.swap();
+          StaticMap.swapIndices();
         }
 
         const i = connectedPoints.findIndex((v) => v.pointFrom === StaticConnectionData.pointFrom && v.pointTo === StaticConnectionData.pointTo);
@@ -58,7 +77,19 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
         if (pos !== -1) {
           return;
         }
+
+        const map: IConnectionMap = {
+          inputIndex: StaticMap.inputIndex,
+          outputIndex: StaticMap.outputIndex,
+          inputGateIndex: StaticMap.inputGateIndex,
+          outputGateIndex: StaticMap.outputGateIndex,
+        };
+        if (connections.findIndex((v) => v === map) !== -1) {
+          return;
+        }
+
         connectedPoints.push(conn);
+        connections.push(map);
       }
     }
   }

@@ -22,7 +22,7 @@ export const renderable: IRenderable[] = [];
 export const gates: Gate[] = [];
 export const ioButtons: IOButton[] = [];
 export const connectedPoints: ConnectionData[] = [];
-const connections: IConnectionMap[] = [];
+export const connections: IConnectionMap[] = [];
 
 export const simulator: Simulator = new Simulator(gates, ioButtons, connections);
 

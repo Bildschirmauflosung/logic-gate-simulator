@@ -5,12 +5,12 @@ import { Dialog } from "./dialog/Dialog";
 import { ButtonType, DialogButton } from "./dialog/DialogButton";
 import { DialogField, FieldType } from "./dialog/DialogField";
 import { IOType } from "./IOType";
-import { IWithID } from "./IWithID";
+import { IConnectable } from "./IConnectable";
 import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
 
-export class IOButton implements IWithMouseEvent, IWithID {
+export class IOButton implements IWithMouseEvent, IConnectable {
   private _left: number;
   private _top: number;
   private _menu: Menu;
@@ -64,9 +64,9 @@ export class IOButton implements IWithMouseEvent, IWithID {
     }
 
     if (type === IOType.INPUT) {
-      this._point = new ConnectionPoint(IOType.OUTPUT, this._left + this.width, this._top + this.height / 2);
+      this._point = new ConnectionPoint(IOType.OUTPUT, this._left + this.width, this._top + this.height / 2, this);
     } else {
-      this._point = new ConnectionPoint(IOType.INPUT, this._left, this._top + this.height / 2);
+      this._point = new ConnectionPoint(IOType.INPUT, this._left, this._top + this.height / 2, this);
     }
     withMouseEvent.push(this._point);
   }
@@ -143,8 +143,16 @@ export class IOButton implements IWithMouseEvent, IWithID {
     }
   }
 
+  getID(): number {
+    return this.id;
+  }
+
   updateId(): void {
     this.id = ioButtons.findIndex((v) => v === this);
+  }
+
+  getPoints(): [ConnectionPoint[], ConnectionPoint[]] {
+    return [[this._point], [this._point]];
   }
 
   render(ctx: CanvasRenderingContext2D): void {

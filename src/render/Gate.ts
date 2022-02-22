@@ -4,12 +4,12 @@ import { clamp, isMouseOver, updateConnectionData } from "../utils/Helpers";
 import { ConnectionPoint } from "./ConnectionPoint";
 import { IOType } from "./IOType";
 import { IRenderable } from "./IRenderable";
-import { IWithID } from "./IWithID";
+import { IConnectable } from "./IConnectable";
 import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
 
-export class Gate implements IRenderable, IWithMouseEvent, IWithID {
+export class Gate implements IRenderable, IWithMouseEvent, IConnectable {
   private _grabbed: boolean = false;
   private _enterred: boolean = false;
   private _menu: Menu;
@@ -49,12 +49,12 @@ export class Gate implements IRenderable, IWithMouseEvent, IWithID {
     }, ItemType.DANGER));
 
     for (let i = 0; i < gate.arity; i++) {
-      const point = new ConnectionPoint(IOType.INPUT, this.left, this.top + this._height / (gate.arity + 1) * (i + 1));
+      const point = new ConnectionPoint(IOType.INPUT, this.left, this.top + this._height / (gate.arity + 1) * (i + 1), this);
       this._ipoints.push(point);
       withMouseEvent.push(point);
     }
     for (let i = 0; i < gate.outputCount; i++) {
-      const point = new ConnectionPoint(IOType.OUTPUT, this.left + this._width, this.top + this._height / (gate.outputCount + 1) * (i + 1));
+      const point = new ConnectionPoint(IOType.OUTPUT, this.left + this._width, this.top + this._height / (gate.outputCount + 1) * (i + 1), this);
       this._opoints.push(point);
       withMouseEvent.push(point);
     }
@@ -146,8 +146,16 @@ export class Gate implements IRenderable, IWithMouseEvent, IWithID {
     }
   }
 
+  getID(): number {
+    return this.id;
+  }
+
   updateId(): void {
     this.id = gates.findIndex((v) => v === this);
+  }
+
+  getPoints(): [ConnectionPoint[], ConnectionPoint[]] {
+    return [this._ipoints, this._opoints];
   }
 
   render(ctx: CanvasRenderingContext2D): void {
