@@ -6,8 +6,6 @@ import { IOType } from "./IOType";
 import { IRenderable } from "./IRenderable";
 import { IConnectable } from "./IConnectable";
 import { IWithMouseEvent } from "./IWithMouseEvent";
-import { Menu } from "./menu/Menu";
-import { ItemType, MenuItem } from "./menu/MenuItem";
 import { StaticConnectionData } from "./StaticConnectionData";
 import { StaticMap } from "./StaticMap";
 import { IConnectionMap } from "../logic/IConnectionMap";
@@ -15,17 +13,12 @@ import { IConnectionMap } from "../logic/IConnectionMap";
 export class ConnectionPoint implements IRenderable, IWithMouseEvent {
   private _hovered: boolean = false;
   private _pressed: boolean = false;
-  private _menu: Menu;
 
   private _xOffset: number = 0;
   private _yOffset: number = 0;
   private _xPos: number = 0;
 
-  constructor(public type: IOType, public left: number, public top: number, private _parent: IConnectable) {
-    this._menu = new Menu();
-    this._menu.addItem(new MenuItem("Type", () => {}, ItemType.DISABLED));
-    this._menu.addItem(new MenuItem("---", () => {}, ItemType.SEPARATOR));
-  }
+  constructor(public type: IOType, public left: number, public top: number, private _parent: IConnectable) { }
 
   handleMouseMove(e: MouseEvent): void {
     this._hovered = isMouseOver(e, 8, 8, this.left - 4, this.top - 4);
@@ -35,7 +28,6 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
   }
 
   handleMouseDown(e: MouseEvent): void {
-    this._menu.hide();
     if (this._hovered && e.button === 0) {
       this._pressed = true;
       StaticConnectionData.pointFrom = this;
@@ -99,15 +91,7 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
     }
   }
 
-  handleMouseContextMenu(e: MouseEvent): void {
-    if (this._hovered) {
-      this._menu.show(e.clientX, e.clientY);
-    }
-  }
-
-  destroyMenu() {
-    this._menu.destroy();
-  }
+  handleMouseContextMenu(_e: MouseEvent): void { }
 
   render(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();

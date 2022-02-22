@@ -45,7 +45,6 @@ export class IOButton implements IWithMouseEvent, IConnectable {
     }));
     this._menu.addItem(new MenuItem("Delete", () => {
       this._menu.destroy();
-      this._point.destroyMenu();
       ioButtons.splice(ioButtons.findIndex((v) => v == this), 1);
       withMouseEvent.splice(withMouseEvent.findIndex((v) => v == this), 1);
       renderable.splice(renderable.findIndex((v) => v == this), 1);
