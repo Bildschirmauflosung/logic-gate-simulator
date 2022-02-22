@@ -15,7 +15,8 @@ export class Gate implements IRenderable, IWithMouseEvent, IWithID {
   private _menu: Menu;
   private _width: number;
   private _height: number;
-  private _points: ConnectionPoint[] = [];
+  private _ipoints: ConnectionPoint[] = [];
+  private _opoints: ConnectionPoint[] = [];
 
   private _xOffset: number = 0;
   private _yOffset: number = 0;
@@ -31,7 +32,10 @@ export class Gate implements IRenderable, IWithMouseEvent, IWithID {
     this._menu.addItem(new MenuItem("Edit", () => {console.log("edit on", id)}));
     this._menu.addItem(new MenuItem("Delete", () => {
       this._menu.destroy();
-      for (const i of this._points) {
+      for (const i of this._ipoints) {
+        i.destroyMenu();
+      }
+      for (const i of this._opoints) {
         i.destroyMenu();
       }
       renderable.splice(renderable.findIndex((v) => v === this), 1);
@@ -40,17 +44,18 @@ export class Gate implements IRenderable, IWithMouseEvent, IWithID {
       for (const i of gates) {
         i.updateId();
       }
-      updateConnectionData(this._points);
+      updateConnectionData(this._ipoints);
+      updateConnectionData(this._opoints);
     }, ItemType.DANGER));
 
     for (let i = 0; i < gate.arity; i++) {
       const point = new ConnectionPoint(IOType.INPUT, this.left, this.top + this._height / (gate.arity + 1) * (i + 1));
-      this._points.push(point);
+      this._ipoints.push(point);
       withMouseEvent.push(point);
     }
     for (let i = 0; i < gate.outputCount; i++) {
       const point = new ConnectionPoint(IOType.OUTPUT, this.left + this._width, this.top + this._height / (gate.outputCount + 1) * (i + 1));
-      this._points.push(point);
+      this._opoints.push(point);
       withMouseEvent.push(point);
     }
   }
@@ -85,12 +90,12 @@ export class Gate implements IRenderable, IWithMouseEvent, IWithID {
         this.top = clamp(Math.round((e.offsetY - this._yOffset) / 16) * 16 + 4, 4, cv.height - 64 - this._height);
 
         for (let i = 0; i < this.gate.arity; i++) {
-          this._points[i].left = this.left;
-          this._points[i].top = this.top + this._height / (this.gate.arity + 1) * (i + 1);
+          this._ipoints[i].left = this.left;
+          this._ipoints[i].top = this.top + this._height / (this.gate.arity + 1) * (i + 1);
         }
         for (let i = 0; i < this.gate.outputCount; i++) {
-          this._points[i + this.gate.arity].left = this.left + this._width;
-          this._points[i + this.gate.arity].top = this.top + this._height / (this.gate.outputCount + 1) * (i + 1);
+          this._opoints[i].left = this.left + this._width;
+          this._opoints[i].top = this.top + this._height / (this.gate.outputCount + 1) * (i + 1);
         }
       }
     }
@@ -101,7 +106,12 @@ export class Gate implements IRenderable, IWithMouseEvent, IWithID {
   handleMouseDown(e: MouseEvent) {
     this._menu.hide();
     if (e.button == 0) {
-      for (const i of this._points) {
+      for (const i of this._ipoints) {
+        if (isMouseOver(e, 8, 8, i.left - 4, i.top - 4)) {
+          return;
+        }
+      }
+      for (const i of this._opoints) {
         if (isMouseOver(e, 8, 8, i.left - 4, i.top - 4)) {
           return;
         }
@@ -120,7 +130,12 @@ export class Gate implements IRenderable, IWithMouseEvent, IWithID {
   }
 
   handleMouseContextMenu(e: MouseEvent) {
-    for (const i of this._points) {
+    for (const i of this._ipoints) {
+      if (isMouseOver(e, 8, 8, i.left - 4, i.top - 4)) {
+        return;
+      }
+    }
+    for (const i of this._opoints) {
       if (isMouseOver(e, 8, 8, i.left - 4, i.top - 4)) {
         return;
       }
@@ -152,7 +167,10 @@ export class Gate implements IRenderable, IWithMouseEvent, IWithID {
     ctx.stroke();
     ctx.fill();
 
-    for (const i of this._points) {
+    for (const i of this._ipoints) {
+      i.render(ctx);
+    }
+    for (const i of this._opoints) {
       i.render(ctx);
     }
     
