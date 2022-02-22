@@ -71,9 +71,32 @@ export class IOButton implements IWithMouseEvent, IWithID {
     withMouseEvent.push(this._point);
   }
 
+  private isMaxId(onHover: boolean = false): boolean {
+    let max = -1;
+    for (const i of ioButtons) {
+      if (onHover) {
+        if (i._hovered) {
+          if (i.id > max) {
+            max = i.id;
+          }
+        }
+      } else {
+        if (i._grabbed) {
+          if (i.id > max) {
+            max = i.id;
+          }
+        }
+      }
+    }
+    if (max === -1) {
+      return true;
+    }
+    return this.id === max;
+  }
+
   handleMouseMove(e: MouseEvent) {
     this._hovered = isMouseOver(e, this.width, this.height, this._left, this._top);
-    if (this._grabbed) {
+    if (this._grabbed && this.isMaxId()) {
       this._top = clamp(Math.round((e.offsetY + this._yOffset) / 32) * 32 + 4, 4, cv.height - 64 - this.height);
       this._point.top = this._top + this.height / 2;
     }
@@ -109,7 +132,7 @@ export class IOButton implements IWithMouseEvent, IWithID {
       return;
     }
 
-    if (isMouseOver(e, this.width, this.height, this._left, this._top)) {
+    if (isMouseOver(e, this.width, this.height, this._left, this._top) && this.isMaxId(true)) {
       this._menu.show(e.clientX, e.clientY);
     }
   }
