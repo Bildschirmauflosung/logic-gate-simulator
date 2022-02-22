@@ -1,4 +1,4 @@
-import { connectedPoints, connections, ioButtons, sidebar } from "../main";
+import { connectedPoints, connections, ioButtons, sidebar, simulator } from "../main";
 import { isMouseOver } from "../utils/Helpers";
 import { ConnectionData } from "./ConnectionData";
 import { IOButton } from "./IOButton";
@@ -65,19 +65,7 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
           StaticConnectionData.swap();
           StaticMap.swapIndices();
         }
-
-        const i = connectedPoints.findIndex((v) => v.pointFrom === StaticConnectionData.pointFrom && v.pointTo === StaticConnectionData.pointTo);
-        if (i !== -1) {
-          connectedPoints.splice(i, 1);
-          return;
-        }
         
-        const conn = new ConnectionData(StaticConnectionData.pointFrom, StaticConnectionData.pointTo);
-        const pos = connectedPoints.findIndex((v) => v.pointFrom === conn.pointFrom);
-        if (pos !== -1) {
-          return;
-        }
-
         const map: IConnectionMap = {
           inputIndex: StaticMap.inputIndex,
           outputIndex: StaticMap.outputIndex,
@@ -88,8 +76,25 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
           return;
         }
 
+        const i = connectedPoints.findIndex((v) => v.pointFrom === StaticConnectionData.pointFrom && v.pointTo === StaticConnectionData.pointTo);
+        if (i !== -1) {
+          connectedPoints.splice(i, 1);
+          const j = connections.findIndex((v) => v === map);
+          if (j !== -1) {
+            connections.splice(j, 1);
+          }
+          return;
+        }
+        
+        const conn = new ConnectionData(StaticConnectionData.pointFrom, StaticConnectionData.pointTo);
+        const pos = connectedPoints.findIndex((v) => v.pointFrom === conn.pointFrom);
+        if (pos !== -1) {
+          return;
+        }
+
         connectedPoints.push(conn);
         connections.push(map);
+        simulator.rebuild();
       }
     }
   }
