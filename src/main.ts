@@ -10,6 +10,7 @@ import { IRenderable } from "./render/IRenderable";
 import { IWithMouseEvent } from "./render/IWithMouseEvent";
 import { Deserialiser } from './logic/Deserialiser'
 import { ConnectionData } from "./render/ConnectionData";
+import { SettingsDialog } from "./dialogs/SettingsDialog";
 
 export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 const nav: HTMLElement = document.querySelector(".navbar")!;
@@ -46,6 +47,11 @@ function resizeCanvas() {
 }
 
 resizeCanvas();
+
+document.querySelector("#settings-btn")!.addEventListener("click", () => {
+  SettingsDialog.build();
+  SettingsDialog.show();
+});
 
 function render() {
   ctx.fillStyle = "#fff";
