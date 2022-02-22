@@ -41,10 +41,10 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
       StaticConnectionData.pointFrom = this;
 
       if (typeof(this._parent) === typeof(IOButton)) {
-        StaticMap.inputIndex = 0;
-        StaticMap.inputGateIndex = -(ioButtons.findIndex((v) => v === this._parent as unknown as IOButton) + 1);
+        StaticMap.outputIndex = 0;
+        StaticMap.outputGateIndex = -(ioButtons.findIndex((v) => v === this._parent as unknown as IOButton) + 1);
       } else {
-        StaticMap.inputIndex = this._parent.getPoints()[0].findIndex((v) => v === this);
+        StaticMap.outputIndex = this._parent.getPoints()[0].findIndex((v) => v === this);
       }
     }
   }
@@ -55,13 +55,13 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
       if (this._hovered && StaticConnectionData.pointFrom !== this && StaticConnectionData.pointFrom.type !== this.type) {
         StaticConnectionData.pointTo = this;
         if (typeof(this._parent) === typeof(IOButton)) {
-          StaticMap.outputIndex = 0;
-          StaticMap.outputGateIndex = -(ioButtons.findIndex((v) => v === this._parent as unknown as IOButton) + 1);
+          StaticMap.inputIndex = 0;
+          StaticMap.inputGateIndex = -(ioButtons.findIndex((v) => v === this._parent as unknown as IOButton) + 1);
         } else {
-          StaticMap.outputIndex = this._parent.getPoints()[1].findIndex((v) => v === this);
+          StaticMap.inputIndex = this._parent.getPoints()[1].findIndex((v) => v === this);
         }
 
-        if (StaticConnectionData.pointFrom.type === IOType.OUTPUT) {
+        if (StaticConnectionData.pointFrom.type === IOType.INPUT) {
           StaticConnectionData.swap();
           StaticMap.swapIndices();
         }
