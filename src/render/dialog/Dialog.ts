@@ -54,6 +54,7 @@ export class Dialog {
         check.className = "modal-bg__dialog-check-box";
         check.id = field.getName() + "-check";
         check.type = "checkbox";
+        check.checked = field.getValue() as boolean;
         check.addEventListener("change", () => {
           (field as DialogCheckField).value = check.checked;
         });

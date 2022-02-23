@@ -9,6 +9,7 @@ import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
 import { DialogInputField } from "./dialog/DialogInputField";
+import { Settings } from "../Settings";
 
 export class IOButton implements IWithMouseEvent, IConnectable {
   private _left: number;
@@ -172,10 +173,12 @@ export class IOButton implements IWithMouseEvent, IConnectable {
 
     this._point.render(ctx);
     
-    ctx.fillStyle = "#000";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.font = "normal 16px 'Lato', sans-serif";
-    ctx.fillText(this.name, this._left + this.width / 2, this._top + this.height / 2);
+    if (Settings.showFieldNames) {
+      ctx.fillStyle = "#000";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.font = "normal 16px 'Lato', sans-serif";
+      ctx.fillText(this.name, this._left + this.width / 2, this._top + this.height / 2);
+    }
   }
 }
