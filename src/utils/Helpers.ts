@@ -25,3 +25,8 @@ export function updateConnectionData(points: ConnectionPoint[]) {
     connectedPoints.splice(i, 1);
   }
 }
+
+export function tap<T>(obj: T, fn: (obj: T) => unknown): T {
+  fn(obj);
+  return obj;
+}
