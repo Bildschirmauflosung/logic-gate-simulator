@@ -1,5 +1,6 @@
 import { DialogButton } from "./DialogButton";
 import { DialogCheckField } from "./DialogCheckField";
+import { DialogColourField } from "./DialogColourField";
 import { DialogFieldType } from "./DialogFieldType";
 import { DialogInputField } from "./DialogInputField";
 import { IDialogField } from "./IDialogField";
@@ -53,7 +54,25 @@ export class Dialog {
         this._html.appendChild(check);
         break;
       case DialogFieldType.COLOUR:
-        // TODO
+        const flex = document.createElement("div");
+        flex.className = "modal-bg__dialog-colour";
+        const colourBox = document.createElement("div");
+        colourBox.className = "modal-bg__dialog-colour-box";
+        const sliderBase = document.createElement("div");
+        sliderBase.className = "modal-bg__dialog-colour-slider";
+        const sliderHandle = document.createElement("div");
+        sliderHandle.className = "modal-bg__dialog-colour-slider-handle";
+        sliderBase.addEventListener("mousedown", (e) => {
+          sliderHandle.style.left = e.offsetX - sliderHandle.offsetWidth / 2 + "px";
+          (field as DialogColourField).value = Math.round((sliderHandle.offsetLeft - sliderBase.offsetLeft + sliderHandle.offsetWidth / 2) * (360 / 200));
+          colourBox.style.backgroundColor = `hsl(${ field.getValue() }, 50%, 70%)`;
+        });
+
+        flex.appendChild(colourBox);
+        sliderBase.appendChild(sliderHandle);
+        flex.appendChild(sliderBase);
+
+        this._html.appendChild(flex);
         break;
       case DialogFieldType.INPUT:
         const input = document.createElement("input");

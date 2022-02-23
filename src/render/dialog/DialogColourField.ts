@@ -2,7 +2,8 @@ import { DialogFieldType } from "./DialogFieldType";
 import { IDialogField } from "./IDialogField";
 
 export class DialogColourField implements IDialogField {
-  public value: string = "";
+  public value: number = 0;
+  public pressed: boolean = false;
 
   constructor(private name: string, private label: string) { }
 

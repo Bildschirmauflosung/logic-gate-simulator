@@ -45,5 +45,50 @@
         @include btn;
       }
     }
+
+    &-colour {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &-box {
+        width: 2rem;
+        height: 2rem;
+        border: 1px solid $fg-color;
+      }
+
+      &-slider {
+        width: 20rem;
+        height: 1rem;
+        background: linear-gradient(
+          to right,
+        hsl(0, 50%, 70%),
+        hsl(60, 50%, 70%),
+        hsl(120, 50%, 70%),
+        hsl(180, 50%, 70%),
+        hsl(240, 50%, 70%),
+        hsl(300, 50%, 70%),
+        hsl(360, 50%, 70%),);
+        border-radius: 0.6rem;
+        display: inline-flex;
+        align-items: center;
+
+        &-handle {
+          margin: 0;
+          position: relative;
+          width: 1rem;
+          height: 1rem;
+          background-color: rgba($color: $fg-color, $alpha: 0.0);
+          border: 2px solid $fg-color;
+          border-radius: 0.6rem;
+          cursor: grab;
+          display: block;
+
+          &:active {
+            cursor: grabbing;
+          }
+        }
+      }
+    }
   }
 }
