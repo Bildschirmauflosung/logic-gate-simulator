@@ -100,5 +100,32 @@
         }
       }
     }
+
+    &-select {
+      @include btn;
+
+      border: 1px solid $fg-color;
+      box-sizing: content-box;
+      display: inline-flex;
+
+      &-base {
+        z-index: 2;
+        // position: absolute;
+        background-color: $bg-color;
+        border: 1px solid $fg-color;
+        border-radius: 0.4rem;
+        display: none;
+        flex-direction: column;
+    
+        &-btn {
+          @include btn;
+  
+          margin: 0;
+          padding: 1.2rem;
+          border-radius: 0.4rem;
+        }
+      }
+    }
+    
   }
 }

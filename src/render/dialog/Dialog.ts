@@ -3,6 +3,7 @@ import { DialogCheckField } from "./DialogCheckField";
 import { DialogColourField } from "./DialogColourField";
 import { DialogFieldType } from "./DialogFieldType";
 import { DialogInputField } from "./DialogInputField";
+import { DialogSelectField } from "./DialogSelectField";
 import { IDialogField } from "./IDialogField";
 
 export class Dialog {
@@ -114,6 +115,37 @@ export class Dialog {
           (field as DialogInputField).value = input.value;
         });
         this._html.appendChild(input);
+        break;
+      case DialogFieldType.SELECT:
+        const select = document.createElement("div");
+        select.className = "modal-bg__dialog-select";
+        select.innerText = (field as DialogSelectField).value;
+        const selectBase = document.createElement("div");
+        selectBase.className = "modal-bg__dialog-select-base";
+
+        for (const i of (field as DialogSelectField).values) {
+          const selectBtn = document.createElement("div");
+          selectBtn.className = "modal-bg__dialog-select-base-btn";
+          selectBtn.innerText = i;
+          selectBtn.addEventListener("click", () => {
+            (field as DialogSelectField).value = selectBtn.innerText;
+            select.innerText = (field as DialogSelectField).value;
+            selectBase.style.display = "none";
+          });
+          selectBase.appendChild(selectBtn);
+        }
+
+        select.addEventListener("click", () => {
+          if (selectBase.style.display !== "flex") {
+            selectBase.style.display = "flex";
+          } else {
+            selectBase.style.display = "none";
+          }
+          selectBase.style.top = select.offsetTop - select.clientHeight * (field as DialogSelectField).values.findIndex((v) => v === (field as DialogSelectField).value) + "px";
+        });
+
+        this._html.appendChild(select);
+        this._html.appendChild(selectBase);
         break;
     }
     
