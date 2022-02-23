@@ -1,11 +1,27 @@
-$bg-color: #fff;
-$fg-color: #000;
-$hover-bg-color: #dfdfdf;
-$active-bg-color: #afafaf;
+$bg-colour: #1f1f1f;
+$bg-dark-colour: #0f0f0f;
+$fg-colour: #dfdfdf;
+$hover-bg-colour: #5f5f5f;
+$active-bg-colour: #1f1f1f;
 
-$red-fg-color: #ff1f1f;
-$red-hover-bg-color: #ff1f1f;
-$red-hover-fg-color: #fff;
-$red-active-bg-color: #bf0f0f;
+$red-fg-colour: #ff1f1f;
+$red-hover-bg-colour: #ff1f1f;
+$red-hover-fg-colour: #fff;
+$red-active-bg-colour: #bf0f0f;
 
-$disabled-color: #5f5f5f;
+$disabled-colour: #5f5f5f;
+
+@media (prefers-color-scheme: light) {
+  $bg-colour: #fff;
+  $bg-dark-colour: #fff;
+  $fg-colour: #000;
+  $hover-bg-colour: #dfdfdf;
+  $active-bg-colour: #afafaf;
+  
+  $red-fg-colour: #ff1f1f;
+  $red-hover-bg-colour: #ff1f1f;
+  $red-hover-fg-colour: #fff;
+  $red-active-bg-colour: #bf0f0f;
+  
+  $disabled-colour: #5f5f5f;
+}

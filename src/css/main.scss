@@ -19,6 +19,7 @@ html {
 
 .navbar {
 	width: 100%;
+	background-color: $bg-colour;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -46,6 +47,7 @@ html {
 	}
 
 	&__title {
+		color: $fg-colour;
 		margin: 0.5rem;
 		font-size: 2.4rem;
 	}
@@ -56,6 +58,7 @@ html {
 	flex-direction: row;
 
 	&__sidebar {
+		background-color: $bg-colour;
 		display: flex;
 		flex-direction: column;
 
@@ -68,6 +71,7 @@ html {
 	}
 
 	&__canvas {
+		background-color: $bg-dark-colour;
 		display: block;
 	}
 }

@@ -8,6 +8,7 @@ import { IConnectable } from "./IConnectable";
 import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
+import { Theme } from "./theme/Theme";
 
 export class Gate implements IRenderable, IWithMouseEvent, IConnectable {
   private _grabbed: boolean = false;
@@ -155,8 +156,8 @@ export class Gate implements IRenderable, IWithMouseEvent, IConnectable {
   render(ctx: CanvasRenderingContext2D): void {
     const rad: number = 8;
     ctx.beginPath();
-    ctx.strokeStyle = "#000";
-    ctx.fillStyle = "#fff";
+    ctx.strokeStyle = Theme.fgColour;
+    ctx.fillStyle = Theme.bgColour;
     ctx.moveTo(this.left + rad, this.top);
     ctx.lineTo(this.left + this._width - rad, this.top);
     ctx.arcTo(this.left + this._width, this.top, this.left + this._width, this.top + rad, rad);
@@ -175,8 +176,8 @@ export class Gate implements IRenderable, IWithMouseEvent, IConnectable {
     for (const i of this._opoints) {
       i.render(ctx);
     }
-    
-    ctx.fillStyle = "#000";
+        
+    ctx.fillStyle = Theme.fgColour;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = "normal 16px 'Lato', sans-serif";

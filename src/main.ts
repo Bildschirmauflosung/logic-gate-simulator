@@ -11,6 +11,7 @@ import { IWithMouseEvent } from "./render/IWithMouseEvent";
 import { Deserialiser } from './logic/Deserialiser'
 import { ConnectionData } from "./render/ConnectionData";
 import { SettingsDialog } from "./dialogs/SettingsDialog";
+import { Theme } from "./render/theme/Theme";
 
 export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 const nav: HTMLElement = document.querySelector(".navbar")!;
@@ -53,8 +54,10 @@ document.querySelector("#settings-btn")!.addEventListener("click", () => {
   SettingsDialog.show();
 });
 
+Theme.setSystemTheme();
+
 function render() {
-  ctx.fillStyle = "#fff";
+  // ctx.fillStyle = Theme.bgColour;
   ctx.clearRect(0, 0, cv.width, cv.height);
   for (const i of connectedPoints) {
     i.render(ctx);
@@ -102,8 +105,8 @@ sidebarBtn.forEach((v) => {
     inputNum = 1;
   }
   v.addEventListener("click", () => {
-    const lg: LogicGate = new LogicGate([], inputNum, 1, Deserialiser.basicResolutionFuncs.get(gateName)!);
-    const g: Gate = new Gate(64, 68, gates.length, gateName, lg);
+    const lg: LogicGate = new LogicGate([], [], inputNum, 1, Deserialiser.basicResolutionFuncs.get(gateName)!);
+    const g: Gate = new Gate(64, 4, gates.length, gateName, lg);
     gates.push(g);
     renderable.push(g);
     withMouseEvent.push(g);

@@ -5,7 +5,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba($color: $fg-color, $alpha: 0.5);
+  background-color: rgba($color: #000, $alpha: 0.5);
   z-index: 1;
   
   &__dialog {
@@ -13,10 +13,11 @@
     flex-direction: column;
     padding: 2.4rem;
     border-radius: 1.2rem;
-    background-color: $bg-color;
+    background-color: $bg-colour;
     z-index: 2;
 
     & * {
+      color: $fg-colour;
       margin: 0.4rem;
     }
   
@@ -26,13 +27,14 @@
     }
 
     &-input {
-      border: 1px solid $fg-color;
+      border: 1px solid $fg-colour;
+      background-color: $bg-colour;
       padding: 0.4rem;
       border-radius: 1.2rem;
       
       &:focus {
         outline: none;
-        background-color: $hover-bg-color;
+        background-color: $hover-bg-colour;
       }
     }
 
@@ -64,7 +66,7 @@
       &-box {
         width: 2rem;
         height: 2rem;
-        border: 1px solid $fg-color;
+        border: 1px solid $fg-colour;
       }
 
       &-slider {
@@ -88,8 +90,8 @@
           position: relative;
           width: 1rem;
           height: 1rem;
-          background-color: rgba($color: $fg-color, $alpha: 0.0);
-          border: 2px solid $fg-color;
+          background-color: rgba($color: $fg-colour, $alpha: 0.0);
+          border: 2px solid $fg-colour;
           border-radius: 0.6rem;
           cursor: grab;
           display: block;
@@ -104,15 +106,15 @@
     &-select {
       @include btn;
 
-      border: 1px solid $fg-color;
+      border: 1px solid $fg-colour;
       box-sizing: content-box;
       display: inline-flex;
 
       &-base {
         z-index: 2;
         // position: absolute;
-        background-color: $bg-color;
-        border: 1px solid $fg-color;
+        background-color: $bg-colour;
+        border: 1px solid $fg-colour;
         border-radius: 0.4rem;
         display: none;
         flex-direction: column;

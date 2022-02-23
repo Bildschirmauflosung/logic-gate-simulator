@@ -9,6 +9,7 @@ import { IWithMouseEvent } from "./IWithMouseEvent";
 import { StaticConnectionData } from "./StaticConnectionData";
 import { StaticMap } from "./StaticMap";
 import { IConnectionMap } from "../logic/IConnectionMap";
+import { Theme } from "./theme/Theme";
 
 export class ConnectionPoint implements IRenderable, IWithMouseEvent {
   private _hovered: boolean = false;
@@ -96,11 +97,11 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
   render(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
     if (this._hovered) {
-      ctx.strokeStyle = "#7f7f7f";
-      ctx.fillStyle = "#7f7f7f";
+      ctx.strokeStyle = Theme.hoverBgColour;
+      ctx.fillStyle = Theme.hoverBgColour;
     } else {
-      ctx.strokeStyle = "#000";
-      ctx.fillStyle = "#000";
+      ctx.strokeStyle = Theme.fgColour;
+      ctx.fillStyle = Theme.fgColour;
     }
     ctx.moveTo(this.left, this.top - 4);
     ctx.arcTo(this.left + 4, this.top - 4, this.left + 4, this.top, 4);
@@ -112,7 +113,7 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
 
     if (this._pressed) {
       ctx.beginPath();
-      ctx.strokeStyle = "#000";
+      ctx.strokeStyle = Theme.fgColour;
       ctx.moveTo(this.left, this.top);
       ctx.lineTo((this._xPos + this.left - sidebar.offsetWidth) / 2, this.top);
       ctx.lineTo((this._xPos + this.left - sidebar.offsetWidth) / 2, this._yOffset);

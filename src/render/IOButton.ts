@@ -10,6 +10,7 @@ import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
 import { DialogInputField } from "./dialog/DialogInputField";
 import { Settings } from "../Settings";
+import { Theme } from "./theme/Theme";
 
 export class IOButton implements IWithMouseEvent, IConnectable {
   private _left: number;
@@ -156,7 +157,7 @@ export class IOButton implements IWithMouseEvent, IConnectable {
   }
 
   render(ctx: CanvasRenderingContext2D): void {
-    ctx.strokeStyle = "#000";
+    ctx.strokeStyle = Theme.fgColour;
     ctx.beginPath();
     ctx.moveTo(this._left + this.width / 2, this._top);
     ctx.arcTo(this._left + this.width, this._top, this._left + this.width, this._top + this.width / 2, this.width / 2);
@@ -165,16 +166,16 @@ export class IOButton implements IWithMouseEvent, IConnectable {
     ctx.arcTo(this._left, this._top, this._left + this.width / 2, this._top, this.width / 2);
     ctx.stroke();
     if (this.enabled) {
-      ctx.fillStyle = "#ff3f3f";
+      ctx.fillStyle = Theme.enabledBgColour;
     } else {
-      ctx.fillStyle = "#fff";
+      ctx.fillStyle = Theme.bgColour;
     }
     ctx.fill();
 
     this._point.render(ctx);
     
     if (Settings.showFieldNames) {
-      ctx.fillStyle = "#000";
+      ctx.fillStyle = Theme.fgColour;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.font = "normal 16px 'Lato', sans-serif";

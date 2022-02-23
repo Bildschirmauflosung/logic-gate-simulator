@@ -1,8 +1,8 @@
 .context-menu {
 	position: absolute;
-	border: 0.1rem solid $active-bg-color;
+	border: 0.1rem solid $active-bg-colour;
 	border-radius: 0.5rem;
-	background: $bg-color;
+	background: $bg-colour;
 	display: none;
 	flex-direction: column;
 	align-items: center;
@@ -31,27 +31,27 @@
 		}
 
 		&--danger {
-			color: $red-fg-color;
+			color: $red-fg-colour;
 
 			&:hover {
-				color: $red-hover-fg-color;
-				background-color: $red-hover-bg-color;
+				color: $red-hover-fg-colour;
+				background-color: $red-hover-bg-colour;
 			}
 
 			&:active {
-				color: $red-hover-fg-color;
-				background-color: $red-active-bg-color;
+				color: $red-hover-fg-colour;
+				background-color: $red-active-bg-colour;
 			}
 		}
 
 		&--disabled {
 			@include btn-disabled;
-			color: $disabled-color;
+			color: $disabled-colour;
 		}
 		
 		&--separator {
 			@include btn-disabled;
-			background-color: $disabled-color;
+			background-color: $disabled-colour;
 			margin: 0.3rem 0;
 			padding: 0;
 			display: flex;

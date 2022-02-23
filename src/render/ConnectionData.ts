@@ -1,12 +1,13 @@
 import { ConnectionPoint } from "./ConnectionPoint";
 import { IRenderable } from "./IRenderable";
+import { Theme } from "./theme/Theme";
 
 export class ConnectionData implements IRenderable {
   constructor(public pointFrom: ConnectionPoint, public pointTo: ConnectionPoint) { }
 
   render(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
-    ctx.strokeStyle = "#000";
+    ctx.strokeStyle = Theme.fgColour;
     if (this.pointFrom.left + 16 >= this.pointTo.left) {
       const hy = Math.round(Math.max(this.pointFrom.top, this.pointTo.top) + Math.min(this.pointFrom.top, this.pointTo.top)) / 2;
       ctx.moveTo(this.pointFrom.left, this.pointFrom.top);

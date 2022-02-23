@@ -4,6 +4,7 @@ import { IOButton } from "./IOButton";
 import { IOType } from "./IOType";
 import { IRenderable } from "./IRenderable";
 import { IWithMouseEvent } from "./IWithMouseEvent";
+import { Theme } from "./theme/Theme";
 
 export class IOAddButton implements IRenderable, IWithMouseEvent {
   private _left: number;
@@ -64,7 +65,7 @@ export class IOAddButton implements IRenderable, IWithMouseEvent {
   }
 
   render(ctx: CanvasRenderingContext2D): void {
-    ctx.strokeStyle = "#000";
+    ctx.strokeStyle = Theme.fgColour;
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(this._left + this.width / 2, this._top);
@@ -74,11 +75,11 @@ export class IOAddButton implements IRenderable, IWithMouseEvent {
     ctx.arcTo(this._left, this._top, this._left + this.width / 2, this._top, this.width / 2);
     ctx.stroke();
     if (this._pressed) {
-      ctx.fillStyle = "#afafaf";
+      ctx.fillStyle = Theme.activeBgColour;
     } else if (this._hovered) {
-      ctx.fillStyle = "#dfdfdf";
+      ctx.fillStyle = Theme.hoverBgColour;
     } else {
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = Theme.bgColour;
     }
     ctx.fill();
     ctx.beginPath();
