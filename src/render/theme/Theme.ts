@@ -9,6 +9,7 @@ export class Theme {
   static enabledBgColour: string;
 
   static setDarkTheme() {
+    document.documentElement.setAttribute("data-theme", "dark");
     Theme.bgColour = DarkTheme.bgColour;
     Theme.hoverBgColour = DarkTheme.hoverBgColour;
     Theme.activeBgColour = DarkTheme.activeBgColour;
@@ -17,6 +18,7 @@ export class Theme {
   }
 
   static setLightTheme() {
+    document.documentElement.setAttribute("data-theme", "light");
     Theme.bgColour = LightTheme.bgColour;
     Theme.hoverBgColour = LightTheme.hoverBgColour;
     Theme.activeBgColour = LightTheme.activeBgColour;

@@ -19,7 +19,7 @@ html {
 
 .navbar {
 	width: 100%;
-	background-color: $bg-colour;
+	background-color: var(--bg-colour);
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -41,13 +41,14 @@ html {
 			height: 2.4rem;
 		}
 	}
-
+	
+	
 	&__spacer {
 		flex-grow: 1;
 	}
 
 	&__title {
-		color: $fg-colour;
+		color: var(--fg-colour);
 		margin: 0.5rem;
 		font-size: 2.4rem;
 	}
@@ -58,7 +59,7 @@ html {
 	flex-direction: row;
 
 	&__sidebar {
-		background-color: $bg-colour;
+		background-color: var(--bg-colour);
 		display: flex;
 		flex-direction: column;
 
@@ -71,7 +72,19 @@ html {
 	}
 
 	&__canvas {
-		background-color: $bg-dark-colour;
+		background-color: var(--bg-dark-colour);
 		display: block;
+	}
+}
+
+html[data-theme="dark"] {
+	.navbar__btn-icon--light {
+		display: none;
+	}
+}
+
+html[data-theme="light"] {
+	.navbar__btn-icon--dark {
+		display: none;
 	}
 }
