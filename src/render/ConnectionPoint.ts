@@ -26,20 +26,27 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
     this._menu = new Menu();
     this._menu.addItem(new MenuItem("Disconnect", () => {
       this._menu.hide();
-      const i = connectedPoints.findIndex((v) => v.pointFrom === StaticConnectionData.pointFrom && v.pointTo === StaticConnectionData.pointTo);
-      if (i !== -1) {
-        const indices: number[] = [];
-        connectedPoints.splice(i, 1);
-        connections.forEach((v, i) => {
-          if (_parent.getID() === v.inputGateIndex && _parent.getPoints()[1].findIndex((v) => v === this) !== -1) {
-            indices.push(i);
-          }
-        });
-        indices.sort((a, b) => a - b).reverse();
-        for (const j in indices) {
-          connections.splice(j, 1);
+      const pointIndices: number[] = [];
+      connectedPoints.forEach((v, i) => {
+        if (v.pointFrom === this || v.pointTo === this) {
+          pointIndices.push(i);
         }
-        return;
+      });
+      pointIndices.sort((a, b) => a - b).reverse();
+      for (const j of pointIndices) {
+        console.log(j);
+        connectedPoints.splice(j, 1);
+      }
+      
+      const indices: number[] = [];
+      connections.forEach((v, i) => {
+        if (_parent.getID() === v.inputGateIndex && _parent.getPoints()[1].findIndex((v) => v === this) !== -1) {
+          indices.push(i);
+        }
+      });
+      indices.sort((a, b) => a - b).reverse();
+      for (const j of indices) {
+        connections.splice(j, 1);
       }
     }, ItemType.DANGER));
   }
@@ -103,7 +110,7 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
         }
         
         const conn = new ConnectionData(StaticConnectionData.pointFrom, StaticConnectionData.pointTo);
-        const pos = connectedPoints.findIndex((v) => v.pointFrom === conn.pointFrom);
+        const pos = connectedPoints.findIndex((v) => v.pointTo === conn.pointTo);
         if (pos !== -1) {
           return;
         }
