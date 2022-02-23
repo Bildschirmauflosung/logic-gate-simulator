@@ -10,16 +10,39 @@ import { StaticConnectionData } from "./StaticConnectionData";
 import { StaticMap } from "./StaticMap";
 import { IConnectionMap } from "../logic/IConnectionMap";
 import { Theme } from "./theme/Theme";
+import { Menu } from "./menu/Menu";
+import { ItemType, MenuItem } from "./menu/MenuItem";
 
 export class ConnectionPoint implements IRenderable, IWithMouseEvent {
   private _hovered: boolean = false;
   private _pressed: boolean = false;
+  private _menu: Menu;
 
   private _xOffset: number = 0;
   private _yOffset: number = 0;
   private _xPos: number = 0;
 
-  constructor(public type: IOType, public left: number, public top: number, private _parent: IConnectable) { }
+  constructor(public type: IOType, public left: number, public top: number, private _parent: IConnectable) {
+    this._menu = new Menu();
+    this._menu.addItem(new MenuItem("Disconnect", () => {
+      this._menu.hide();
+      const i = connectedPoints.findIndex((v) => v.pointFrom === StaticConnectionData.pointFrom && v.pointTo === StaticConnectionData.pointTo);
+      if (i !== -1) {
+        const indices: number[] = [];
+        connectedPoints.splice(i, 1);
+        connections.forEach((v, i) => {
+          if (_parent.getID() === v.inputGateIndex && _parent.getPoints()[1].findIndex((v) => v === this) !== -1) {
+            indices.push(i);
+          }
+        });
+        indices.sort((a, b) => a - b).reverse();
+        for (const j in indices) {
+          connections.splice(j, 1);
+        }
+        return;
+      }
+    }, ItemType.DANGER));
+  }
 
   handleMouseMove(e: MouseEvent): void {
     this._hovered = isMouseOver(e, 8, 8, this.left - 4, this.top - 4);
@@ -92,7 +115,11 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
     }
   }
 
-  handleMouseContextMenu(_e: MouseEvent): void { }
+  handleMouseContextMenu(e: MouseEvent): void {
+    if (this._hovered) {
+      this._menu.show(e.clientX, e.clientY);
+    }
+  }
 
   render(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
