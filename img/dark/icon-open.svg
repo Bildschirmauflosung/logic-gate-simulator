@@ -26,7 +26,7 @@
        inkscape:isstock="true">
       <path
          transform="scale(-0.2)"
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         style="fill-rule:evenodd;stroke:#ffffff;stroke-width:1pt;stroke-opacity:1;fill:#ffffff;fill-opacity:1"
          d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
          id="path3214" />
     </marker>
@@ -137,8 +137,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="123.9567"
-     inkscape:cy="147.87101"
+     inkscape:cx="118.49138"
+     inkscape:cy="113.14374"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -162,7 +162,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -171,13 +171,13 @@
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="fill:none;stroke:#000000;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 7.9375,29.104167 4e-7,10.583333 c 0,2.645834 2.6458336,5.291668 5.2916666,5.291667 H 39.6875 c 2.645834,1e-6 5.291668,-2.645833 5.291667,-5.291667 V 29.104167"
+       style="fill:none;stroke:#ffffff;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 7.9375,31.75 1e-7,10.583333 c 0,2.645834 2.6458339,5.291668 5.2916669,5.291667 H 39.6875 c 2.645834,10e-7 5.291668,-2.645833 5.291667,-5.291667 l 0,-10.583333"
        id="path3140"
        sodipodi:nodetypes="cccccc" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:4;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker3216)"
-       d="M 26.458333,10.583333 V 31.75"
+       style="fill:none;stroke:#ffffff;stroke-width:8;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker3216)"
+       d="M 26.458333,13.229167 V 34.395833"
        id="path3142"
        sodipodi:nodetypes="cc" />
   </g>

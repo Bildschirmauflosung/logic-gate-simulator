@@ -17,22 +17,34 @@
 
 		<nav class="navbar">
 			<a href="#" class="navbar__btn">
-				<img class="navbar__btn-icon" src="img/icon-new.svg" alt="add" />
+				<picture>
+					<source media="(prefers-color-scheme: dark)" srcset="img/dark/icon-new.svg">
+					<img class="navbar__btn-icon" src="img/light/icon-new.svg" alt="New" />
+				</picture>
 				New
 			</a>
 			<a href="#" class="navbar__btn">
-				<img class="navbar__btn-icon" src="img/icon-open.svg" alt="open" />
+				<picture>
+					<source media="(prefers-color-scheme: dark)" srcset="img/dark/icon-open.svg">
+					<img class="navbar__btn-icon" src="img/light/icon-open.svg" alt="Open" />
+				</picture>
 				Open
 			</a>
 			<a href="#" class="navbar__btn">
-				<img class="navbar__btn-icon" src="img/icon-save.svg" alt="save" />
+				<picture>
+					<source media="(prefers-color-scheme: dark)" srcset="img/dark/icon-save.svg">
+					<img class="navbar__btn-icon" src="img/light/icon-save.svg" alt="Save" />
+				</picture>
 				Save
 			</a>
 			<div class="navbar__spacer"></div>
 			<p class="navbar__title">(untitled)</p>
 			<div class="navbar__spacer"></div>
 			<a id="settings-btn" class="navbar__btn">
-				<img class="navbar__btn-icon" src="img/icon-settings.svg" alt="Settings" />
+				<picture>
+					<source media="(prefers-color-scheme: dark)" srcset="img/dark/icon-settings.svg">
+					<img class="navbar__btn-icon" src="img/light/icon-settings.svg" alt="Settings" />
+				</picture>
 			</a>
 		</nav>
 
