@@ -46,6 +46,16 @@
       }
     }
 
+    &-check {
+      display: flex;
+      align-items: center;
+
+      &-box {
+        width: 2rem;
+        height: 2rem;
+      }
+    }
+
     &-colour {
       display: flex;
       align-items: center;

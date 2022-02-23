@@ -39,29 +39,59 @@ export class Dialog {
   }
 
   addField(field: IDialogField) {
-    const label = document.createElement("p");
-    label.className = "modal-bg__dialog-label";
-    label.innerText = field.getLabel();
-    this._html.appendChild(label);
+    if (field.getType() !== DialogFieldType.CHECK) {
+      const label = document.createElement("p");
+      label.className = "modal-bg__dialog-label";
+      label.innerText = field.getLabel();
+      this._html.appendChild(label);
+    }
+
     switch (field.getType()) {
       case DialogFieldType.CHECK:
+        const div = document.createElement("div");
+        div.className = "modal-bg__dialog-check";
         const check = document.createElement("input");
-        check.className = "modal-bg__dialog-check";
+        check.className = "modal-bg__dialog-check-box";
+        check.id = field.getName() + "-check";
         check.type = "checkbox";
         check.addEventListener("change", () => {
           (field as DialogCheckField).value = check.checked;
-        })
-        this._html.appendChild(check);
+        });
+        
+        const label = document.createElement("label");
+        label.className = "modal-bg__dialog-check-label";
+        label.innerText = field.getLabel();
+        label.htmlFor = check.id;
+        div.appendChild(check);
+        div.appendChild(label);
+        this._html.appendChild(div);
         break;
       case DialogFieldType.COLOUR:
         const flex = document.createElement("div");
         flex.className = "modal-bg__dialog-colour";
         const colourBox = document.createElement("div");
         colourBox.className = "modal-bg__dialog-colour-box";
+        colourBox.style.backgroundColor = `hsl(${ field.getValue() }, 50%, 70%)`;
         const sliderBase = document.createElement("div");
         sliderBase.className = "modal-bg__dialog-colour-slider";
         const sliderHandle = document.createElement("div");
         sliderHandle.className = "modal-bg__dialog-colour-slider-handle";
+
+        sliderHandle.addEventListener("mousedown", (e) => {
+          e.stopPropagation();
+          (field as DialogColourField).pressed = true;
+        });
+        sliderHandle.addEventListener("mouseup", () => {
+          (field as DialogColourField).pressed = false;
+        });
+        sliderHandle.addEventListener("mousemove", (e) => {
+          if ((field as DialogColourField).pressed) {
+            sliderHandle.style.left = e.offsetX + "px";
+            (field as DialogColourField).value = Math.round((sliderHandle.offsetLeft - sliderBase.offsetLeft + sliderHandle.offsetWidth / 2) * (360 / 200));
+            colourBox.style.backgroundColor = `hsl(${ field.getValue() }, 50%, 70%)`;
+          }
+        });
+
         sliderBase.addEventListener("mousedown", (e) => {
           sliderHandle.style.left = e.offsetX - sliderHandle.offsetWidth / 2 + "px";
           (field as DialogColourField).value = Math.round((sliderHandle.offsetLeft - sliderBase.offsetLeft + sliderHandle.offsetWidth / 2) * (360 / 200));
