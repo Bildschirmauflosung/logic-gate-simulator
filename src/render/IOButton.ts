@@ -4,7 +4,7 @@ import { ConnectionPoint } from "./ConnectionPoint";
 import { Dialog } from "./dialog/Dialog";
 import { ButtonType, DialogButton } from "./dialog/DialogButton";
 import { IOType } from "./IOType";
-import { IConnectable } from "./IConnectable";
+import { ConnectableType, IConnectable } from "./IConnectable";
 import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
@@ -26,6 +26,9 @@ export class IOButton implements IWithMouseEvent, IConnectable {
   width: number = 48;
   height: number = 48;
   enabled: boolean = false;
+
+  public inputValues: boolean[] = [];
+  public outputValues: boolean[] = [];
 
   constructor(public id: number, public name: string, public type: IOType) {
     this._menu = new Menu();
@@ -146,6 +149,18 @@ export class IOButton implements IWithMouseEvent, IConnectable {
 
   getID(): number {
     return this.id;
+  }
+
+  getName(): string {
+    return this.name;
+  }
+
+  getType(): ConnectableType {
+    if (this.type === IOType.INPUT) {
+      return ConnectableType.INPUT;
+    } else {
+      return ConnectableType.OUTPUT;
+    }
   }
 
   updateId(): void {

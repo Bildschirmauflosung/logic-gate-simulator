@@ -4,7 +4,7 @@ import { clamp, isMouseOver, updateConnectionData } from "../utils/Helpers";
 import { ConnectionPoint } from "./ConnectionPoint";
 import { IOType } from "./IOType";
 import { IRenderable } from "./IRenderable";
-import { IConnectable } from "./IConnectable";
+import { ConnectableType, IConnectable } from "./IConnectable";
 import { IWithMouseEvent } from "./IWithMouseEvent";
 import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
@@ -23,6 +23,9 @@ export class Gate implements IRenderable, IWithMouseEvent, IConnectable {
   private _yOffset: number = 0;
 
   public readonly name: string;
+
+  public inputValues: boolean[] = [];
+  public outputValues: boolean[] = [];
 
   constructor(public left: number, public top: number, public id: number, name: string, public readonly gate: LogicGate) {
     const max = gate.arity > gate.outputCount ? gate.arity : gate.outputCount;
@@ -143,6 +146,14 @@ export class Gate implements IRenderable, IWithMouseEvent, IConnectable {
 
   getID(): number {
     return this.id;
+  }
+
+  getName(): string {
+    return this.name;
+  }
+
+  getType(): ConnectableType {
+    return ConnectableType.GATE;
   }
 
   updateId(): void {
