@@ -7,9 +7,11 @@
   height: 100%;
   background-color: rgba($color: #000, $alpha: 0.5);
   z-index: 1;
+  align-items: center;
+  justify-content: center;
   
   &__dialog {
-    position: absolute;
+    // position: absolute;
     flex-direction: column;
     padding: 2.4rem;
     border-radius: 1.2rem;

@@ -54,14 +54,12 @@ export class Dialog {
   }
 
   show() {
-    this._modalBg.style.display = "block";
+    this._modalBg.style.display = "flex";
     this._html.style.display = "flex";
     if (!this._areBtnsCreated) {
       this.createButtons();
       this._areBtnsCreated = true;
     }
-    this._html.style.top = document.body.offsetHeight / 2 - this._html.offsetHeight / 2 + "px";
-    this._html.style.left = document.body.offsetWidth / 2 - this._html.offsetWidth / 2 + "px";
   }
   
   close() {
