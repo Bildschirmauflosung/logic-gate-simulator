@@ -1,9 +1,5 @@
 import { DialogButton } from "./DialogButton";
-import { DialogCheckField } from "./DialogCheckField";
-import { DialogColourField } from "./DialogColourField";
 import { DialogFieldType } from "./DialogFieldType";
-import { DialogInputField } from "./DialogInputField";
-import { DialogSelectField } from "./DialogSelectField";
 import { IDialogField } from "./IDialogField";
 
 export class Dialog {
@@ -47,107 +43,7 @@ export class Dialog {
       this._html.appendChild(label);
     }
 
-    switch (field.getType()) {
-      case DialogFieldType.CHECK:
-        const div = document.createElement("div");
-        div.className = "modal-bg__dialog-check";
-        const check = document.createElement("input");
-        check.className = "modal-bg__dialog-check-box";
-        check.id = field.getName() + "-check";
-        check.type = "checkbox";
-        check.checked = field.getValue() as boolean;
-        check.addEventListener("change", () => {
-          (field as DialogCheckField).value = check.checked;
-        });
-        
-        const label = document.createElement("label");
-        label.className = "modal-bg__dialog-check-label";
-        label.innerText = field.getLabel();
-        label.htmlFor = check.id;
-        div.appendChild(check);
-        div.appendChild(label);
-        this._html.appendChild(div);
-        break;
-      case DialogFieldType.COLOUR:
-        const flex = document.createElement("div");
-        flex.className = "modal-bg__dialog-colour";
-        const colourBox = document.createElement("div");
-        colourBox.className = "modal-bg__dialog-colour-box";
-        colourBox.style.backgroundColor = `hsl(${ field.getValue() }, 50%, 70%)`;
-        const sliderBase = document.createElement("div");
-        sliderBase.className = "modal-bg__dialog-colour-slider";
-        const sliderHandle = document.createElement("div");
-        sliderHandle.className = "modal-bg__dialog-colour-slider-handle";
-
-        sliderHandle.addEventListener("mousedown", (e) => {
-          e.stopPropagation();
-          (field as DialogColourField).pressed = true;
-        });
-        sliderHandle.addEventListener("mouseup", () => {
-          (field as DialogColourField).pressed = false;
-        });
-        sliderHandle.addEventListener("mousemove", (e) => {
-          if ((field as DialogColourField).pressed) {
-            sliderHandle.style.left = e.offsetX + "px";
-            (field as DialogColourField).value = Math.round((sliderHandle.offsetLeft - sliderBase.offsetLeft + sliderHandle.offsetWidth / 2) * (360 / 200));
-            colourBox.style.backgroundColor = `hsl(${ field.getValue() }, 50%, 70%)`;
-          }
-        });
-
-        sliderBase.addEventListener("mousedown", (e) => {
-          sliderHandle.style.left = e.offsetX - sliderHandle.offsetWidth / 2 + "px";
-          (field as DialogColourField).value = Math.round((sliderHandle.offsetLeft - sliderBase.offsetLeft + sliderHandle.offsetWidth / 2) * (360 / 200));
-          colourBox.style.backgroundColor = `hsl(${ field.getValue() }, 50%, 70%)`;
-        });
-
-        flex.appendChild(colourBox);
-        sliderBase.appendChild(sliderHandle);
-        flex.appendChild(sliderBase);
-
-        this._html.appendChild(flex);
-        break;
-      case DialogFieldType.INPUT:
-        const input = document.createElement("input");
-        input.className = "modal-bg__dialog-input";
-        input.type = "text";
-        input.maxLength = (field as DialogInputField).maxLength;
-        input.addEventListener("change", () => {
-          (field as DialogInputField).value = input.value;
-        });
-        this._html.appendChild(input);
-        break;
-      case DialogFieldType.SELECT:
-        const select = document.createElement("div");
-        select.className = "modal-bg__dialog-select";
-        select.innerText = (field as DialogSelectField).value;
-        const selectBase = document.createElement("div");
-        selectBase.className = "modal-bg__dialog-select-base";
-
-        for (const i of (field as DialogSelectField).values) {
-          const selectBtn = document.createElement("div");
-          selectBtn.className = "modal-bg__dialog-select-base-btn";
-          selectBtn.innerText = i;
-          selectBtn.addEventListener("click", () => {
-            (field as DialogSelectField).value = selectBtn.innerText;
-            select.innerText = (field as DialogSelectField).value;
-            selectBase.style.display = "none";
-          });
-          selectBase.appendChild(selectBtn);
-        }
-
-        select.addEventListener("click", () => {
-          if (selectBase.style.display !== "flex") {
-            selectBase.style.display = "flex";
-          } else {
-            selectBase.style.display = "none";
-          }
-          selectBase.style.top = select.offsetTop - select.clientHeight * (field as DialogSelectField).values.findIndex((v) => v === (field as DialogSelectField).value) + "px";
-        });
-
-        this._html.appendChild(select);
-        this._html.appendChild(selectBase);
-        break;
-    }
+    field.create(this._html);
     
     this._fields.push(field);
   }
