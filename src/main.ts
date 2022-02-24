@@ -11,6 +11,7 @@ import { Theme } from "./render/theme/Theme";
 import { IWidget } from "./render/IWidget";
 import { MouseEventType } from "./render/MouseEventType";
 import { GateType } from "./render/GateType";
+import { ProjectsDialog } from "./dialogs/ProjectsDialog";
 
 export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 const nav: HTMLElement = document.querySelector(".navbar")!;
@@ -47,6 +48,9 @@ document.querySelector("#settings-btn")!.addEventListener("click", () => {
 });
 
 Theme.setSystemTheme();
+
+ProjectsDialog.build();
+ProjectsDialog.show();
 
 function render() {
   // ctx.fillStyle = Theme.bgColour;

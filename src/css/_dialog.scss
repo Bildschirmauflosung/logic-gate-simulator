@@ -129,5 +129,20 @@
       }
     }
     
+    &-flex {
+      display: flex;
+
+      &--horizontal {
+        flex-direction: row;
+      }
+
+      &--vertical {
+        flex-direction: column;
+      }
+    }
+
+    &-text {
+      font-size: 1.8rem;
+    }
   }
 }

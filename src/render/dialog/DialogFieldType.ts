@@ -3,4 +3,6 @@ export enum DialogFieldType {
   COLOUR,
   CHECK,
   SELECT,
+  TEXT,
+  FLEX,
 }
