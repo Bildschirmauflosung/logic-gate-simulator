@@ -46,6 +46,10 @@ document.querySelector("#settings-btn")!.addEventListener("click", () => {
   SettingsDialog.build();
   SettingsDialog.show();
 });
+document.querySelector("#projects-btn")!.addEventListener("click", () => {
+  ProjectsDialog.build();
+  ProjectsDialog.show();
+});
 
 Theme.setSystemTheme();
 
