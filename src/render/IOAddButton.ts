@@ -41,7 +41,7 @@ export class IOAddButton implements IWidget {
   private handleMouseUp(e: MouseEvent): void {
     if (this._hovered && this._pressed && e.button == 0) {
       const lg = new LogicGate([], [], this.isInput ? 0 : 1, this.isInput ? 1 : 0, ([]) => []);
-      const io = new Gate(4, 4, gates.length, "X", this.isInput ? GateType.INPUT : GateType.OUTPUT, lg);
+      const io = new Gate(this.isInput ? 4 : cv.width - this.width - 4, 4, gates.length, "X", this.isInput ? GateType.INPUT : GateType.OUTPUT, lg);
       gates.push(io);
       widgets.push(io);
     }

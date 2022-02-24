@@ -12,6 +12,7 @@ import { Theme } from "./theme/Theme";
 export class Gate implements IWidget {
   private _grabbed: boolean = false;
   private _enterred: boolean = false;
+  private _moving: boolean = false;
   private _menu: Menu;
   private _width: number;
   private _height: number;
@@ -23,7 +24,7 @@ export class Gate implements IWidget {
   
   public inputValues: boolean[] = [];
   public outputValues: boolean[] = [];
-  public enabled: boolean[] = [false];
+  public enabled: boolean = false;
 
   constructor(public left: number, public top: number, private id: number, public readonly name: string, public readonly type: GateType, public readonly gate: LogicGate) {
     const max = gate.arity > gate.outputCount ? gate.arity : gate.outputCount;
@@ -91,7 +92,10 @@ export class Gate implements IWidget {
   private handleMouseMove(e: MouseEvent) {
     if (this._grabbed) {
       if (this.isMaxId()) {
-        this.left = clamp(Math.round((e.offsetX - this._xOffset) / 16) * 16, 64, cv.width - 64 - this._width);
+        this._moving = true;
+        if (this.type === GateType.GATE) {
+          this.left = clamp(Math.round((e.offsetX - this._xOffset) / 16) * 16, 64, cv.width - 64 - this._width);
+        }
         this.top = clamp(Math.round((e.offsetY - this._yOffset) / 16) * 16 + 4, 4, cv.height - 64 - this._height);
 
         for (let i = 0; i < this.gate.arity; i++) {
@@ -132,6 +136,12 @@ export class Gate implements IWidget {
 
   private handleMouseUp(_e: MouseEvent) {
     this._grabbed = false;
+
+    if (this.type === GateType.INPUT && this._enterred && !this._moving) {
+      this.enabled = !this.enabled;
+    }
+
+    this._moving = false;
   }
 
   private handleMouseContextMenu(e: MouseEvent) {
@@ -184,7 +194,11 @@ export class Gate implements IWidget {
     const rad: number = 8;
     ctx.beginPath();
     ctx.strokeStyle = Theme.fgColour;
-    ctx.fillStyle = Theme.bgColour;
+    if (this.enabled) {
+      ctx.fillStyle = Theme.enabledBgColour;
+    } else {
+      ctx.fillStyle = Theme.bgColour;
+    }
     ctx.moveTo(this.left + rad, this.top);
     ctx.lineTo(this.left + this._width - rad, this.top);
     ctx.arcTo(this.left + this._width, this.top, this.left + this._width, this.top + rad, rad);
