@@ -1,8 +1,7 @@
 import { ConnectionPoint } from "./ConnectionPoint";
-import { IRenderable } from "./IRenderable";
 import { Theme } from "./theme/Theme";
 
-export class ConnectionData implements IRenderable {
+export class ConnectionData {
   constructor(public pointFrom: ConnectionPoint, public pointTo: ConnectionPoint) { }
 
   render(ctx: CanvasRenderingContext2D): void {

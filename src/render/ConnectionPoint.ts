@@ -1,19 +1,18 @@
-import { connectedPoints, connections, ioButtons, sidebar, simulator } from "../main";
+import { connectedPoints, connections, gates, sidebar } from "../main";
 import { isMouseOver } from "../utils/Helpers";
 import { ConnectionData } from "./ConnectionData";
-import { IOButton } from "./IOButton";
-import { IOType } from "./IOType";
-import { IRenderable } from "./IRenderable";
-import { IConnectable } from "./IConnectable";
-import { IWithMouseEvent } from "./IWithMouseEvent";
 import { StaticConnectionData } from "./StaticConnectionData";
 import { StaticMap } from "./StaticMap";
 import { IConnectionMap } from "../logic/IConnectionMap";
 import { Theme } from "./theme/Theme";
 import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
+import { IWidget } from "./IWidget";
+import { MouseEventType } from "./MouseEventType";
+import { Gate } from "./Gate";
+import { GateType } from "./GateType";
 
-export class ConnectionPoint implements IRenderable, IWithMouseEvent {
+export class ConnectionPoint implements IWidget {
   private _hovered: boolean = false;
   private _pressed: boolean = false;
   private _menu: Menu;
@@ -22,7 +21,7 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
   private _yOffset: number = 0;
   private _xPos: number = 0;
 
-  constructor(public type: IOType, public left: number, public top: number, private _parent: IConnectable) {
+  constructor(public isInput: boolean, public left: number, public top: number, private _parent: Gate) {
     this._menu = new Menu();
     this._menu.addItem(new MenuItem("Disconnect", () => {
       this._menu.hide();
@@ -34,7 +33,6 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
       });
       pointIndices.sort((a, b) => a - b).reverse();
       for (const j of pointIndices) {
-        console.log(j);
         connectedPoints.splice(j, 1);
       }
       
@@ -51,40 +49,40 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
     }, ItemType.DANGER));
   }
 
-  handleMouseMove(e: MouseEvent): void {
+  private handleMouseMove(e: MouseEvent): void {
     this._hovered = isMouseOver(e, 8, 8, this.left - 4, this.top - 4);
     this._xOffset = e.offsetX;
     this._yOffset = e.offsetY;
     this._xPos = e.clientX;
   }
 
-  handleMouseDown(e: MouseEvent): void {
+  private handleMouseDown(e: MouseEvent): void {
     if (this._hovered && e.button === 0) {
       this._pressed = true;
       StaticConnectionData.pointFrom = this;
 
-      if (typeof(this._parent) === typeof(IOButton)) {
+      if (this._parent.type !== GateType.GATE) {
         StaticMap.outputIndex = 0;
-        StaticMap.outputGateIndex = -(ioButtons.findIndex((v) => v === this._parent as unknown as IOButton) + 1);
+        StaticMap.outputGateIndex = -(gates.findIndex((v) => v === this._parent) + 1);
       } else {
         StaticMap.outputIndex = this._parent.getPoints()[0].findIndex((v) => v === this);
       }
     }
   }
   
-  handleMouseUp(e: MouseEvent): void {
+  private handleMouseUp(e: MouseEvent): void {
     this._pressed = false;
     if (e.button === 0) {
-      if (this._hovered && StaticConnectionData.pointFrom !== this && StaticConnectionData.pointFrom.type !== this.type) {
+      if (this._hovered && StaticConnectionData.pointFrom !== this && StaticConnectionData.pointFrom.isInput !== this.isInput) {
         StaticConnectionData.pointTo = this;
-        if (typeof(this._parent) === typeof(IOButton)) {
+        if (this._parent.type !== GateType.GATE) {
           StaticMap.inputIndex = 0;
-          StaticMap.inputGateIndex = -(ioButtons.findIndex((v) => v === this._parent as unknown as IOButton) + 1);
+          StaticMap.inputGateIndex = -(gates.findIndex((v) => v === this._parent) + 1);
         } else {
           StaticMap.inputIndex = this._parent.getPoints()[1].findIndex((v) => v === this);
         }
 
-        if (StaticConnectionData.pointFrom.type === IOType.INPUT) {
+        if (StaticConnectionData.pointFrom.isInput) {
           StaticConnectionData.swap();
           StaticMap.swapIndices();
         }
@@ -117,14 +115,31 @@ export class ConnectionPoint implements IRenderable, IWithMouseEvent {
 
         connectedPoints.push(conn);
         connections.push(map);
-        simulator.rebuild();
+        // simulator.rebuild();
       }
     }
   }
 
-  handleMouseContextMenu(e: MouseEvent): void {
+  private handleMouseContextMenu(e: MouseEvent): void {
     if (this._hovered) {
       this._menu.show(e.clientX, e.clientY);
+    }
+  }
+
+  handleEvent(type: MouseEventType, event: MouseEvent): void {
+    switch (type) {
+      case MouseEventType.MOVE:
+        this.handleMouseMove(event);
+        break;
+      case MouseEventType.UP:
+        this.handleMouseUp(event);
+        break;
+      case MouseEventType.DOWN:
+        this.handleMouseDown(event);
+        break;
+      case MouseEventType.CONTEXTMENU:
+        this.handleMouseContextMenu(event);
+        break;
     }
   }
 

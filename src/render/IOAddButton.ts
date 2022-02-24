@@ -1,25 +1,23 @@
-import { cv, ioButtons, renderable, withMouseEvent } from "../main";
+import { LogicGate } from "../logic/LogicGate";
+import { cv, gates, widgets } from "../main";
 import { isMouseOver } from "../utils/Helpers";
-import { IOButton } from "./IOButton";
-import { IOType } from "./IOType";
-import { IRenderable } from "./IRenderable";
-import { IWithMouseEvent } from "./IWithMouseEvent";
+import { Gate } from "./Gate";
+import { GateType } from "./GateType";
+import { IWidget } from "./IWidget";
+import { MouseEventType } from "./MouseEventType";
 import { Theme } from "./theme/Theme";
 
-export class IOAddButton implements IRenderable, IWithMouseEvent {
+export class IOAddButton implements IWidget {
   private _left: number;
   private _top: number;
   private _hovered: boolean = false;
   private _pressed: boolean = false;
 
-  width: number = 48;
-  height: number = 48;
-  type: IOType;
+  public width: number = 48;
+  public height: number = 48;
   
-  constructor(type: IOType) {
-    this.type = type;
-    
-    if (type == IOType.INPUT) {
+  constructor(public readonly isInput: boolean) {    
+    if (isInput) {
       this._left = 8;
       this._top = cv.height - this.height - 8;
     } else {
@@ -28,11 +26,11 @@ export class IOAddButton implements IRenderable, IWithMouseEvent {
     }
   }
 
-  handleMouseMove(e: MouseEvent): void {
+  private handleMouseMove(e: MouseEvent): void {
     this._hovered = (isMouseOver(e, this.width, this.height, this._left, this._top));
   }
 
-  handleMouseDown(e: MouseEvent): void {
+  private handleMouseDown(e: MouseEvent): void {
     if (e.button == 0) {
       if (isMouseOver(e, this.width, this.height, this._left, this._top)) {
         this._pressed = true;
@@ -40,28 +38,38 @@ export class IOAddButton implements IRenderable, IWithMouseEvent {
     }
   }
 
-  handleMouseUp(e: MouseEvent): void {
+  private handleMouseUp(e: MouseEvent): void {
     if (this._hovered && this._pressed && e.button == 0) {
-      const io = new IOButton(ioButtons.length, "x", this.type);
-      ioButtons.push(io);
-      withMouseEvent.push(io);
-      renderable.push(io);
+      const lg = new LogicGate([], [], this.isInput ? 0 : 1, this.isInput ? 1 : 0, ([]) => []);
+      const io = new Gate(4, 4, gates.length, "X", this.isInput ? GateType.INPUT : GateType.OUTPUT, lg);
+      gates.push(io);
+      widgets.push(io);
     }
     this._hovered = false;
     this._pressed = false;
   }
 
-  handleMouseContextMenu(_e: MouseEvent): void { }
-
-  updateId() {
-
-  }
-
   align(): void {
-    if (this.type == IOType.OUTPUT) {
+    if (!this.isInput) {
       this._left = cv.width - this.width - 8;
     }
     this._top = cv.height - this.height - 8;
+  }
+
+  handleEvent(type: MouseEventType, event: MouseEvent): void {
+    switch (type) {
+      case MouseEventType.MOVE:
+        this.handleMouseMove(event);
+        break;
+      case MouseEventType.UP:
+        this.handleMouseUp(event);
+        break;
+      case MouseEventType.DOWN:
+        this.handleMouseDown(event);
+        break;
+      case MouseEventType.CONTEXTMENU:
+        break;
+    }
   }
 
   render(ctx: CanvasRenderingContext2D): void {

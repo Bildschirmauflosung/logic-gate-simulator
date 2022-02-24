@@ -1,16 +1,15 @@
 import { LogicGate } from "../logic/LogicGate";
-import { cv, gates, renderable, withMouseEvent } from "../main";
+import { cv, gates, widgets } from "../main";
 import { clamp, isMouseOver, updateConnectionData } from "../utils/Helpers";
 import { ConnectionPoint } from "./ConnectionPoint";
-import { IOType } from "./IOType";
-import { IRenderable } from "./IRenderable";
-import { ConnectableType, IConnectable } from "./IConnectable";
-import { IWithMouseEvent } from "./IWithMouseEvent";
+import { GateType } from "./GateType";
+import { IWidget } from "./IWidget";
 import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
+import { MouseEventType } from "./MouseEventType";
 import { Theme } from "./theme/Theme";
 
-export class Gate implements IRenderable, IWithMouseEvent, IConnectable {
+export class Gate implements IWidget {
   private _grabbed: boolean = false;
   private _enterred: boolean = false;
   private _menu: Menu;
@@ -18,43 +17,51 @@ export class Gate implements IRenderable, IWithMouseEvent, IConnectable {
   private _height: number;
   private _ipoints: ConnectionPoint[] = [];
   private _opoints: ConnectionPoint[] = [];
-
+  
   private _xOffset: number = 0;
   private _yOffset: number = 0;
-
-  public readonly name: string;
-
+  
   public inputValues: boolean[] = [];
   public outputValues: boolean[] = [];
+  public enabled: boolean[] = [false];
 
-  constructor(public left: number, public top: number, public id: number, name: string, public readonly gate: LogicGate) {
+  constructor(public left: number, public top: number, private id: number, public readonly name: string, public readonly type: GateType, public readonly gate: LogicGate) {
     const max = gate.arity > gate.outputCount ? gate.arity : gate.outputCount;
-    this._width = 64;
-    this._height = 64 + (max - 1) * 32;
-    this.name = name.toUpperCase();
+    if (type === GateType.GATE) {
+      this._width = 64;
+      this._height = 64 + (max - 1) * 32;
+    } else {
+      this._width = 48;
+      this._height = 48;
+    }
     this._menu = new Menu();
     this._menu.addItem(new MenuItem("Edit", () => {console.log("edit on", id)}));
     this._menu.addItem(new MenuItem("Delete", () => {
       this._menu.destroy();
-      renderable.splice(renderable.findIndex((v) => v === this), 1);
-      withMouseEvent.splice(withMouseEvent.findIndex((v) => v === this), 1);
       gates.splice(gates.findIndex((v) => v === this), 1);
+      widgets.splice(widgets.findIndex((v) => v === this), 1);
       for (const i of gates) {
         i.updateId();
+      }
+      for (const i of this._ipoints) {
+        widgets.splice(widgets.findIndex((v) => v === i), 1);
+      }
+      for (const i of this._opoints) {
+        widgets.splice(widgets.findIndex((v) => v === i), 1);
       }
       updateConnectionData(this._ipoints);
       updateConnectionData(this._opoints);
     }, ItemType.DANGER));
 
     for (let i = 0; i < gate.arity; i++) {
-      const point = new ConnectionPoint(IOType.INPUT, this.left, this.top + this._height / (gate.arity + 1) * (i + 1), this);
+      const point = new ConnectionPoint(true, this.left, this.top + this._height / (gate.arity + 1) * (i + 1), this);
       this._ipoints.push(point);
-      withMouseEvent.push(point);
+      widgets.push(point);
     }
     for (let i = 0; i < gate.outputCount; i++) {
-      const point = new ConnectionPoint(IOType.OUTPUT, this.left + this._width, this.top + this._height / (gate.outputCount + 1) * (i + 1), this);
+      const point = new ConnectionPoint(false, this.left + this._width, this.top + this._height / (gate.outputCount + 1) * (i + 1), this);
       this._opoints.push(point);
-      withMouseEvent.push(point);
+      widgets.push(point);
     }
   }
 
@@ -81,7 +88,7 @@ export class Gate implements IRenderable, IWithMouseEvent, IConnectable {
     return this.id === max;
   }
 
-  handleMouseMove(e: MouseEvent) {
+  private handleMouseMove(e: MouseEvent) {
     if (this._grabbed) {
       if (this.isMaxId()) {
         this.left = clamp(Math.round((e.offsetX - this._xOffset) / 16) * 16, 64, cv.width - 64 - this._width);
@@ -101,7 +108,7 @@ export class Gate implements IRenderable, IWithMouseEvent, IConnectable {
     this._enterred = isMouseOver(e, this._width, this._height, this.left, this.top);
   }
 
-  handleMouseDown(e: MouseEvent) {
+  private handleMouseDown(e: MouseEvent) {
     this._menu.hide();
     if (e.button == 0) {
       for (const i of this._ipoints) {
@@ -123,11 +130,11 @@ export class Gate implements IRenderable, IWithMouseEvent, IConnectable {
     }
   }
 
-  handleMouseUp(_e: MouseEvent) {
+  private handleMouseUp(_e: MouseEvent) {
     this._grabbed = false;
   }
 
-  handleMouseContextMenu(e: MouseEvent) {
+  private handleMouseContextMenu(e: MouseEvent) {
     for (const i of this._ipoints) {
       if (isMouseOver(e, 8, 8, i.left - 4, i.top - 4)) {
         return;
@@ -148,20 +155,29 @@ export class Gate implements IRenderable, IWithMouseEvent, IConnectable {
     return this.id;
   }
 
-  getName(): string {
-    return this.name;
-  }
-
-  getType(): ConnectableType {
-    return ConnectableType.GATE;
-  }
-
   updateId(): void {
     this.id = gates.findIndex((v) => v === this);
   }
 
   getPoints(): [ConnectionPoint[], ConnectionPoint[]] {
     return [this._ipoints, this._opoints];
+  }
+
+  handleEvent(type: MouseEventType, event: MouseEvent): void {
+    switch (type) {
+      case MouseEventType.MOVE:
+        this.handleMouseMove(event);
+        break;
+      case MouseEventType.UP:
+        this.handleMouseUp(event);
+        break;
+      case MouseEventType.DOWN:
+        this.handleMouseDown(event);
+        break;
+      case MouseEventType.CONTEXTMENU:
+        this.handleMouseContextMenu(event);
+        break;
+    }
   }
 
   render(ctx: CanvasRenderingContext2D): void {
@@ -187,11 +203,11 @@ export class Gate implements IRenderable, IWithMouseEvent, IConnectable {
     for (const i of this._opoints) {
       i.render(ctx);
     }
-        
+
     ctx.fillStyle = Theme.fgColour;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = "normal 16px 'Lato', sans-serif";
-    ctx.fillText(this.name, this.left + this._width / 2, this.top + this._height / 2);
+    ctx.fillText(this.name.toUpperCase(), this.left + this._width / 2, this.top + this._height / 2);
   }
 }
