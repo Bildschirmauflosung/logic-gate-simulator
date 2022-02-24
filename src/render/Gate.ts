@@ -13,17 +13,17 @@ import { MouseEventType } from "./MouseEventType";
 import { Theme } from "./theme/Theme";
 
 export class Gate implements IWidget {
-  private _grabbed: boolean = false;
-  private _enterred: boolean = false;
-  private _moving: boolean = false;
-  private _menu: Menu;
-  private _width: number;
-  private _height: number;
-  private _ipoints: ConnectionPoint[] = [];
-  private _opoints: ConnectionPoint[] = [];
+  private grabbed: boolean = false;
+  private enterred: boolean = false;
+  private moving: boolean = false;
+  private menu: Menu;
+  private width: number;
+  private height: number;
+  private ipoints: ConnectionPoint[] = [];
+  private opoints: ConnectionPoint[] = [];
   
-  private _xOffset: number = 0;
-  private _yOffset: number = 0;
+  private xOffset: number = 0;
+  private yOffset: number = 0;
   
   public inputValues: boolean[] = [];
   public outputValues: boolean[] = [];
@@ -32,18 +32,18 @@ export class Gate implements IWidget {
   constructor(public left: number, public top: number, private id: number, public name: string, public readonly type: GateType, public readonly gate: LogicGate) {
     const max = gate.arity > gate.outputCount ? gate.arity : gate.outputCount;
     if (type === GateType.GATE) {
-      this._width = 64;
-      this._height = 64 + (max - 1) * 32;
+      this.width = 64;
+      this.height = 64 + (max - 1) * 32;
     } else {
-      this._width = 48;
-      this._height = 48;
+      this.width = 48;
+      this.height = 48;
     }
-    this._menu = new Menu();
+    this.menu = new Menu();
     if (type === GateType.GATE) {
-      this._menu.addItem(new MenuItem("Edit", () => {console.log("edit on", id)}));
+      this.menu.addItem(new MenuItem("Edit", () => {console.log("edit on", id)}));
     } else {
-      this._menu.addItem(new MenuItem("Rename", () => {
-        this._menu.hide();
+      this.menu.addItem(new MenuItem("Rename", () => {
+        this.menu.hide();
         const dialog = new Dialog("Rename");
         dialog.addField(new DialogInputField("name", "Name (max. 2 chars)", 2));
         dialog.addButton(new DialogButton("Cancel", ButtonType.NORMAL, () => {
@@ -58,31 +58,31 @@ export class Gate implements IWidget {
         dialog.show();
       }));
     }
-    this._menu.addItem(new MenuItem("Delete", () => {
-      this._menu.destroy();
+    this.menu.addItem(new MenuItem("Delete", () => {
+      this.menu.destroy();
       gates.splice(gates.findIndex((v) => v === this), 1);
       widgets.splice(widgets.findIndex((v) => v === this), 1);
       for (const i of gates) {
         i.updateId();
       }
-      for (const i of this._ipoints) {
+      for (const i of this.ipoints) {
         widgets.splice(widgets.findIndex((v) => v === i), 1);
       }
-      for (const i of this._opoints) {
+      for (const i of this.opoints) {
         widgets.splice(widgets.findIndex((v) => v === i), 1);
       }
-      updateConnectionData(this._ipoints);
-      updateConnectionData(this._opoints);
+      updateConnectionData(this.ipoints);
+      updateConnectionData(this.opoints);
     }, ItemType.DANGER));
 
     for (let i = 0; i < gate.arity; i++) {
-      const point = new ConnectionPoint(true, this.left, this.top + this._height / (gate.arity + 1) * (i + 1), this);
-      this._ipoints.push(point);
+      const point = new ConnectionPoint(true, this.left, this.top + this.height / (gate.arity + 1) * (i + 1), this);
+      this.ipoints.push(point);
       widgets.push(point);
     }
     for (let i = 0; i < gate.outputCount; i++) {
-      const point = new ConnectionPoint(false, this.left + this._width, this.top + this._height / (gate.outputCount + 1) * (i + 1), this);
-      this._opoints.push(point);
+      const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / (gate.outputCount + 1) * (i + 1), this);
+      this.opoints.push(point);
       widgets.push(point);
     }
   }
@@ -91,13 +91,13 @@ export class Gate implements IWidget {
     let max = -1;
     for (const i of gates) {
       if (onEnter) {
-        if (i._enterred) {
+        if (i.enterred) {
           if (i.id > max) {
             max = i.id;
           }
         }
       } else {
-        if (i._grabbed) {
+        if (i.grabbed) {
           if (i.id > max) {
             max = i.id;
           }
@@ -111,74 +111,74 @@ export class Gate implements IWidget {
   }
 
   private handleMouseMove(e: MouseEvent) {
-    if (this._grabbed) {
+    if (this.grabbed) {
       if (this.isMaxId()) {
-        this._moving = true;
+        this.moving = true;
         if (this.type === GateType.GATE) {
-          this.left = clamp(Math.round((e.offsetX - this._xOffset) / 16) * 16, 64, cv.width - 64 - this._width);
+          this.left = clamp(Math.round((e.offsetX - this.xOffset) / 16) * 16, 64, cv.width - 64 - this.width);
         }
-        this.top = clamp(Math.round((e.offsetY - this._yOffset) / 16) * 16 + 4, 4, cv.height - 64 - this._height);
+        this.top = clamp(Math.round((e.offsetY - this.yOffset) / 16) * 16 + 4, 4, cv.height - 64 - this.height);
 
         for (let i = 0; i < this.gate.arity; i++) {
-          this._ipoints[i].left = this.left;
-          this._ipoints[i].top = this.top + this._height / (this.gate.arity + 1) * (i + 1);
+          this.ipoints[i].left = this.left;
+          this.ipoints[i].top = this.top + this.height / (this.gate.arity + 1) * (i + 1);
         }
         for (let i = 0; i < this.gate.outputCount; i++) {
-          this._opoints[i].left = this.left + this._width;
-          this._opoints[i].top = this.top + this._height / (this.gate.outputCount + 1) * (i + 1);
+          this.opoints[i].left = this.left + this.width;
+          this.opoints[i].top = this.top + this.height / (this.gate.outputCount + 1) * (i + 1);
         }
       }
     }
 
-    this._enterred = isMouseOver(e, this._width, this._height, this.left, this.top);
+    this.enterred = isMouseOver(e, this.width, this.height, this.left, this.top);
   }
 
   private handleMouseDown(e: MouseEvent) {
-    this._menu.hide();
+    this.menu.hide();
     if (e.button == 0) {
-      for (const i of this._ipoints) {
+      for (const i of this.ipoints) {
         if (isMouseOver(e, 8, 8, i.left - 4, i.top - 4)) {
           return;
         }
       }
-      for (const i of this._opoints) {
+      for (const i of this.opoints) {
         if (isMouseOver(e, 8, 8, i.left - 4, i.top - 4)) {
           return;
         }
       }
 
-      this._grabbed = isMouseOver(e, this._width, this._height, this.left, this.top);
-      if (this._grabbed) {
-        this._xOffset = e.offsetX - this.left;
-        this._yOffset = e.offsetY - this.top;
+      this.grabbed = isMouseOver(e, this.width, this.height, this.left, this.top);
+      if (this.grabbed) {
+        this.xOffset = e.offsetX - this.left;
+        this.yOffset = e.offsetY - this.top;
       }
     }
   }
 
   private handleMouseUp(e: MouseEvent) {
-    this._grabbed = false;
+    this.grabbed = false;
 
-    if (this.type === GateType.INPUT && this._enterred && !this._moving && e.button === 0) {
+    if (this.type === GateType.INPUT && this.enterred && !this.moving && e.button === 0) {
       this.enabled = !this.enabled;
     }
 
-    this._moving = false;
+    this.moving = false;
   }
 
   private handleMouseContextMenu(e: MouseEvent) {
-    for (const i of this._ipoints) {
+    for (const i of this.ipoints) {
       if (isMouseOver(e, 8, 8, i.left - 4, i.top - 4)) {
         return;
       }
     }
-    for (const i of this._opoints) {
+    for (const i of this.opoints) {
       if (isMouseOver(e, 8, 8, i.left - 4, i.top - 4)) {
         return;
       }
     }
 
-    if (isMouseOver(e, this._width, this._height, this.left, this.top) && this.isMaxId(true)) {
-      this._menu.show(e.clientX, e.clientY);
+    if (isMouseOver(e, this.width, this.height, this.left, this.top) && this.isMaxId(true)) {
+      this.menu.show(e.clientX, e.clientY);
     }
   }
 
@@ -191,7 +191,7 @@ export class Gate implements IWidget {
   }
 
   getPoints(): [ConnectionPoint[], ConnectionPoint[]] {
-    return [this._ipoints, this._opoints];
+    return [this.ipoints, this.opoints];
   }
 
   handleEvent(type: MouseEventType, event: MouseEvent): void {
@@ -221,21 +221,21 @@ export class Gate implements IWidget {
       ctx.fillStyle = Theme.bgColour;
     }
     ctx.moveTo(this.left + rad, this.top);
-    ctx.lineTo(this.left + this._width - rad, this.top);
-    ctx.arcTo(this.left + this._width, this.top, this.left + this._width, this.top + rad, rad);
-    ctx.lineTo(this.left + this._width, this.top + this._height - rad);
-    ctx.arcTo(this.left + this._width, this.top + this._height, this.left + this._width - rad, this.top + this._height, rad);
-    ctx.lineTo(this.left + rad, this.top + this._height);
-    ctx.arcTo(this.left, this.top + this._height, this.left, this.top + this._height - rad, rad);
+    ctx.lineTo(this.left + this.width - rad, this.top);
+    ctx.arcTo(this.left + this.width, this.top, this.left + this.width, this.top + rad, rad);
+    ctx.lineTo(this.left + this.width, this.top + this.height - rad);
+    ctx.arcTo(this.left + this.width, this.top + this.height, this.left + this.width - rad, this.top + this.height, rad);
+    ctx.lineTo(this.left + rad, this.top + this.height);
+    ctx.arcTo(this.left, this.top + this.height, this.left, this.top + this.height - rad, rad);
     ctx.lineTo(this.left, this.top + rad);
     ctx.arcTo(this.left, this.top, this.left + rad, this.top, rad);
     ctx.stroke();
     ctx.fill();
 
-    for (const i of this._ipoints) {
+    for (const i of this.ipoints) {
       i.render(ctx);
     }
-    for (const i of this._opoints) {
+    for (const i of this.opoints) {
       i.render(ctx);
     }
 
@@ -243,6 +243,6 @@ export class Gate implements IWidget {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = "normal 16px 'Lato', sans-serif";
-    ctx.fillText(this.name.toUpperCase(), this.left + this._width / 2, this.top + this._height / 2);
+    ctx.fillText(this.name.toUpperCase(), this.left + this.width / 2, this.top + this.height / 2);
   }
 }

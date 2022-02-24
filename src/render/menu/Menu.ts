@@ -2,11 +2,11 @@ import { cv } from "../../main";
 import { ItemType, MenuItem } from "./MenuItem";
 
 export class Menu {
-  private _html = document.createElement("div");
-  private _items: MenuItem[] = [];
+  private html = document.createElement("div");
+  private items: MenuItem[] = [];
 
   constructor() {
-    this._html.className = "context-menu";
+    this.html.className = "context-menu";
   }
 
   addItem(item: MenuItem) {
@@ -33,22 +33,22 @@ export class Menu {
         out.classList.add("context-menu__item--separator");
         break;
     }
-    this._html.appendChild(out);
-    this._items.push(item);
-    document.body.appendChild(this._html);
+    this.html.appendChild(out);
+    this.items.push(item);
+    document.body.appendChild(this.html);
   }
 
   show(left: number, top: number) {
-    this._html.style.display = "inline-flex";
-    this._html.style.left = left > (cv.width - this._html.offsetWidth) ? left - this._html.offsetWidth + "px" : left + "px";
-    this._html.style.top = top > (cv.height - this._html.offsetHeight) ? top - this._html.offsetHeight + "px" : top + "px";
+    this.html.style.display = "inline-flex";
+    this.html.style.left = left > (cv.width - this.html.offsetWidth) ? left - this.html.offsetWidth + "px" : left + "px";
+    this.html.style.top = top > (cv.height - this.html.offsetHeight) ? top - this.html.offsetHeight + "px" : top + "px";
   }
 
   hide() {
-    this._html.style.display = "none";
+    this.html.style.display = "none";
   }
 
   destroy() {
-    this._html.remove();
+    this.html.remove();
   }
 }

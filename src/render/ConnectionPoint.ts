@@ -13,18 +13,18 @@ import { Gate } from "./Gate";
 import { GateType } from "./GateType";
 
 export class ConnectionPoint implements IWidget {
-  private _hovered: boolean = false;
-  private _pressed: boolean = false;
-  private _menu: Menu;
+  private hovered: boolean = false;
+  private pressed: boolean = false;
+  private menu: Menu;
 
-  private _xOffset: number = 0;
-  private _yOffset: number = 0;
-  private _xPos: number = 0;
+  private xOffset: number = 0;
+  private yOffset: number = 0;
+  private xPos: number = 0;
 
   constructor(public isInput: boolean, public left: number, public top: number, private _parent: Gate) {
-    this._menu = new Menu();
-    this._menu.addItem(new MenuItem("Disconnect", () => {
-      this._menu.hide();
+    this.menu = new Menu();
+    this.menu.addItem(new MenuItem("Disconnect", () => {
+      this.menu.hide();
       const pointIndices: number[] = [];
       connectedPoints.forEach((v, i) => {
         if (v.pointFrom === this || v.pointTo === this) {
@@ -50,16 +50,16 @@ export class ConnectionPoint implements IWidget {
   }
 
   private handleMouseMove(e: MouseEvent): void {
-    this._hovered = isMouseOver(e, 8, 8, this.left - 4, this.top - 4);
-    this._xOffset = e.offsetX;
-    this._yOffset = e.offsetY;
-    this._xPos = e.clientX;
+    this.hovered = isMouseOver(e, 8, 8, this.left - 4, this.top - 4);
+    this.xOffset = e.offsetX;
+    this.yOffset = e.offsetY;
+    this.xPos = e.clientX;
   }
 
   private handleMouseDown(e: MouseEvent): void {
-    this._menu.hide();
-    if (this._hovered && e.button === 0) {
-      this._pressed = true;
+    this.menu.hide();
+    if (this.hovered && e.button === 0) {
+      this.pressed = true;
       StaticConnectionData.pointFrom = this;
 
       if (this._parent.type !== GateType.GATE) {
@@ -72,9 +72,9 @@ export class ConnectionPoint implements IWidget {
   }
   
   private handleMouseUp(e: MouseEvent): void {
-    this._pressed = false;
+    this.pressed = false;
     if (e.button === 0) {
-      if (this._hovered && StaticConnectionData.pointFrom !== this && StaticConnectionData.pointFrom.isInput !== this.isInput) {
+      if (this.hovered && StaticConnectionData.pointFrom !== this && StaticConnectionData.pointFrom.isInput !== this.isInput) {
         StaticConnectionData.pointTo = this;
         if (this._parent.type !== GateType.GATE) {
           StaticMap.inputIndex = 0;
@@ -122,8 +122,8 @@ export class ConnectionPoint implements IWidget {
   }
 
   private handleMouseContextMenu(e: MouseEvent): void {
-    if (this._hovered) {
-      this._menu.show(e.clientX, e.clientY);
+    if (this.hovered) {
+      this.menu.show(e.clientX, e.clientY);
     }
   }
 
@@ -146,7 +146,7 @@ export class ConnectionPoint implements IWidget {
 
   render(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
-    if (this._hovered) {
+    if (this.hovered) {
       ctx.strokeStyle = Theme.hoverBgColour;
       ctx.fillStyle = Theme.hoverBgColour;
     } else {
@@ -161,13 +161,13 @@ export class ConnectionPoint implements IWidget {
     ctx.stroke();
     ctx.fill();
 
-    if (this._pressed) {
+    if (this.pressed) {
       ctx.beginPath();
       ctx.strokeStyle = Theme.fgColour;
       ctx.moveTo(this.left, this.top);
-      ctx.lineTo((this._xPos + this.left - sidebar.offsetWidth) / 2, this.top);
-      ctx.lineTo((this._xPos + this.left - sidebar.offsetWidth) / 2, this._yOffset);
-      ctx.lineTo(this._xOffset, this._yOffset);
+      ctx.lineTo((this.xPos + this.left - sidebar.offsetWidth) / 2, this.top);
+      ctx.lineTo((this.xPos + this.left - sidebar.offsetWidth) / 2, this.yOffset);
+      ctx.lineTo(this.xOffset, this.yOffset);
       ctx.stroke();
     }
   }
