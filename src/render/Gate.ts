@@ -4,6 +4,7 @@ import { clamp, isMouseOver, updateConnectionData } from "../utils/Helpers";
 import { ConnectionPoint } from "./ConnectionPoint";
 import { Dialog } from "./dialog/Dialog";
 import { ButtonType, DialogButton } from "./dialog/DialogButton";
+import { DialogColourField } from "./dialog/DialogColourField";
 import { DialogInputField } from "./dialog/DialogInputField";
 import { GateType } from "./GateType";
 import { IWidget } from "./IWidget";
@@ -40,7 +41,20 @@ export class Gate implements IWidget {
     }
     this.menu = new Menu();
     if (type === GateType.GATE) {
-      this.menu.addItem(new MenuItem("Edit", () => {console.log("edit on", id)}));
+      this.menu.addItem(new MenuItem("Edit", () => {
+        this.menu.hide();
+        const dialog = new Dialog("Edit Gate");
+        dialog.addField(new DialogColourField("colour", "Gate Colour"));
+        dialog.addField(new DialogInputField("name", "Gate Name", 8));
+        dialog.addButton(new DialogButton("Cancel", ButtonType.NORMAL, () => {
+          dialog.close();
+        }));
+        dialog.addButton(new DialogButton("Save", ButtonType.NORMAL, () => {
+          dialog.close();
+          // TODO
+        }));
+        dialog.show();
+      }));
     } else {
       this.menu.addItem(new MenuItem("Rename", () => {
         this.menu.hide();
