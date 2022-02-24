@@ -57,6 +57,7 @@ export class ConnectionPoint implements IWidget {
   }
 
   private handleMouseDown(e: MouseEvent): void {
+    this._menu.hide();
     if (this._hovered && e.button === 0) {
       this._pressed = true;
       StaticConnectionData.pointFrom = this;

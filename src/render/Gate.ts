@@ -2,6 +2,9 @@ import { LogicGate } from "../logic/LogicGate";
 import { cv, gates, widgets } from "../main";
 import { clamp, isMouseOver, updateConnectionData } from "../utils/Helpers";
 import { ConnectionPoint } from "./ConnectionPoint";
+import { Dialog } from "./dialog/Dialog";
+import { ButtonType, DialogButton } from "./dialog/DialogButton";
+import { DialogInputField } from "./dialog/DialogInputField";
 import { GateType } from "./GateType";
 import { IWidget } from "./IWidget";
 import { Menu } from "./menu/Menu";
@@ -26,7 +29,7 @@ export class Gate implements IWidget {
   public outputValues: boolean[] = [];
   public enabled: boolean = false;
 
-  constructor(public left: number, public top: number, private id: number, public readonly name: string, public readonly type: GateType, public readonly gate: LogicGate) {
+  constructor(public left: number, public top: number, private id: number, public name: string, public readonly type: GateType, public readonly gate: LogicGate) {
     const max = gate.arity > gate.outputCount ? gate.arity : gate.outputCount;
     if (type === GateType.GATE) {
       this._width = 64;
@@ -36,7 +39,25 @@ export class Gate implements IWidget {
       this._height = 48;
     }
     this._menu = new Menu();
-    this._menu.addItem(new MenuItem("Edit", () => {console.log("edit on", id)}));
+    if (type === GateType.GATE) {
+      this._menu.addItem(new MenuItem("Edit", () => {console.log("edit on", id)}));
+    } else {
+      this._menu.addItem(new MenuItem("Rename", () => {
+        this._menu.hide();
+        const dialog = new Dialog("Rename");
+        dialog.addField(new DialogInputField("name", "Name (max. 2 chars)", 2));
+        dialog.addButton(new DialogButton("Cancel", ButtonType.NORMAL, () => {
+          dialog.close();
+        }));
+        dialog.addButton(new DialogButton("Rename", ButtonType.NORMAL, () => {
+          if ((dialog.getValueFromField("name") as string).length > 0) {
+            dialog.close();
+            this.name = dialog.getValueFromField("name") as string;
+          }
+        }));
+        dialog.show();
+      }));
+    }
     this._menu.addItem(new MenuItem("Delete", () => {
       this._menu.destroy();
       gates.splice(gates.findIndex((v) => v === this), 1);
@@ -134,10 +155,10 @@ export class Gate implements IWidget {
     }
   }
 
-  private handleMouseUp(_e: MouseEvent) {
+  private handleMouseUp(e: MouseEvent) {
     this._grabbed = false;
 
-    if (this.type === GateType.INPUT && this._enterred && !this._moving) {
+    if (this.type === GateType.INPUT && this._enterred && !this._moving && e.button === 0) {
       this.enabled = !this.enabled;
     }
 
