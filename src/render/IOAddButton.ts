@@ -4,6 +4,8 @@ import { isMouseOver } from "../utils/Helpers";
 import { Gate } from "./Gate";
 import { GateType } from "./GateType";
 import { IWidget } from "./IWidget";
+import { Menu } from "./menu/Menu";
+import { ItemType, MenuItem } from "./menu/MenuItem";
 import { MouseEventType } from "./MouseEventType";
 import { Theme } from "./theme/Theme";
 
@@ -12,11 +14,24 @@ export class IOAddButton implements IWidget {
   private _top: number;
   private _hovered: boolean = false;
   private _pressed: boolean = false;
+  private menu: Menu;
 
   public width: number = 48;
   public height: number = 48;
   
   constructor(public readonly isInput: boolean) {    
+    this.menu = new Menu();
+    this.menu.addItem(new MenuItem("1", () => {
+      this.menu.hide();
+      const lg = new LogicGate([], [], this.isInput ? 0 : 1, this.isInput ? 1 : 0, ([]) => []);
+      const io = new Gate(this.isInput ? 4 : cv.width - this.width - 4, 4, gates.length, "X", this.isInput ? GateType.INPUT : GateType.OUTPUT, lg);
+      gates.push(io);
+      widgets.push(io);
+    }, ItemType.NORMAL));
+    this.menu.addItem(new MenuItem("2", () => {}, ItemType.NORMAL));
+    this.menu.addItem(new MenuItem("4", () => {}, ItemType.NORMAL));
+    this.menu.addItem(new MenuItem("8", () => {}, ItemType.NORMAL));
+
     if (isInput) {
       this._left = 8;
       this._top = cv.height - this.height - 8;
@@ -31,6 +46,8 @@ export class IOAddButton implements IWidget {
   }
 
   private handleMouseDown(e: MouseEvent): void {
+    this.menu.hide();
+
     if (e.button == 0) {
       if (isMouseOver(e, this.width, this.height, this._left, this._top)) {
         this._pressed = true;
@@ -40,10 +57,7 @@ export class IOAddButton implements IWidget {
 
   private handleMouseUp(e: MouseEvent): void {
     if (this._hovered && this._pressed && e.button == 0) {
-      const lg = new LogicGate([], [], this.isInput ? 0 : 1, this.isInput ? 1 : 0, ([]) => []);
-      const io = new Gate(this.isInput ? 4 : cv.width - this.width - 4, 4, gates.length, "X", this.isInput ? GateType.INPUT : GateType.OUTPUT, lg);
-      gates.push(io);
-      widgets.push(io);
+      this.menu.show(e.x, e.y);
     }
     this._hovered = false;
     this._pressed = false;
