@@ -21,7 +21,7 @@ export class ConnectionPoint implements IWidget {
   private yOffset: number = 0;
   private xPos: number = 0;
 
-  constructor(public isInput: boolean, public left: number, public top: number, private _parent: Gate) {
+  constructor(public isInput: boolean, public left: number, public top: number, private _parent: Gate, public enabled: boolean = true) {
     this.menu = new Menu();
     this.menu.addItem(new MenuItem("Disconnect", () => {
       this.menu.hide();
@@ -130,13 +130,19 @@ export class ConnectionPoint implements IWidget {
   handleEvent(type: MouseEventType, event: MouseEvent): void {
     switch (type) {
       case MouseEventType.MOVE:
-        this.handleMouseMove(event);
+        if (this.enabled) {
+          this.handleMouseMove(event);
+        }
         break;
       case MouseEventType.UP:
-        this.handleMouseUp(event);
+        if (this.enabled) {
+          this.handleMouseUp(event);
+        }
         break;
       case MouseEventType.DOWN:
-        this.handleMouseDown(event);
+        if (this.enabled) {
+          this.handleMouseDown(event);
+        }
         break;
       case MouseEventType.CONTEXTMENU:
         this.handleMouseContextMenu(event);

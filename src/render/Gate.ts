@@ -94,15 +94,28 @@ export class Gate implements IWidget {
       updateConnectionData(this.opoints);
     }, ItemType.DANGER));
 
-    for (let i = 0; i < gate.arity; i++) {
-      const point = new ConnectionPoint(true, this.left, this.top + this.height / (gate.arity + 1) * (i + 1), this);
-      this.ipoints.push(point);
-      widgets.push(point);
-    }
-    for (let i = 0; i < gate.outputCount; i++) {
-      const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / (gate.outputCount + 1) * (i + 1), this);
-      this.opoints.push(point);
-      widgets.push(point);
+    if (type === GateType.GATE) {
+      for (let i = 0; i < gate.arity; i++) {
+        const point = new ConnectionPoint(true, this.left, this.top + this.height / (gate.arity + 1) * (i + 1), this);
+        this.ipoints.push(point);
+        widgets.push(point);
+      }
+      for (let i = 0; i < gate.outputCount; i++) {
+        const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / (gate.outputCount + 1) * (i + 1), this);
+        this.opoints.push(point);
+        widgets.push(point);
+      }
+    } else {
+      for (let i = 0; i < gate.arity; i++) {
+        const point = new ConnectionPoint(true, this.left, this.top + this.height / 2, this, false);
+        this.ipoints.push(point);
+        widgets.push(point);
+      }
+      for (let i = 0; i < gate.outputCount; i++) {
+        const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / 2, this, false);
+        this.opoints.push(point);
+        widgets.push(point);
+      }
     }
   }
 
@@ -129,6 +142,29 @@ export class Gate implements IWidget {
     return this.id === max;
   }
 
+  private movePoint(point: ConnectionPoint, index: number) {
+    point.top = this.top + (this.bits + 1) + (index + 1) * 48 + 12;
+  }
+
+  private togglePoints() {
+    this.ipoints.forEach((v, i) => {
+      v.enabled = !v.enabled;
+      if (v.enabled) {
+        this.movePoint(v, i);
+      } else {
+        v.top = this.top + this.height / 2;
+      }
+    });
+    this.opoints.forEach((v, i) => {
+      v.enabled = !v.enabled;
+      if (v.enabled) {
+        this.movePoint(v, i);
+      } else {
+        v.top = this.top + this.height / 2;
+      }
+    });
+  }
+
   private handleMouseMove(e: MouseEvent) {
     if (this.grabbed) {
       if (this.isMaxId()) {
@@ -138,13 +174,30 @@ export class Gate implements IWidget {
         }
         this.top = clamp(Math.round((e.offsetY - this.yOffset) / 16) * 16 + 4, 4, cv.height - 64 - this.height);
 
-        for (let i = 0; i < this.gate.arity; i++) {
-          this.ipoints[i].left = this.left;
-          this.ipoints[i].top = this.top + this.height / (this.gate.arity + 1) * (i + 1);
-        }
-        for (let i = 0; i < this.gate.outputCount; i++) {
-          this.opoints[i].left = this.left + this.width;
-          this.opoints[i].top = this.top + this.height / (this.gate.outputCount + 1) * (i + 1);
+        if (this.type === GateType.GATE) {
+          for (let i = 0; i < this.gate.arity; i++) {
+            this.ipoints[i].left = this.left;
+            this.ipoints[i].top = this.top + this.height / (this.gate.arity + 1) * (i + 1);
+          }
+          for (let i = 0; i < this.gate.outputCount; i++) {
+            this.opoints[i].left = this.left + this.width;
+            this.opoints[i].top = this.top + this.height / (this.gate.outputCount + 1) * (i + 1);
+          }
+        } else {
+          this.ipoints.forEach((v, i) => {
+            if (v.enabled) {
+              this.movePoint(v, i);
+            } else {
+              v.top = this.top + this.height / 2;
+            }
+          });
+          this.opoints.forEach((v, i) => {
+            if (v.enabled) {
+              this.movePoint(v, i);
+            } else {
+              v.top = this.top + this.height / 2;
+            }
+          });
         }
       }
     }
@@ -177,11 +230,12 @@ export class Gate implements IWidget {
   private handleMouseUp(e: MouseEvent) {
     this.grabbed = false;
 
-    if (this.type === GateType.INPUT && this.enterred && !this.moving && e.button === 0) {
-      if (this.bits === BitsNumber.ONE) {
+    if (this.enterred && !this.moving && e.button === 0) {
+      if (this.bits === BitsNumber.ONE && this.type === GateType.INPUT) {
         this.enabled = !this.enabled;
       } else {
         this.expanded = !this.expanded;
+        this.togglePoints();
       }
     }
 
@@ -290,13 +344,6 @@ export class Gate implements IWidget {
       ctx.arcTo(this.left, this.top, this.left + rad, this.top, rad);
       ctx.stroke();
       ctx.fill();
-      
-      for (const i of this.ipoints) {
-        i.render(ctx);
-      }
-      for (const i of this.opoints) {
-        i.render(ctx);
-      }  
     }
 
     ctx.fillStyle = Theme.fgColour;
@@ -304,5 +351,12 @@ export class Gate implements IWidget {
     ctx.textBaseline = "middle";
     ctx.font = "normal 1.4rem 'Lato', sans-serif";
     ctx.fillText(this.name.toUpperCase(), this.left + this.width / 2, this.top + this.height / 2);
+
+    for (const i of this.ipoints) {
+      i.render(ctx);
+    }
+    for (const i of this.opoints) {
+      i.render(ctx);
+    }
   }
 }
