@@ -1,6 +1,7 @@
 import { LogicGate } from "../logic/LogicGate";
 import { cv, gates, widgets } from "../main";
 import { clamp, isMouseOver, updateConnectionData } from "../utils/Helpers";
+import { BitsNumber } from "./BitsNumber";
 import { ConnectionPoint } from "./ConnectionPoint";
 import { Dialog } from "./dialog/Dialog";
 import { ButtonType, DialogButton } from "./dialog/DialogButton";
@@ -22,6 +23,9 @@ export class Gate implements IWidget {
   private height: number;
   private ipoints: ConnectionPoint[] = [];
   private opoints: ConnectionPoint[] = [];
+
+  private expanded: boolean = false;
+  private expandHeight: number = 0;
   
   private xOffset: number = 0;
   private yOffset: number = 0;
@@ -30,7 +34,7 @@ export class Gate implements IWidget {
   public outputValues: boolean[] = [];
   public enabled: boolean = false;
 
-  constructor(public left: number, public top: number, private id: number, public name: string, public readonly type: GateType, public readonly gate: LogicGate) {
+  constructor(public left: number, public top: number, private id: number, public name: string, public readonly type: GateType, public readonly gate: LogicGate, public readonly bits: BitsNumber = BitsNumber.ONE) {
     const max = gate.arity > gate.outputCount ? gate.arity : gate.outputCount;
     if (type === GateType.GATE) {
       this.width = 96;
@@ -38,6 +42,7 @@ export class Gate implements IWidget {
     } else {
       this.width = 48;
       this.height = 48;
+      this.expandHeight = this.height + (bits) * 48;
     }
     this.menu = new Menu();
     if (type === GateType.GATE) {
@@ -173,7 +178,11 @@ export class Gate implements IWidget {
     this.grabbed = false;
 
     if (this.type === GateType.INPUT && this.enterred && !this.moving && e.button === 0) {
-      this.enabled = !this.enabled;
+      if (this.bits === BitsNumber.ONE) {
+        this.enabled = !this.enabled;
+      } else {
+        this.expanded = !this.expanded;
+      }
     }
 
     this.moving = false;
@@ -234,23 +243,60 @@ export class Gate implements IWidget {
     } else {
       ctx.fillStyle = Theme.bgColour;
     }
-    ctx.moveTo(this.left + rad, this.top);
-    ctx.lineTo(this.left + this.width - rad, this.top);
-    ctx.arcTo(this.left + this.width, this.top, this.left + this.width, this.top + rad, rad);
-    ctx.lineTo(this.left + this.width, this.top + this.height - rad);
-    ctx.arcTo(this.left + this.width, this.top + this.height, this.left + this.width - rad, this.top + this.height, rad);
-    ctx.lineTo(this.left + rad, this.top + this.height);
-    ctx.arcTo(this.left, this.top + this.height, this.left, this.top + this.height - rad, rad);
-    ctx.lineTo(this.left, this.top + rad);
-    ctx.arcTo(this.left, this.top, this.left + rad, this.top, rad);
-    ctx.stroke();
-    ctx.fill();
 
-    for (const i of this.ipoints) {
-      i.render(ctx);
-    }
-    for (const i of this.opoints) {
-      i.render(ctx);
+    if (this.expanded) {
+      ctx.moveTo(this.left + rad, this.top);
+      ctx.lineTo(this.left + this.width - rad, this.top);
+      ctx.arcTo(this.left + this.width, this.top, this.left + this.width, this.top + rad, rad);
+      ctx.lineTo(this.left + this.width, this.top + this.expandHeight - rad);
+      ctx.arcTo(this.left + this.width, this.top + this.expandHeight, this.left + this.width - rad, this.top + this.expandHeight, rad);
+      ctx.lineTo(this.left + rad, this.top + this.expandHeight);
+      ctx.arcTo(this.left, this.top + this.expandHeight, this.left, this.top + this.expandHeight - rad, rad);
+      ctx.lineTo(this.left, this.top + rad);
+      ctx.arcTo(this.left, this.top, this.left + rad, this.top, rad);
+      ctx.stroke();
+      ctx.fill();
+      for (let i = 0; i < this.bits; i++) {
+        const h = (i + 1) * 48;
+        ctx.beginPath();
+        ctx.fillStyle = Theme.bgColour;
+        ctx.moveTo(this.left + 2 * rad, this.top + h);
+        ctx.lineTo(this.left + 32, this.top + h);
+        ctx.arcTo(this.left + 32 + rad, this.top + h, this.left + 32 + rad, this.top + h + rad, rad);
+        ctx.lineTo(this.left + 32 + rad, this.top + h + 32 - rad);
+        ctx.arcTo(this.left + 32 + rad, this.top + h + 32, this.left + 32, this.top + h + 32, rad);
+        ctx.lineTo(this.left + 2 * rad, this.top + h + 32);
+        ctx.arcTo(this.left + rad, this.top + h + 32, this.left + rad, this.top + h + 32 - rad, rad);
+        ctx.lineTo(this.left + rad, this.top + h + rad);
+        ctx.arcTo(this.left + rad, this.top + h, this.left + 2 * rad, this.top + h, rad);
+        ctx.stroke();
+        ctx.fill();
+
+        ctx.fillStyle = Theme.fgColour;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = "normal 1.4rem 'Lato', sans-serif";
+        ctx.fillText((this.bits - i - 1).toString(), this.left + this.width / 2, this.top + this.height / 2 + h - rad);
+      }
+    } else {
+      ctx.moveTo(this.left + rad, this.top);
+      ctx.lineTo(this.left + this.width - rad, this.top);
+      ctx.arcTo(this.left + this.width, this.top, this.left + this.width, this.top + rad, rad);
+      ctx.lineTo(this.left + this.width, this.top + this.height - rad);
+      ctx.arcTo(this.left + this.width, this.top + this.height, this.left + this.width - rad, this.top + this.height, rad);
+      ctx.lineTo(this.left + rad, this.top + this.height);
+      ctx.arcTo(this.left, this.top + this.height, this.left, this.top + this.height - rad, rad);
+      ctx.lineTo(this.left, this.top + rad);
+      ctx.arcTo(this.left, this.top, this.left + rad, this.top, rad);
+      ctx.stroke();
+      ctx.fill();
+      
+      for (const i of this.ipoints) {
+        i.render(ctx);
+      }
+      for (const i of this.opoints) {
+        i.render(ctx);
+      }  
     }
 
     ctx.fillStyle = Theme.fgColour;

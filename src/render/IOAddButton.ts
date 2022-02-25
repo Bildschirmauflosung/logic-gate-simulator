@@ -1,6 +1,7 @@
 import { LogicGate } from "../logic/LogicGate";
 import { cv, gates, widgets } from "../main";
 import { isMouseOver } from "../utils/Helpers";
+import { BitsNumber } from "./BitsNumber";
 import { Gate } from "./Gate";
 import { GateType } from "./GateType";
 import { IWidget } from "./IWidget";
@@ -18,19 +19,29 @@ export class IOAddButton implements IWidget {
 
   public width: number = 48;
   public height: number = 48;
+
+  private createGate(bits: BitsNumber) {
+    this.menu.hide();
+    const lg = new LogicGate([], [], this.isInput ? 0 : 1, this.isInput ? 1 : 0, ([]) => []);
+    const io = new Gate(this.isInput ? 4 : cv.width - this.width - 4, 4, gates.length, "X", this.isInput ? GateType.INPUT : GateType.OUTPUT, lg, bits);
+    gates.push(io);
+    widgets.push(io);
+  }
   
   constructor(public readonly isInput: boolean) {    
     this.menu = new Menu();
     this.menu.addItem(new MenuItem("1", () => {
-      this.menu.hide();
-      const lg = new LogicGate([], [], this.isInput ? 0 : 1, this.isInput ? 1 : 0, ([]) => []);
-      const io = new Gate(this.isInput ? 4 : cv.width - this.width - 4, 4, gates.length, "X", this.isInput ? GateType.INPUT : GateType.OUTPUT, lg);
-      gates.push(io);
-      widgets.push(io);
+      this.createGate(BitsNumber.ONE);
     }, ItemType.NORMAL));
-    this.menu.addItem(new MenuItem("2", () => {}, ItemType.NORMAL));
-    this.menu.addItem(new MenuItem("4", () => {}, ItemType.NORMAL));
-    this.menu.addItem(new MenuItem("8", () => {}, ItemType.NORMAL));
+    this.menu.addItem(new MenuItem("2", () => {
+      this.createGate(BitsNumber.TWO);
+    }, ItemType.NORMAL));
+    this.menu.addItem(new MenuItem("4", () => {
+      this.createGate(BitsNumber.FOUR);
+    }, ItemType.NORMAL));
+    this.menu.addItem(new MenuItem("8", () => {
+      this.createGate(BitsNumber.EIGHT);
+    }, ItemType.NORMAL));
 
     if (isInput) {
       this.left = 8;
