@@ -33,7 +33,7 @@ export class Gate implements IWidget {
   constructor(public left: number, public top: number, private id: number, public name: string, public readonly type: GateType, public readonly gate: LogicGate) {
     const max = gate.arity > gate.outputCount ? gate.arity : gate.outputCount;
     if (type === GateType.GATE) {
-      this.width = 64;
+      this.width = 96;
       this.height = 64 + (max - 1) * 32;
     } else {
       this.width = 48;
@@ -256,7 +256,7 @@ export class Gate implements IWidget {
     ctx.fillStyle = Theme.fgColour;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.font = "normal 16px 'Lato', sans-serif";
+    ctx.font = "normal 1.4rem 'Lato', sans-serif";
     ctx.fillText(this.name.toUpperCase(), this.left + this.width / 2, this.top + this.height / 2);
   }
 }
