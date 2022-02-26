@@ -109,12 +109,12 @@ export class Gate implements IWidget {
       }
     } else {
       for (let i = 0; i < gate.arity; i++) {
-        const point = new ConnectionPoint(true, this.left, this.top + this.height / 2, this, false);
+        const point = new ConnectionPoint(true, this.left, this.top + this.height / 2, this, bits === BitsNumber.ONE);
         this.ipoints.push(point);
         widgets.push(point);
       }
       for (let i = 0; i < gate.outputCount; i++) {
-        const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / 2, this, false);
+        const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / 2, this, bits === BitsNumber.ONE);
         this.opoints.push(point);
         widgets.push(point);
       }
