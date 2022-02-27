@@ -241,7 +241,7 @@ export class Gate implements IWidget {
     if (this.enterred && !this.moving && e.button === 0) {
       if (this.bits === BitsNumber.ONE && this.type === GateType.INPUT) {
         this.enabled = !this.enabled;
-      } else if (this.type !== GateType.GATE) {
+      } else if (this.type !== GateType.GATE && this.bits !== BitsNumber.ONE) {
         this.expanded = !this.expanded;
         this.togglePoints();
       }
