@@ -190,14 +190,14 @@ export class Gate implements IWidget {
           }
         } else {
           this.ipoints.forEach((v, i) => {
-            if (v.enabled) {
+            if (v.enabled && this.bits !== BitsNumber.ONE) {
               this.movePoint(v, i);
             } else {
               v.top = this.top + this.height / 2;
             }
           });
           this.opoints.forEach((v, i) => {
-            if (v.enabled) {
+            if (v.enabled && this.bits !== BitsNumber.ONE) {
               this.movePoint(v, i);
             } else {
               v.top = this.top + this.height / 2;
