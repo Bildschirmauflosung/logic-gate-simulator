@@ -1,6 +1,7 @@
 import { LogicGate } from "../logic/LogicGate";
 import { cv, gates, widgets } from "../main";
 import { clamp, isMouseOver, updateConnectionData } from "../utils/Helpers";
+import { BitButton } from "./BitButton";
 import { BitsNumber } from "./BitsNumber";
 import { ConnectionPoint } from "./ConnectionPoint";
 import { Dialog } from "./dialog/Dialog";
@@ -26,6 +27,7 @@ export class Gate implements IWidget {
 
   private expanded: boolean = false;
   private expandHeight: number = 0;
+  private buttons: BitButton[] = [];
   
   private xOffset: number = 0;
   private yOffset: number = 0;
@@ -107,14 +109,17 @@ export class Gate implements IWidget {
       }
     } else {
       for (let i = 0; i < gate.arity; i++) {
-        const point = new ConnectionPoint(true, this.left, this.top + this.height / 2, this, false);
+        const point = new ConnectionPoint(true, this.left, this.top + this.height / 2, this, bits === BitsNumber.ONE);
         this.ipoints.push(point);
         widgets.push(point);
       }
       for (let i = 0; i < gate.outputCount; i++) {
-        const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / 2, this, false);
+        const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / 2, this, bits === BitsNumber.ONE);
         this.opoints.push(point);
         widgets.push(point);
+      }
+      for (let i = 0; i < bits; i++) {
+        this.buttons.push(new BitButton(left + 8, top + (i + 1) * 48, bits - i - 1));
       }
     }
   }
@@ -143,7 +148,7 @@ export class Gate implements IWidget {
   }
 
   private movePoint(point: ConnectionPoint, index: number) {
-    point.top = this.top + (this.bits + 1) + (index + 1) * 48 + 12;
+    point.top = this.top + (index + 1) * 48 + 16;
   }
 
   private togglePoints() {
@@ -198,6 +203,9 @@ export class Gate implements IWidget {
               v.top = this.top + this.height / 2;
             }
           });
+          this.buttons.forEach((v, i) => {
+            v.top = this.top + (i + 1) * 48;
+          });
         }
       }
     }
@@ -233,7 +241,7 @@ export class Gate implements IWidget {
     if (this.enterred && !this.moving && e.button === 0) {
       if (this.bits === BitsNumber.ONE && this.type === GateType.INPUT) {
         this.enabled = !this.enabled;
-      } else {
+      } else if (this.type !== GateType.GATE && this.bits !== BitsNumber.ONE) {
         this.expanded = !this.expanded;
         this.togglePoints();
       }
@@ -286,6 +294,11 @@ export class Gate implements IWidget {
         this.handleMouseContextMenu(event);
         break;
     }
+    if (this.type !== GateType.GATE) {
+      for (const i of this.buttons) {
+        i.handleEvent(type, event);
+      }
+    }
   }
 
   render(ctx: CanvasRenderingContext2D): void {
@@ -310,27 +323,8 @@ export class Gate implements IWidget {
       ctx.arcTo(this.left, this.top, this.left + rad, this.top, rad);
       ctx.stroke();
       ctx.fill();
-      for (let i = 0; i < this.bits; i++) {
-        const h = (i + 1) * 48;
-        ctx.beginPath();
-        ctx.fillStyle = Theme.bgColour;
-        ctx.moveTo(this.left + 2 * rad, this.top + h);
-        ctx.lineTo(this.left + 32, this.top + h);
-        ctx.arcTo(this.left + 32 + rad, this.top + h, this.left + 32 + rad, this.top + h + rad, rad);
-        ctx.lineTo(this.left + 32 + rad, this.top + h + 32 - rad);
-        ctx.arcTo(this.left + 32 + rad, this.top + h + 32, this.left + 32, this.top + h + 32, rad);
-        ctx.lineTo(this.left + 2 * rad, this.top + h + 32);
-        ctx.arcTo(this.left + rad, this.top + h + 32, this.left + rad, this.top + h + 32 - rad, rad);
-        ctx.lineTo(this.left + rad, this.top + h + rad);
-        ctx.arcTo(this.left + rad, this.top + h, this.left + 2 * rad, this.top + h, rad);
-        ctx.stroke();
-        ctx.fill();
-
-        ctx.fillStyle = Theme.fgColour;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.font = "normal 1.4rem 'Lato', sans-serif";
-        ctx.fillText((this.bits - i - 1).toString(), this.left + this.width / 2, this.top + this.height / 2 + h - rad);
+      for (const i of this.buttons) {
+        i.render(ctx);
       }
     } else {
       ctx.moveTo(this.left + rad, this.top);
