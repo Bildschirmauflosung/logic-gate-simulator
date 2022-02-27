@@ -311,33 +311,23 @@ export class Gate implements IWidget {
       ctx.fillStyle = Theme.bgColour;
     }
 
+    const h = this.expanded ? this.expandHeight : this.height;
+    ctx.moveTo(this.left + rad, this.top);
+    ctx.lineTo(this.left + this.width - rad, this.top);
+    ctx.arcTo(this.left + this.width, this.top, this.left + this.width, this.top + rad, rad);
+    ctx.lineTo(this.left + this.width, this.top + h - rad);
+    ctx.arcTo(this.left + this.width, this.top + h, this.left + this.width - rad, this.top + h, rad);
+    ctx.lineTo(this.left + rad, this.top + h);
+    ctx.arcTo(this.left, this.top + h, this.left, this.top + h - rad, rad);
+    ctx.lineTo(this.left, this.top + rad);
+    ctx.arcTo(this.left, this.top, this.left + rad, this.top, rad);
+    ctx.stroke();
+    ctx.fill();
+
     if (this.expanded) {
-      ctx.moveTo(this.left + rad, this.top);
-      ctx.lineTo(this.left + this.width - rad, this.top);
-      ctx.arcTo(this.left + this.width, this.top, this.left + this.width, this.top + rad, rad);
-      ctx.lineTo(this.left + this.width, this.top + this.expandHeight - rad);
-      ctx.arcTo(this.left + this.width, this.top + this.expandHeight, this.left + this.width - rad, this.top + this.expandHeight, rad);
-      ctx.lineTo(this.left + rad, this.top + this.expandHeight);
-      ctx.arcTo(this.left, this.top + this.expandHeight, this.left, this.top + this.expandHeight - rad, rad);
-      ctx.lineTo(this.left, this.top + rad);
-      ctx.arcTo(this.left, this.top, this.left + rad, this.top, rad);
-      ctx.stroke();
-      ctx.fill();
       for (const i of this.buttons) {
         i.render(ctx);
       }
-    } else {
-      ctx.moveTo(this.left + rad, this.top);
-      ctx.lineTo(this.left + this.width - rad, this.top);
-      ctx.arcTo(this.left + this.width, this.top, this.left + this.width, this.top + rad, rad);
-      ctx.lineTo(this.left + this.width, this.top + this.height - rad);
-      ctx.arcTo(this.left + this.width, this.top + this.height, this.left + this.width - rad, this.top + this.height, rad);
-      ctx.lineTo(this.left + rad, this.top + this.height);
-      ctx.arcTo(this.left, this.top + this.height, this.left, this.top + this.height - rad, rad);
-      ctx.lineTo(this.left, this.top + rad);
-      ctx.arcTo(this.left, this.top, this.left + rad, this.top, rad);
-      ctx.stroke();
-      ctx.fill();
     }
 
     ctx.fillStyle = Theme.fgColour;
