@@ -1,4 +1,4 @@
-import { connectedPoints, connections, gates, sidebar } from "../main";
+import { connectedPoints, connections, gates } from "../main";
 import { isMouseOver } from "../utils/Helpers";
 import { ConnectionData } from "./ConnectionData";
 import { StaticConnectionData } from "./StaticConnectionData";
@@ -19,7 +19,6 @@ export class ConnectionPoint implements IWidget {
 
   private xOffset: number = 0;
   private yOffset: number = 0;
-  private xPos: number = 0;
 
   constructor(public isInput: boolean, public left: number, public top: number, private _parent: Gate, public enabled: boolean = true) {
     this.menu = new Menu();
@@ -53,7 +52,6 @@ export class ConnectionPoint implements IWidget {
     this.hovered = isMouseOver(e, 8, 8, this.left - 4, this.top - 4);
     this.xOffset = e.offsetX;
     this.yOffset = e.offsetY;
-    this.xPos = e.clientX;
   }
 
   private handleMouseDown(e: MouseEvent): void {
@@ -170,11 +168,22 @@ export class ConnectionPoint implements IWidget {
     if (this.pressed) {
       ctx.beginPath();
       ctx.strokeStyle = Theme.fgColour;
-      ctx.moveTo(this.left, this.top);
-      ctx.lineTo((this.xPos + this.left - sidebar.offsetWidth) / 2, this.top);
-      ctx.lineTo((this.xPos + this.left - sidebar.offsetWidth) / 2, this.yOffset);
-      ctx.lineTo(this.xOffset, this.yOffset);
-      ctx.stroke();
+      if (this.xOffset > this.left && this.isInput || this.xOffset < this.left && !this.isInput) {
+        const hy = Math.round((this.top + this.yOffset) / 2);
+        ctx.moveTo(this.left, this.top);
+        ctx.lineTo(this.left + 16 * (this.isInput ? -1 : 1), this.top);
+        ctx.lineTo(this.left + 16 * (this.isInput ? -1 : 1), hy);
+        ctx.lineTo(this.xOffset - 16 * (this.isInput ? -1 : 1), hy);
+        ctx.lineTo(this.xOffset - 16 * (this.isInput ? -1 : 1), this.yOffset);
+        ctx.lineTo(this.xOffset, this.yOffset);
+        ctx.stroke();
+      } else {
+        ctx.moveTo(this.left, this.top);
+        ctx.lineTo(Math.round((this.xOffset + this.left) / 2), this.top);
+        ctx.lineTo(Math.round((this.xOffset + this.left) / 2), this.yOffset);
+        ctx.lineTo(this.xOffset, this.yOffset);
+        ctx.stroke();
+      }
     }
   }
 }
