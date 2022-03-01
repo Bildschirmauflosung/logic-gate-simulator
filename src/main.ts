@@ -1,10 +1,8 @@
 import "./css/main.scss";
 import { IConnectionMap } from "./logic/IConnectionMap";
-import { LogicGate } from "./logic/LogicGate";
 // import { Simulator } from "./logic/Simulator";
 import { Gate } from "./render/Gate";
 import { IOAddButton } from "./render/IOAddButton";
-import { Deserialiser } from './logic/Deserialiser'
 import { ConnectionData } from "./render/ConnectionData";
 import { SettingsDialog } from "./dialogs/SettingsDialog";
 import { Theme } from "./render/theme/Theme";
@@ -80,15 +78,8 @@ window.addEventListener("resize", resizeCanvas);
 
 sidebarBtn.forEach((v) => {
   const gateName = v.innerText.toLowerCase();
-  let inputNum: number;
-  if (gateName.toUpperCase() === "AND") {
-    inputNum = 2;
-  } else {
-    inputNum = 1;
-  }
   v.addEventListener("click", () => {
-    const lg: LogicGate = new LogicGate([], [], inputNum, 1, Deserialiser.basicResolutionFuncs.get(gateName)!);
-    const g: Gate = new Gate(64, 4, gates.length, gateName, GateType.GATE, lg);
+    const g: Gate = new Gate(64, 4, gates.length, gateName, GateType.GATE);
     gates.push(g);
     widgets.push(g);
   });

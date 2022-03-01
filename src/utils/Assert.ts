@@ -5,7 +5,7 @@ export function assert(expression: boolean, errorMessage?: string): void {
 }
 
 export function assertNotNull(expression: unknown, errorMessage?: string): void {
-  if(expression === null) throw new AssertionError(errorMessage);
+  if(expression === null || expression === undefined) throw new AssertionError(errorMessage);
 }
 
 export function assertEqual<T>(expected: T, actual: T): void {

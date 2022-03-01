@@ -1,5 +1,5 @@
 export enum GateType {
   GATE = 0,
-  INPUT,
-  OUTPUT,
+  INPUT = 1,
+  OUTPUT = 2,
 }

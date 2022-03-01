@@ -19,7 +19,7 @@ export function updateConnectionData(points: ConnectionPoint[]) {
     }
   });
 
-  removing.sort((a, b) => a - b).reverse();
+  removing.sort((a, b) => b - a);
 
   for (const i of removing) {
     connectedPoints.splice(i, 1);

@@ -1,4 +1,3 @@
-import { LogicGate } from "../logic/LogicGate";
 import { cv, gates, widgets } from "../main";
 import { clamp, isMouseOver, updateConnectionData } from "../utils/Helpers";
 import { BitButton } from "./BitButton";
@@ -14,10 +13,11 @@ import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
 import { MouseEventType } from "./MouseEventType";
 import { Theme } from "./theme/Theme";
+import {GateRegistry} from "../logic/GateRegistry";
 
 export class Gate implements IWidget {
   private grabbed: boolean = false;
-  private enterred: boolean = false;
+  private entered: boolean = false;
   private moving: boolean = false;
   private menu: Menu;
   private width: number;
@@ -29,15 +29,21 @@ export class Gate implements IWidget {
   private expandHeight: number = 0;
   private buttons: BitButton[] = [];
   
+  private arity: number = -1;
+  private outputCount: number = -1;
+
   private xOffset: number = 0;
   private yOffset: number = 0;
-  
+
   public inputValues: boolean[] = [];
   public outputValues: boolean[] = [];
   public enabled: boolean = false;
 
-  constructor(public left: number, public top: number, private id: number, public name: string, public readonly type: GateType, public readonly gate: LogicGate, public readonly bits: BitsNumber = BitsNumber.ONE) {
-    const max = gate.arity > gate.outputCount ? gate.arity : gate.outputCount;
+  constructor(public left: number, public top: number, private id: number, public name: string, public readonly type: GateType, public readonly bits: BitsNumber = BitsNumber.ONE) {
+    const gateData = GateRegistry.get(name)!;
+    this.arity = gateData.arity;
+    this.outputCount = gateData.outputCount;
+    const max = Math.max(this.arity, this.outputCount);
     if (type === GateType.GATE) {
       this.width = 96;
       this.height = 64 + (max - 1) * 32;
@@ -97,23 +103,23 @@ export class Gate implements IWidget {
     }, ItemType.DANGER));
 
     if (type === GateType.GATE) {
-      for (let i = 0; i < gate.arity; i++) {
-        const point = new ConnectionPoint(true, this.left, this.top + this.height / (gate.arity + 1) * (i + 1), this);
+      for (let i = 0; i < this.arity; i++) {
+        const point = new ConnectionPoint(true, this.left, this.top + this.height / (this.arity + 1) * (i + 1), this);
         this.ipoints.push(point);
         widgets.push(point);
       }
-      for (let i = 0; i < gate.outputCount; i++) {
-        const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / (gate.outputCount + 1) * (i + 1), this);
+      for (let i = 0; i < this.outputCount; i++) {
+        const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / (this.outputCount + 1) * (i + 1), this);
         this.opoints.push(point);
         widgets.push(point);
       }
     } else {
-      for (let i = 0; i < gate.arity; i++) {
+      for (let i = 0; i < this.arity; i++) {
         const point = new ConnectionPoint(true, this.left, this.top + this.height / 2, this, bits === BitsNumber.ONE);
         this.ipoints.push(point);
         widgets.push(point);
       }
-      for (let i = 0; i < gate.outputCount; i++) {
+      for (let i = 0; i < this.outputCount; i++) {
         const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / 2, this, bits === BitsNumber.ONE);
         this.opoints.push(point);
         widgets.push(point);
@@ -128,7 +134,7 @@ export class Gate implements IWidget {
     let max = -1;
     for (const i of gates) {
       if (onEnter) {
-        if (i.enterred) {
+        if (i.entered) {
           if (i.id > max) {
             max = i.id;
           }
@@ -180,13 +186,13 @@ export class Gate implements IWidget {
         this.top = clamp(Math.round((e.offsetY - this.yOffset) / 16) * 16 + 4, 4, cv.height - 64 - this.height);
 
         if (this.type === GateType.GATE) {
-          for (let i = 0; i < this.gate.arity; i++) {
+          for (let i = 0; i < this.arity; i++) {
             this.ipoints[i].left = this.left;
-            this.ipoints[i].top = this.top + this.height / (this.gate.arity + 1) * (i + 1);
+            this.ipoints[i].top = this.top + this.height / (this.arity + 1) * (i + 1);
           }
-          for (let i = 0; i < this.gate.outputCount; i++) {
+          for (let i = 0; i < this.outputCount; i++) {
             this.opoints[i].left = this.left + this.width;
-            this.opoints[i].top = this.top + this.height / (this.gate.outputCount + 1) * (i + 1);
+            this.opoints[i].top = this.top + this.height / (this.outputCount + 1) * (i + 1);
           }
         } else {
           this.ipoints.forEach((v, i) => {
@@ -210,7 +216,7 @@ export class Gate implements IWidget {
       }
     }
 
-    this.enterred = isMouseOver(e, this.width, this.height, this.left, this.top);
+    this.entered = isMouseOver(e, this.width, this.height, this.left, this.top);
   }
 
   private handleMouseDown(e: MouseEvent) {
@@ -238,7 +244,7 @@ export class Gate implements IWidget {
   private handleMouseUp(e: MouseEvent) {
     this.grabbed = false;
 
-    if (this.enterred && !this.moving && e.button === 0) {
+    if (this.entered && !this.moving && e.button === 0) {
       if (this.bits === BitsNumber.ONE && this.type === GateType.INPUT) {
         this.enabled = !this.enabled;
       } else if (this.type !== GateType.GATE && this.bits !== BitsNumber.ONE) {
