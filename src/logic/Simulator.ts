@@ -1,43 +1,43 @@
-import {IConnectionMap} from "./IConnectionMap";
+import {RenderSimulator} from "../render/RenderSimulator";
 import {Gate} from "../render/Gate";
-import {LogicInput} from "./LogicInput";
-import {LogicOutput} from "./LogicOutput";
+import {IConnectionMap} from "./IConnectionMap";
 import {LogicGate} from "./LogicGate";
+import {GateType} from "../render/GateType";
 
 export class Simulator {
-  // @ts-ignore
-  private inputs!:  LogicInput[];
-  // @ts-ignore
-  private outputs!: LogicOutput[];
-  // @ts-ignore
-  private gates!:   LogicGate[];
+  private gates: LogicGate[] = [];
+  private outputs: LogicGate[] = [];
 
   rebuild() {
-/*    this.inputs = this.ioPorts.filter(value => value.type === IOType.INPUT).map(value => new LogicInput(value));
-    // @ts-ignore
-    const outputConnections: IConnectionMap[] = this.connections.filter(value  => value.inputGateIndex < 0);
-    this.outputs = this.ioPorts
-      .map((value, index) => [value, index] as [IOButton, number])
-      .filter(value => value[0].type === IOType.OUTPUT)
-      .map(value =>  {
-        const btn = value[0];
-        const idx = value[1];
+    this.gates = this.fGates.map(LogicGate.from);
+    this.conMap.forEach((con) => {
+      this.gates[con.inputGateIndex].connect(
+        con.inputIndex,
+        this.gates[con.outputGateIndex],
+        con.outputIndex
+      );
+    });
 
-        // outputConnections ->
-
-        btn.enabled = btn.enabled && (btn.enabled || true);
-        previoousIdx.requestValue();
-
-        // new LogicOutput( , btn as IOButton)
-        return new LogicOutput({requestValue(): boolean[] {return []}}, [], btn)
-      }); // TODOOOO: change this line, to work */
+    this.outputs = this.gates.filter((gate) => gate.gate.type === GateType.OUTPUT);
   }
 
-  // @ts-ignore
-  constructor(private fall: Gate[], private connections: IConnectionMap[]): void {
-    this.rebuild();
+  private constructor(
+    private readonly fGates: Gate[],
+    readonly conMap: IConnectionMap[]
+  ) {
+      this.rebuild();
+  }
+
+  static from(sim: RenderSimulator): Simulator {
+    return new Simulator(
+      sim.gates,
+      sim.connectionMap
+    );
   }
 
   tick(): void {
+    this.outputs.forEach((out) => {
+      out.requestValue();
+    });
   }
 }
