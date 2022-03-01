@@ -1,5 +1,5 @@
 import { LogicGate } from "../logic/LogicGate";
-import { cv, gates, nav, sidebar, widgets } from "../main";
+import { cv, nav, rs, sidebar } from "../main";
 import { clamp, isMouseOver, updateConnectionData } from "../utils/Helpers";
 import { BitButton } from "./BitButton";
 import { BitsNumber } from "./BitsNumber";
@@ -81,16 +81,16 @@ export class Gate implements IWidget {
     }
     this.menu.addItem(new MenuItem("Delete", () => {
       this.menu.destroy();
-      gates.splice(gates.findIndex((v) => v === this), 1);
-      widgets.splice(widgets.findIndex((v) => v === this), 1);
-      for (const i of gates) {
+      rs.gates.splice(rs.gates.findIndex((v) => v === this), 1);
+      rs.widgets.splice(rs.widgets.findIndex((v) => v === this), 1);
+      for (const i of rs.gates) {
         i.updateId();
       }
       for (const i of this.ipoints) {
-        widgets.splice(widgets.findIndex((v) => v === i), 1);
+        rs.widgets.splice(rs.widgets.findIndex((v) => v === i), 1);
       }
       for (const i of this.opoints) {
-        widgets.splice(widgets.findIndex((v) => v === i), 1);
+        rs.widgets.splice(rs.widgets.findIndex((v) => v === i), 1);
       }
       updateConnectionData(this.ipoints);
       updateConnectionData(this.opoints);
@@ -100,23 +100,23 @@ export class Gate implements IWidget {
       for (let i = 0; i < gate.arity; i++) {
         const point = new ConnectionPoint(true, this.left, this.top + this.height / (gate.arity + 1) * (i + 1), this);
         this.ipoints.push(point);
-        widgets.push(point);
+        rs.widgets.push(point);
       }
       for (let i = 0; i < gate.outputCount; i++) {
         const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / (gate.outputCount + 1) * (i + 1), this);
         this.opoints.push(point);
-        widgets.push(point);
+        rs.widgets.push(point);
       }
     } else {
       for (let i = 0; i < gate.arity; i++) {
         const point = new ConnectionPoint(true, this.left, this.top + this.height / 2, this, bits === BitsNumber.ONE);
         this.ipoints.push(point);
-        widgets.push(point);
+        rs.widgets.push(point);
       }
       for (let i = 0; i < gate.outputCount; i++) {
         const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / 2, this, bits === BitsNumber.ONE);
         this.opoints.push(point);
-        widgets.push(point);
+        rs.widgets.push(point);
       }
       for (let i = 0; i < bits; i++) {
         this.buttons.push(new BitButton(left + 8, top + (i + 1) * 48, bits - i - 1));
@@ -126,7 +126,7 @@ export class Gate implements IWidget {
 
   private isMaxId(onEnter: boolean = false): boolean {
     let max = -1;
-    for (const i of gates) {
+    for (const i of rs.gates) {
       if (onEnter) {
         if (i.enterred) {
           if (i.id > max) {
@@ -276,7 +276,7 @@ export class Gate implements IWidget {
   }
 
   updateId(): void {
-    this.id = gates.findIndex((v) => v === this);
+    this.id = rs.gates.findIndex((v) => v === this);
   }
 
   getPoints(): [ConnectionPoint[], ConnectionPoint[]] {
