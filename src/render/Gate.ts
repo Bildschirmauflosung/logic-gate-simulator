@@ -1,5 +1,5 @@
 import { LogicGate } from "../logic/LogicGate";
-import { cv, gates, widgets } from "../main";
+import { cv, gates, nav, sidebar, widgets } from "../main";
 import { clamp, isMouseOver, updateConnectionData } from "../utils/Helpers";
 import { BitButton } from "./BitButton";
 import { BitsNumber } from "./BitsNumber";
@@ -277,6 +277,50 @@ export class Gate implements IWidget {
 
   getPoints(): [ConnectionPoint[], ConnectionPoint[]] {
     return [this.ipoints, this.opoints];
+  }
+
+  align(): void {
+    if (this.type === GateType.GATE && this.left + this.width + sidebar.offsetWidth >= cv.clientWidth) {
+      this.left = Math.round((cv.clientWidth - this.width - sidebar.offsetWidth) / 16) * 16;
+    }
+
+    if (this.top + this.height + 64 >= cv.clientHeight) {
+      this.top = Math.round((cv.clientHeight - this.height - nav.clientHeight) / 16) * 16 - 16;
+    }
+    
+    if (this.type === GateType.OUTPUT) {
+      this.left = cv.clientWidth - this.width - 4;
+    }
+
+    this.buttons.forEach((v, i) => {
+      v.left = this.left + 8;
+      v.top = this.top + (i + 1) * 48;
+    });
+
+    this.ipoints.forEach((v, i) => {
+      if (this.type === GateType.GATE || this.bits === BitsNumber.ONE) {
+        v.top = this.top + this.height / (this.gate.arity + 1) * (i + 1);
+      } else {
+        if (this.expanded) {
+          v.top = this.top + (i + 1) * 48 + 16;
+        } else {
+          v.top = this.top + this.height / 2;
+        }
+      }
+      v.left = this.left;
+    });
+    this.opoints.forEach((v, i) => {
+      if (this.type === GateType.GATE || this.bits === BitsNumber.ONE) {
+        v.top = this.top + this.height / (this.gate.outputCount + 1) * (i + 1);
+      } else {
+        if (this.expanded) {
+          v.top = this.top + (i + 1) * 48 + 16;
+        } else {
+          v.top = this.top + this.height / 2;
+        }
+      }
+      v.left = this.left + this.width;
+    });
   }
 
   handleEvent(type: MouseEventType, event: MouseEvent): void {

@@ -14,7 +14,7 @@ import { GateType } from "./render/GateType";
 import { ProjectsDialog } from "./dialogs/ProjectsDialog";
 
 export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
-const nav: HTMLElement = document.querySelector(".navbar")!;
+export const nav: HTMLElement = document.querySelector(".navbar")!;
 export const sidebar: HTMLElement = document.querySelector(".content__sidebar")!;
 const sidebarBtn: NodeListOf<HTMLElement> = document.querySelectorAll(".content__sidebar-btn")!;
 let ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
@@ -38,6 +38,9 @@ function resizeCanvas() {
   ctx.fillRect(0, 0, cv.width, cv.height);
   addInput.align();
   addOutput.align();
+  for (const i of gates) {
+    i.align();
+  }
 }
 
 resizeCanvas();
