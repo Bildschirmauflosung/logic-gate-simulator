@@ -177,7 +177,11 @@ export class Gate implements IWidget {
         if (this.type === GateType.GATE) {
           this.left = clamp(Math.round((e.offsetX - this.xOffset) / 16) * 16, 64, cv.width - 64 - this.width);
         }
-        this.top = clamp(Math.round((e.offsetY - this.yOffset) / 16) * 16 + 4, 4, cv.height - 64 - this.height);
+        if (this.expanded) {
+          this.top = clamp(Math.round((e.offsetY - this.yOffset) / 16) * 16 + 4, 4, cv.height - 64 - this.expandHeight);
+        } else {
+          this.top = clamp(Math.round((e.offsetY - this.yOffset) / 16) * 16 + 4, 4, cv.height - 64 - this.height);
+        }
 
         if (this.type === GateType.GATE) {
           for (let i = 0; i < this.gate.arity; i++) {
@@ -284,8 +288,14 @@ export class Gate implements IWidget {
       this.left = Math.round((cv.clientWidth - this.width - sidebar.offsetWidth) / 16) * 16;
     }
 
-    if (this.top + this.height + 64 >= cv.clientHeight) {
-      this.top = Math.round((cv.clientHeight - this.height - nav.clientHeight) / 16) * 16 - 16;
+    if (this.expanded) {
+      if (this.top + this.expandHeight + 64 >= cv.clientHeight) {
+        this.top = Math.round((cv.clientHeight - this.expandHeight - nav.clientHeight) / 16) * 16 - 16;
+      }
+    } else {
+      if (this.top + this.height + 64 >= cv.clientHeight) {
+        this.top = Math.round((cv.clientHeight - this.height - nav.clientHeight) / 16) * 16 - 16;
+      }
     }
     
     if (this.type === GateType.OUTPUT) {
