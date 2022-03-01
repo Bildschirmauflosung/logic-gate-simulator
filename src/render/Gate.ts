@@ -1,19 +1,21 @@
-import { cv, gates, widgets } from "../main";
-import { clamp, isMouseOver, updateConnectionData } from "../utils/Helpers";
-import { BitButton } from "./BitButton";
-import { BitsNumber } from "./BitsNumber";
-import { ConnectionPoint } from "./ConnectionPoint";
-import { Dialog } from "./dialog/Dialog";
-import { ButtonType, DialogButton } from "./dialog/DialogButton";
-import { DialogColourField } from "./dialog/DialogColourField";
-import { DialogInputField } from "./dialog/DialogInputField";
-import { GateType } from "./GateType";
-import { IWidget } from "./IWidget";
-import { Menu } from "./menu/Menu";
-import { ItemType, MenuItem } from "./menu/MenuItem";
-import { MouseEventType } from "./MouseEventType";
-import { Theme } from "./theme/Theme";
+import {cv, gates, widgets} from "../main";
+import {clamp, isMouseOver, updateConnectionData} from "../utils/Helpers";
+import {BitButton} from "./BitButton";
+import {BitsNumber} from "./BitsNumber";
+import {ConnectionPoint} from "./ConnectionPoint";
+import {Dialog} from "./dialog/Dialog";
+import {ButtonType, DialogButton} from "./dialog/DialogButton";
+import {DialogColourField} from "./dialog/DialogColourField";
+import {DialogInputField} from "./dialog/DialogInputField";
+import {GateType} from "./GateType";
+import {IWidget} from "./IWidget";
+import {Menu} from "./menu/Menu";
+import {ItemType, MenuItem} from "./menu/MenuItem";
+import {MouseEventType} from "./MouseEventType";
+import {Theme} from "./theme/Theme";
 import {GateRegistry} from "../logic/GateRegistry";
+import {IGateData} from "../logic/IGateData";
+import {assert} from "../utils/Assert";
 
 export class Gate implements IWidget {
   private grabbed: boolean = false;
@@ -40,7 +42,21 @@ export class Gate implements IWidget {
   public enabled: boolean = false;
 
   constructor(public left: number, public top: number, private id: number, public name: string, public readonly type: GateType, public readonly bits: BitsNumber = BitsNumber.ONE) {
-    const gateData = GateRegistry.get(name)!;
+    let gateData: IGateData;
+    if((gateData = GateRegistry.get(name)!) === undefined) {
+      switch (type) {
+        case GateType.OUTPUT:
+          gateData = GateRegistry.get('output')!;
+          break;
+        case GateType.INPUT:
+          gateData = GateRegistry.get('input')!;
+          break;
+        default:
+          assert(false, "Unknown Gate");
+          throw new Error();
+      }
+    }
+
     this.arity = gateData.arity;
     this.outputCount = gateData.outputCount;
     const max = Math.max(this.arity, this.outputCount);

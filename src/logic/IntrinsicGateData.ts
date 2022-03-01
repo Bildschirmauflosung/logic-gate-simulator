@@ -22,4 +22,18 @@ export const IntrinsicGateData: Map<string, IGateData> = new Map([
     resolutionFunc: ([v, ..._]: boolean[]) => [!v],
     customStructure: null,
   }],
+  ['input', {
+    arity: 0,
+    customStructure: null,
+    intrinsic: true,
+    outputCount: 1,
+   resolutionFunc: (_: boolean[]) => [],
+  }],
+  ['output', {
+    arity: 1,
+    customStructure: null,
+    intrinsic: true,
+    outputCount: 0,
+    resolutionFunc: (_: boolean[]) => []
+  }]
 ])
