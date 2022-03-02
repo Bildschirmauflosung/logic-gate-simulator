@@ -87,19 +87,20 @@
         display: inline-flex;
         align-items: center;
 
-        &-handle {
-          margin: 0;
-          position: relative;
-          width: 1rem;
-          height: 1rem;
-          background-color: rgba($color: var(--fg-colour), $alpha: 0.0);
-          border: 2px solid var(--fg-colour);
-          border-radius: 0.6rem;
-          cursor: grab;
-          display: block;
+        &-input {
+          background: none;
+          width: 100%;
 
-          &:active {
-            cursor: grabbing;
+          &::-moz-range-track,
+          &::-webkit-slider-runnable-track {
+            background: none;
+          }
+
+          &::-moz-range-thumb,
+          &::-webkit-slider-thumb {
+            width: 0.8rem;
+            height: 1.6rem;
+            border: none;
           }
         }
       }
