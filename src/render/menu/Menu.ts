@@ -10,13 +10,8 @@ export class Menu {
   }
 
   addItem(item: MenuItem) {
-    let out;
-    if (item.type === ItemType.SEPARATOR) {
-      out = document.createElement("hr");
-    } else {
-      out = document.createElement("div");
-      out.textContent = item.text;
-    }
+    const out = document.createElement("div");
+    out.textContent = item.text;
     out.classList.add("context-menu__item");
     out.addEventListener("click", item.onClick);
     switch (item.type) {
@@ -25,12 +20,6 @@ export class Menu {
         break;
       case ItemType.DANGER:
         out.classList.add("context-menu__item--danger");
-        break;
-      case ItemType.DISABLED:
-        out.classList.add("context-menu__item--disabled");
-        break;
-      case ItemType.SEPARATOR:
-        out.classList.add("context-menu__item--separator");
         break;
     }
     this.html.appendChild(out);

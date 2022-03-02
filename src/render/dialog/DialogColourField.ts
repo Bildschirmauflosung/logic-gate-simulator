@@ -15,32 +15,19 @@ export class DialogColourField implements IDialogField {
     colourBox.style.backgroundColor = `hsl(${ this.getValue() }, 50%, 70%)`;
     const sliderBase = document.createElement("div");
     sliderBase.className = "modal-bg__dialog-colour-slider";
-    const sliderHandle = document.createElement("div");
-    sliderHandle.className = "modal-bg__dialog-colour-slider-handle";
-
-    sliderHandle.addEventListener("mousedown", (e) => {
-      e.stopPropagation();
-      this.pressed = true;
-    });
-    sliderHandle.addEventListener("mouseup", () => {
-      this.pressed = false;
-    });
-    sliderHandle.addEventListener("mousemove", (e) => {
-      if (this.pressed) {
-        sliderHandle.style.left = e.offsetX + "px";
-        this.value = Math.round((sliderHandle.offsetLeft - sliderBase.offsetLeft + sliderHandle.offsetWidth / 2) * (360 / 200));
-        colourBox.style.backgroundColor = `hsl(${ this.getValue() }, 50%, 70%)`;
-      }
-    });
-
-    sliderBase.addEventListener("mousedown", (e) => {
-      sliderHandle.style.left = e.offsetX - sliderHandle.offsetWidth / 2 + "px";
-      this.value = Math.round((sliderHandle.offsetLeft - sliderBase.offsetLeft + sliderHandle.offsetWidth / 2) * (360 / 200));
-      colourBox.style.backgroundColor = `hsl(${ this.getValue() }, 50%, 70%)`;
+    const sliderInput = document.createElement("input");
+    sliderInput.className = "modal-bg__dialog-colour-slider-input";
+    sliderInput.type = "range";
+    sliderInput.value = "0";
+    sliderInput.min = "0";
+    sliderInput.max = "360";
+    sliderInput.addEventListener("input", () => {
+      colourBox.style.backgroundColor = `hsl(${ sliderInput.value }, 50%, 75%)`;
+      this.value = sliderInput.valueAsNumber;
     });
 
     flex.appendChild(colourBox);
-    sliderBase.appendChild(sliderHandle);
+    sliderBase.appendChild(sliderInput);
     flex.appendChild(sliderBase);
 
     html.appendChild(flex);

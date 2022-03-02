@@ -1,4 +1,3 @@
-import { connectedPoints, connections, gates, sidebar } from "../main";
 import { isMouseOver } from "../utils/Helpers";
 import { ConnectionData } from "./ConnectionData";
 import { StaticConnectionData } from "./StaticConnectionData";
@@ -11,6 +10,8 @@ import { IWidget } from "./IWidget";
 import { MouseEventType } from "./MouseEventType";
 import { Gate } from "./Gate";
 import { GateType } from "./GateType";
+import { rs } from "../main";
+import { Settings } from "../Settings";
 
 export class ConnectionPoint implements IWidget {
   private hovered: boolean = false;
@@ -19,32 +20,31 @@ export class ConnectionPoint implements IWidget {
 
   private xOffset: number = 0;
   private yOffset: number = 0;
-  private xPos: number = 0;
 
-  constructor(public isInput: boolean, public left: number, public top: number, private _parent: Gate, public enabled: boolean = true) {
+  constructor(public isInput: boolean, public left: number, public top: number, private _parent: Gate, public name: string, public enabled: boolean = true) {
     this.menu = new Menu();
     this.menu.addItem(new MenuItem("Disconnect", () => {
       this.menu.hide();
       const pointIndices: number[] = [];
-      connectedPoints.forEach((v, i) => {
+      rs.connectionData.forEach((v, i) => {
         if (v.pointFrom === this || v.pointTo === this) {
           pointIndices.push(i);
         }
       });
       pointIndices.sort((a, b) => a - b).reverse();
       for (const j of pointIndices) {
-        connectedPoints.splice(j, 1);
+        rs.connectionData.splice(j, 1);
       }
       
       const indices: number[] = [];
-      connections.forEach((v, i) => {
+      rs.connectionMap.forEach((v, i) => {
         if (_parent.getID() === v.inputGateIndex && _parent.getPoints()[1].findIndex((v) => v === this) !== -1) {
           indices.push(i);
         }
       });
       indices.sort((a, b) => a - b).reverse();
       for (const j of indices) {
-        connections.splice(j, 1);
+        rs.connectionMap.splice(j, 1);
       }
     }, ItemType.DANGER));
   }
@@ -53,7 +53,6 @@ export class ConnectionPoint implements IWidget {
     this.hovered = isMouseOver(e, 8, 8, this.left - 4, this.top - 4);
     this.xOffset = e.offsetX;
     this.yOffset = e.offsetY;
-    this.xPos = e.clientX;
   }
 
   private handleMouseDown(e: MouseEvent): void {
@@ -64,7 +63,7 @@ export class ConnectionPoint implements IWidget {
 
       if (this._parent.type !== GateType.GATE) {
         StaticMap.outputIndex = 0;
-        StaticMap.outputGateIndex = -(gates.findIndex((v) => v === this._parent) + 1);
+        StaticMap.outputGateIndex = -(rs.gates.findIndex((v) => v === this._parent) + 1);
       } else {
         StaticMap.outputIndex = this._parent.getPoints()[0].findIndex((v) => v === this);
       }
@@ -78,7 +77,7 @@ export class ConnectionPoint implements IWidget {
         StaticConnectionData.pointTo = this;
         if (this._parent.type !== GateType.GATE) {
           StaticMap.inputIndex = 0;
-          StaticMap.inputGateIndex = -(gates.findIndex((v) => v === this._parent) + 1);
+          StaticMap.inputGateIndex = -(rs.gates.findIndex((v) => v === this._parent) + 1);
         } else {
           StaticMap.inputIndex = this._parent.getPoints()[1].findIndex((v) => v === this);
         }
@@ -94,28 +93,28 @@ export class ConnectionPoint implements IWidget {
           inputGateIndex: StaticMap.inputGateIndex,
           outputGateIndex: StaticMap.outputGateIndex,
         };
-        if (connections.findIndex((v) => v === map) !== -1) {
+        if (rs.connectionMap.findIndex((v) => v === map) !== -1) {
           return;
         }
 
-        const i = connectedPoints.findIndex((v) => v.pointFrom === StaticConnectionData.pointFrom && v.pointTo === StaticConnectionData.pointTo);
+        const i = rs.connectionData.findIndex((v) => v.pointFrom === StaticConnectionData.pointFrom && v.pointTo === StaticConnectionData.pointTo);
         if (i !== -1) {
-          connectedPoints.splice(i, 1);
-          const j = connections.findIndex((v) => v === map);
+          rs.connectionData.splice(i, 1);
+          const j = rs.connectionMap.findIndex((v) => v === map);
           if (j !== -1) {
-            connections.splice(j, 1);
+            rs.connectionMap.splice(j, 1);
           }
           return;
         }
         
         const conn = new ConnectionData(StaticConnectionData.pointFrom, StaticConnectionData.pointTo);
-        const pos = connectedPoints.findIndex((v) => v.pointTo === conn.pointTo);
+        const pos = rs.connectionData.findIndex((v) => v.pointTo === conn.pointTo);
         if (pos !== -1) {
           return;
         }
 
-        connectedPoints.push(conn);
-        connections.push(map);
+        rs.connectionData.push(conn);
+        rs.connectionMap.push(map);
         // simulator.rebuild();
       }
     }
@@ -125,6 +124,10 @@ export class ConnectionPoint implements IWidget {
     if (this.hovered) {
       this.menu.show(e.clientX, e.clientY);
     }
+  }
+
+  destroyMenu() {
+    this.menu.destroy();
   }
 
   handleEvent(type: MouseEventType, event: MouseEvent): void {
@@ -170,11 +173,30 @@ export class ConnectionPoint implements IWidget {
     if (this.pressed) {
       ctx.beginPath();
       ctx.strokeStyle = Theme.fgColour;
-      ctx.moveTo(this.left, this.top);
-      ctx.lineTo((this.xPos + this.left - sidebar.offsetWidth) / 2, this.top);
-      ctx.lineTo((this.xPos + this.left - sidebar.offsetWidth) / 2, this.yOffset);
-      ctx.lineTo(this.xOffset, this.yOffset);
-      ctx.stroke();
+      if (this.xOffset > this.left && this.isInput || this.xOffset < this.left && !this.isInput) {
+        const hy = Math.round((this.top + this.yOffset) / 2);
+        ctx.moveTo(this.left, this.top);
+        ctx.lineTo(this.left + 16 * (this.isInput ? -1 : 1), this.top);
+        ctx.lineTo(this.left + 16 * (this.isInput ? -1 : 1), hy);
+        ctx.lineTo(this.xOffset - 16 * (this.isInput ? -1 : 1), hy);
+        ctx.lineTo(this.xOffset - 16 * (this.isInput ? -1 : 1), this.yOffset);
+        ctx.lineTo(this.xOffset, this.yOffset);
+        ctx.stroke();
+      } else {
+        ctx.moveTo(this.left, this.top);
+        ctx.lineTo(Math.round((this.xOffset + this.left) / 2), this.top);
+        ctx.lineTo(Math.round((this.xOffset + this.left) / 2), this.yOffset);
+        ctx.lineTo(this.xOffset, this.yOffset);
+        ctx.stroke();
+      }
+    }
+
+    if (Settings.showFieldNames && this.hovered && this._parent.type === GateType.GATE) {
+      ctx.beginPath();
+      const x = this.isInput ? this.left - 16 : this.left + 24;
+      ctx.fillStyle = Theme.fgColour;
+      ctx.textAlign = "right";
+      ctx.fillText(this.name, x, this.top);
     }
   }
 }
