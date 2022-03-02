@@ -16,11 +16,6 @@ export const sidebar: HTMLElement = document.querySelector(".content__sidebar")!
 const sidebarBtn: NodeListOf<HTMLElement> = document.querySelectorAll(".content__sidebar-btn")!;
 let ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
 
-// export const widgets: IWidget[] = [];
-// export const gates: Gate[] = [];
-// export const connectedPoints: ConnectionData[] = [];
-// export const connections: IConnectionMap[] = [];
-
 export const rs = new RenderSimulator();
 
 const addInput = new IOAddButton(true);
@@ -57,21 +52,10 @@ ProjectsDialog.build();
 ProjectsDialog.show();
 
 function render() {
-  // ctx.fillStyle = Theme.bgColour;
   ctx.clearRect(0, 0, cv.width, cv.height);
-  for (const i of rs.connectionData) {
-    i.render(ctx);
-  }
-  for (const i of rs.widgets) {
-    i.render(ctx);
-  }
+  rs.render(ctx);
+  rs.renderWires(ctx);
   requestAnimationFrame(render);
-}
-
-function handle(type: MouseEventType, event: MouseEvent) {
-  for (const i of rs.widgets) {
-    i.handleEvent(type, event);
-  }
 }
 
 document.addEventListener("contextmenu", (e) => e.preventDefault());
@@ -94,9 +78,9 @@ sidebarBtn.forEach((v) => {
   });
 });
 
-cv.addEventListener("mousemove", (e) => handle(MouseEventType.MOVE, e));
-cv.addEventListener("mousedown", (e) => handle(MouseEventType.DOWN, e));
-cv.addEventListener("mouseup", (e) => handle(MouseEventType.UP, e));
-cv.addEventListener("contextmenu", (e) => handle(MouseEventType.CONTEXTMENU, e));
+cv.addEventListener("mousemove", (e) => rs.handleEvents(MouseEventType.MOVE, e));
+cv.addEventListener("mousedown", (e) => rs.handleEvents(MouseEventType.DOWN, e));
+cv.addEventListener("mouseup", (e) => rs.handleEvents(MouseEventType.UP, e));
+cv.addEventListener("contextmenu", (e) => rs.handleEvents(MouseEventType.CONTEXTMENU, e));
 
 requestAnimationFrame(render);
