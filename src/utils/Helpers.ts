@@ -1,4 +1,4 @@
-import { connectedPoints } from "../main";
+import { rs } from "../main";
 import { ConnectionPoint } from "../render/ConnectionPoint";
 
 export function isMouseOver(e: MouseEvent, width: number, height: number, left: number, top: number): boolean {
@@ -11,7 +11,7 @@ export function clamp(a: number, b: number, c: number): number {
 
 export function updateConnectionData(points: ConnectionPoint[]) {
   const removing: number[] = [];
-  connectedPoints.forEach((v, i) => {
+  rs.connectionData.forEach((v, i) => {
     for (const p of points) {
       if (v.pointFrom === p || v.pointTo === p) {
         removing.push(i);
@@ -22,7 +22,7 @@ export function updateConnectionData(points: ConnectionPoint[]) {
   removing.sort((a, b) => b - a);
 
   for (const i of removing) {
-    connectedPoints.splice(i, 1);
+    rs.connectionData.splice(i, 1);
   }
 }
 

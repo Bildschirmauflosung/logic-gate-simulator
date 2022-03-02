@@ -1,21 +1,20 @@
-import {cv, gates, widgets} from "../main";
-import {clamp, isMouseOver, updateConnectionData} from "../utils/Helpers";
-import {BitButton} from "./BitButton";
-import {BitsNumber} from "./BitsNumber";
-import {ConnectionPoint} from "./ConnectionPoint";
-import {Dialog} from "./dialog/Dialog";
-import {ButtonType, DialogButton} from "./dialog/DialogButton";
-import {DialogColourField} from "./dialog/DialogColourField";
-import {DialogInputField} from "./dialog/DialogInputField";
-import {GateType} from "./GateType";
-import {IWidget} from "./IWidget";
-import {Menu} from "./menu/Menu";
-import {ItemType, MenuItem} from "./menu/MenuItem";
-import {MouseEventType} from "./MouseEventType";
-import {Theme} from "./theme/Theme";
-import {GateRegistry} from "../logic/GateRegistry";
-import {IGateData} from "../logic/IGateData";
-import {assert} from "../utils/Assert";
+import { GateRegistry } from "../logic/GateRegistry";
+import { IGateData } from "../logic/IGateData";
+import { cv, nav, rs, sidebar } from "../main";
+import { assert } from "../utils/Assert";
+import { clamp, isMouseOver, updateConnectionData } from "../utils/Helpers";
+import { BitButton } from "./BitButton";
+import { BitsNumber } from "./BitsNumber";
+import { ConnectionPoint } from "./ConnectionPoint";
+import { Dialog } from "./dialog/Dialog";
+import { ButtonType, DialogButton } from "./dialog/DialogButton";
+import { DialogInputField } from "./dialog/DialogInputField";
+import { GateType } from "./GateType";
+import { IWidget } from "./IWidget";
+import { Menu } from "./menu/Menu";
+import { ItemType, MenuItem } from "./menu/MenuItem";
+import { MouseEventType } from "./MouseEventType";
+import { Theme } from "./theme/Theme";
 
 export class Gate implements IWidget {
   private grabbed: boolean = false;
@@ -41,7 +40,7 @@ export class Gate implements IWidget {
   public outputValues: boolean[] = [];
   public enabled: boolean = false;
 
-  constructor(public left: number, public top: number, private id: number, public name: string, public readonly type: GateType, public readonly bits: BitsNumber = BitsNumber.ONE) {
+  constructor(public left: number, public top: number, private id: number, public name: string, public readonly type: GateType, public readonly bits: BitsNumber = BitsNumber.ONE, public colour: string  = "#d98c8c") {
     let gateData: IGateData;
     if((gateData = GateRegistry.get(name)!) === undefined) {
       switch (type) {
@@ -72,17 +71,7 @@ export class Gate implements IWidget {
     if (type === GateType.GATE) {
       this.menu.addItem(new MenuItem("Edit", () => {
         this.menu.hide();
-        const dialog = new Dialog("Edit Gate");
-        dialog.addField(new DialogColourField("colour", "Gate Colour"));
-        dialog.addField(new DialogInputField("name", "Gate Name", 8));
-        dialog.addButton(new DialogButton("Cancel", ButtonType.NORMAL, () => {
-          dialog.close();
-        }));
-        dialog.addButton(new DialogButton("Save", ButtonType.NORMAL, () => {
-          dialog.close();
-          // TODO
-        }));
-        dialog.show();
+        // TODO: Go to editing mode
       }));
     } else {
       this.menu.addItem(new MenuItem("Rename", () => {
@@ -103,16 +92,18 @@ export class Gate implements IWidget {
     }
     this.menu.addItem(new MenuItem("Delete", () => {
       this.menu.destroy();
-      gates.splice(gates.findIndex((v) => v === this), 1);
-      widgets.splice(widgets.findIndex((v) => v === this), 1);
-      for (const i of gates) {
+      rs.gates.splice(rs.gates.findIndex((v) => v === this), 1);
+      rs.widgets.splice(rs.widgets.findIndex((v) => v === this), 1);
+      for (const i of rs.gates) {
         i.updateId();
       }
       for (const i of this.ipoints) {
-        widgets.splice(widgets.findIndex((v) => v === i), 1);
+        i.destroyMenu();
+        rs.widgets.splice(rs.widgets.findIndex((v) => v === i), 1);
       }
       for (const i of this.opoints) {
-        widgets.splice(widgets.findIndex((v) => v === i), 1);
+        i.destroyMenu();
+        rs.widgets.splice(rs.widgets.findIndex((v) => v === i), 1);
       }
       updateConnectionData(this.ipoints);
       updateConnectionData(this.opoints);
@@ -120,25 +111,25 @@ export class Gate implements IWidget {
 
     if (type === GateType.GATE) {
       for (let i = 0; i < this.arity; i++) {
-        const point = new ConnectionPoint(true, this.left, this.top + this.height / (this.arity + 1) * (i + 1), this);
+        const point = new ConnectionPoint(true, this.left, this.top + this.height / (this.arity + 1) * (i + 1), this, "X");
         this.ipoints.push(point);
-        widgets.push(point);
+        rs.widgets.push(point);
       }
       for (let i = 0; i < this.outputCount; i++) {
-        const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / (this.outputCount + 1) * (i + 1), this);
+        const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / (this.outputCount + 1) * (i + 1), this, "X");
         this.opoints.push(point);
-        widgets.push(point);
+        rs.widgets.push(point);
       }
     } else {
       for (let i = 0; i < this.arity; i++) {
-        const point = new ConnectionPoint(true, this.left, this.top + this.height / 2, this, bits === BitsNumber.ONE);
+        const point = new ConnectionPoint(true, this.left, this.top + this.height / 2, this, "X", bits === BitsNumber.ONE);
         this.ipoints.push(point);
-        widgets.push(point);
+        rs.widgets.push(point);
       }
       for (let i = 0; i < this.outputCount; i++) {
-        const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / 2, this, bits === BitsNumber.ONE);
+        const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / 2, this, "X", bits === BitsNumber.ONE);
         this.opoints.push(point);
-        widgets.push(point);
+        rs.widgets.push(point);
       }
       for (let i = 0; i < bits; i++) {
         this.buttons.push(new BitButton(left + 8, top + (i + 1) * 48, bits - i - 1));
@@ -148,7 +139,7 @@ export class Gate implements IWidget {
 
   private isMaxId(onEnter: boolean = false): boolean {
     let max = -1;
-    for (const i of gates) {
+    for (const i of rs.gates) {
       if (onEnter) {
         if (i.entered) {
           if (i.id > max) {
@@ -199,7 +190,11 @@ export class Gate implements IWidget {
         if (this.type === GateType.GATE) {
           this.left = clamp(Math.round((e.offsetX - this.xOffset) / 16) * 16, 64, cv.width - 64 - this.width);
         }
-        this.top = clamp(Math.round((e.offsetY - this.yOffset) / 16) * 16 + 4, 4, cv.height - 64 - this.height);
+        if (this.expanded) {
+          this.top = clamp(Math.round((e.offsetY - this.yOffset) / 16) * 16 + 4, 4, cv.height - 64 - this.expandHeight);
+        } else {
+          this.top = clamp(Math.round((e.offsetY - this.yOffset) / 16) * 16 + 4, 4, cv.height - 64 - this.height);
+        }
 
         if (this.type === GateType.GATE) {
           for (let i = 0; i < this.arity; i++) {
@@ -212,14 +207,14 @@ export class Gate implements IWidget {
           }
         } else {
           this.ipoints.forEach((v, i) => {
-            if (v.enabled) {
+            if (v.enabled && this.bits !== BitsNumber.ONE) {
               this.movePoint(v, i);
             } else {
               v.top = this.top + this.height / 2;
             }
           });
           this.opoints.forEach((v, i) => {
-            if (v.enabled) {
+            if (v.enabled && this.bits !== BitsNumber.ONE) {
               this.movePoint(v, i);
             } else {
               v.top = this.top + this.height / 2;
@@ -294,11 +289,61 @@ export class Gate implements IWidget {
   }
 
   updateId(): void {
-    this.id = gates.findIndex((v) => v === this);
+    this.id = rs.gates.findIndex((v) => v === this);
   }
 
   getPoints(): [ConnectionPoint[], ConnectionPoint[]] {
     return [this.ipoints, this.opoints];
+  }
+
+  align(): void {
+    if (this.type === GateType.GATE && this.left + this.width + sidebar.offsetWidth >= cv.clientWidth) {
+      this.left = Math.round((cv.clientWidth - this.width - sidebar.offsetWidth) / 16) * 16;
+    }
+
+    if (this.expanded) {
+      if (this.top + this.expandHeight + 64 >= cv.clientHeight) {
+        this.top = Math.round((cv.clientHeight - this.expandHeight - nav.clientHeight) / 16) * 16 - 16;
+      }
+    } else {
+      if (this.top + this.height + 64 >= cv.clientHeight) {
+        this.top = Math.round((cv.clientHeight - this.height - nav.clientHeight) / 16) * 16 - 16;
+      }
+    }
+    
+    if (this.type === GateType.OUTPUT) {
+      this.left = cv.clientWidth - this.width - 4;
+    }
+
+    this.buttons.forEach((v, i) => {
+      v.left = this.left + 8;
+      v.top = this.top + (i + 1) * 48;
+    });
+
+    this.ipoints.forEach((v, i) => {
+      if (this.type === GateType.GATE || this.bits === BitsNumber.ONE) {
+        v.top = this.top + this.height / (this.arity + 1) * (i + 1);
+      } else {
+        if (this.expanded) {
+          v.top = this.top + (i + 1) * 48 + 16;
+        } else {
+          v.top = this.top + this.height / 2;
+        }
+      }
+      v.left = this.left;
+    });
+    this.opoints.forEach((v, i) => {
+      if (this.type === GateType.GATE || this.bits === BitsNumber.ONE) {
+        v.top = this.top + this.height / (this.outputCount + 1) * (i + 1);
+      } else {
+        if (this.expanded) {
+          v.top = this.top + (i + 1) * 48 + 16;
+        } else {
+          v.top = this.top + this.height / 2;
+        }
+      }
+      v.left = this.left + this.width;
+    });
   }
 
   handleEvent(type: MouseEventType, event: MouseEvent): void {
@@ -333,35 +378,35 @@ export class Gate implements IWidget {
       ctx.fillStyle = Theme.bgColour;
     }
 
+    const h = this.expanded ? this.expandHeight : this.height;
+    ctx.moveTo(this.left + rad, this.top);
+    ctx.lineTo(this.left + this.width - rad, this.top);
+    ctx.arcTo(this.left + this.width, this.top, this.left + this.width, this.top + rad, rad);
+    ctx.lineTo(this.left + this.width, this.top + h - rad);
+    ctx.arcTo(this.left + this.width, this.top + h, this.left + this.width - rad, this.top + h, rad);
+    ctx.lineTo(this.left + rad, this.top + h);
+    ctx.arcTo(this.left, this.top + h, this.left, this.top + h - rad, rad);
+    ctx.lineTo(this.left, this.top + rad);
+    ctx.arcTo(this.left, this.top, this.left + rad, this.top, rad);
+    ctx.stroke();
+    ctx.fill();
+
     if (this.expanded) {
-      ctx.moveTo(this.left + rad, this.top);
-      ctx.lineTo(this.left + this.width - rad, this.top);
-      ctx.arcTo(this.left + this.width, this.top, this.left + this.width, this.top + rad, rad);
-      ctx.lineTo(this.left + this.width, this.top + this.expandHeight - rad);
-      ctx.arcTo(this.left + this.width, this.top + this.expandHeight, this.left + this.width - rad, this.top + this.expandHeight, rad);
-      ctx.lineTo(this.left + rad, this.top + this.expandHeight);
-      ctx.arcTo(this.left, this.top + this.expandHeight, this.left, this.top + this.expandHeight - rad, rad);
-      ctx.lineTo(this.left, this.top + rad);
-      ctx.arcTo(this.left, this.top, this.left + rad, this.top, rad);
-      ctx.stroke();
-      ctx.fill();
       for (const i of this.buttons) {
         i.render(ctx);
       }
-    } else {
-      ctx.moveTo(this.left + rad, this.top);
-      ctx.lineTo(this.left + this.width - rad, this.top);
-      ctx.arcTo(this.left + this.width, this.top, this.left + this.width, this.top + rad, rad);
-      ctx.lineTo(this.left + this.width, this.top + this.height - rad);
-      ctx.arcTo(this.left + this.width, this.top + this.height, this.left + this.width - rad, this.top + this.height, rad);
-      ctx.lineTo(this.left + rad, this.top + this.height);
-      ctx.arcTo(this.left, this.top + this.height, this.left, this.top + this.height - rad, rad);
-      ctx.lineTo(this.left, this.top + rad);
-      ctx.arcTo(this.left, this.top, this.left + rad, this.top, rad);
+    }
+
+    if (this.type === GateType.GATE) {
+      ctx.beginPath();
+      ctx.strokeStyle = this.colour;
+      ctx.fillStyle = this.colour;
+      ctx.arc(this.left + this.width - 12, this.top + 12, 5, 0, 2 * Math.PI);
       ctx.stroke();
       ctx.fill();
     }
-
+    
+    ctx.beginPath();
     ctx.fillStyle = Theme.fgColour;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
