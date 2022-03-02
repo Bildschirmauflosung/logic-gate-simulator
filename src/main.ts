@@ -9,6 +9,7 @@ import { MouseEventType } from "./render/MouseEventType";
 import { GateType } from "./render/GateType";
 import { ProjectsDialog } from "./dialogs/ProjectsDialog";
 import { RenderSimulator } from "./render/RenderSimulator";
+import { SaveDialog } from "./dialogs/SaveDialog";
 
 export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 export const nav: HTMLElement = document.querySelector(".navbar")!;
@@ -44,6 +45,10 @@ document.querySelector("#settings-btn")!.addEventListener("click", () => {
 document.querySelector("#projects-btn")!.addEventListener("click", () => {
   ProjectsDialog.build();
   ProjectsDialog.show();
+});
+document.querySelector("#save-btn")!.addEventListener("click", () => {
+  SaveDialog.build();
+  SaveDialog.show();
 });
 
 Theme.setSystemTheme();
