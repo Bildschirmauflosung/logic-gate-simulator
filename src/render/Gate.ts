@@ -121,15 +121,18 @@ export class Gate implements IWidget {
         rs.widgets.push(point);
       }
     } else {
-      for (let i = 0; i < this.arity; i++) {
-        const point = new ConnectionPoint(true, this.left, this.top + this.height / 2, this, "X", bits === BitsNumber.ONE);
-        this.ipoints.push(point);
-        rs.widgets.push(point);
-      }
-      for (let i = 0; i < this.outputCount; i++) {
-        const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / 2, this, "X", bits === BitsNumber.ONE);
-        this.opoints.push(point);
-        rs.widgets.push(point);
+      if (type === GateType.OUTPUT) {
+        for (let i = 0; i < bits; i++) {
+          const point = new ConnectionPoint(true, this.left, this.top + this.height / 2, this, "X", bits === BitsNumber.ONE);
+          this.ipoints.push(point);
+          rs.widgets.push(point);
+        }
+      } else {
+        for (let i = 0; i < bits; i++) {
+          const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / 2, this, "X", bits === BitsNumber.ONE);
+          this.opoints.push(point);
+          rs.widgets.push(point);
+        }
       }
       for (let i = 0; i < bits; i++) {
         this.buttons.push(new BitButton(left + 8, top + (i + 1) * 48, bits - i - 1));
