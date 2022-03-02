@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-import { cv, gates, widgets } from "../main";
-=======
-import { LogicGate } from "../logic/LogicGate";
 import { cv, rs } from "../main";
->>>>>>> origin/frontend-rewrite
 import { isMouseOver } from "../utils/Helpers";
 import { BitsNumber } from "./BitsNumber";
 import { Gate } from "./Gate";
@@ -26,16 +21,9 @@ export class IOAddButton implements IWidget {
 
   private createGate(bits: BitsNumber) {
     this.menu.hide();
-<<<<<<< HEAD
-    const io = new Gate(this.isInput ? 4 : cv.width - this.width - 4, 4, gates.length, "X", this.isInput ? GateType.INPUT : GateType.OUTPUT, bits);
-    gates.push(io);
-    widgets.push(io);
-=======
-    const lg = new LogicGate([], [], this.isInput ? 0 : bits, this.isInput ? bits : 0, ([]) => []);
-    const io = new Gate(this.isInput ? 4 : cv.width - this.width - 4, 4, rs.gates.length, "X", this.isInput ? GateType.INPUT : GateType.OUTPUT, lg, bits);
+    const io = new Gate(this.isInput ? 4 : cv.width - this.width - 4, 4, rs.gates.length, "X", this.isInput ? GateType.INPUT : GateType.OUTPUT, bits);
     rs.gates.push(io);
     rs.widgets.push(io);
->>>>>>> origin/frontend-rewrite
   }
   
   constructor(public readonly isInput: boolean) {    
