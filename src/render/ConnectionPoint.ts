@@ -125,6 +125,10 @@ export class ConnectionPoint implements IWidget {
     }
   }
 
+  destroyMenu() {
+    this.menu.destroy();
+  }
+
   handleEvent(type: MouseEventType, event: MouseEvent): void {
     switch (type) {
       case MouseEventType.MOVE:

@@ -87,9 +87,11 @@ export class Gate implements IWidget {
         i.updateId();
       }
       for (const i of this.ipoints) {
+        i.destroyMenu();
         rs.widgets.splice(rs.widgets.findIndex((v) => v === i), 1);
       }
       for (const i of this.opoints) {
+        i.destroyMenu();
         rs.widgets.splice(rs.widgets.findIndex((v) => v === i), 1);
       }
       updateConnectionData(this.ipoints);
