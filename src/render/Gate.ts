@@ -135,7 +135,7 @@ export class Gate implements IWidget {
         }
       }
       for (let i = 0; i < bits; i++) {
-        this.buttons.push(new BitButton(left + 8, top + (i + 1) * 48, bits - i - 1));
+        this.buttons.push(new BitButton(left + 8, top + (i + 1) * 48, bits - i - 1, type === GateType.INPUT));
       }
     }
   }

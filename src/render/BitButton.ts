@@ -12,14 +12,14 @@ export class BitButton implements IWidget {
 
   public enabled: boolean = false;
 
-  constructor(public left: number, public top: number, public readonly bit: number) { }
+  constructor(public left: number, public top: number, public readonly bit: number, public readonly isInput: boolean = true) { }
 
   private handleMouseMove(e: MouseEvent) {
     this.hovered = isMouseOver(e, this.width, this.height, this.left, this.top);
   }
 
   private handleMouseUp(_e: MouseEvent) {
-    if (this.pressed) {
+    if (this.isInput && this.pressed) {
       this.enabled = !this.enabled;
     }
     this.pressed = false;
