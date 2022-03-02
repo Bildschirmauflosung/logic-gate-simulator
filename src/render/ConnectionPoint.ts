@@ -11,6 +11,7 @@ import { MouseEventType } from "./MouseEventType";
 import { Gate } from "./Gate";
 import { GateType } from "./GateType";
 import { rs } from "../main";
+import { Settings } from "../Settings";
 
 export class ConnectionPoint implements IWidget {
   private hovered: boolean = false;
@@ -20,7 +21,7 @@ export class ConnectionPoint implements IWidget {
   private xOffset: number = 0;
   private yOffset: number = 0;
 
-  constructor(public isInput: boolean, public left: number, public top: number, private _parent: Gate, public enabled: boolean = true) {
+  constructor(public isInput: boolean, public left: number, public top: number, private _parent: Gate, public name: string, public enabled: boolean = true) {
     this.menu = new Menu();
     this.menu.addItem(new MenuItem("Disconnect", () => {
       this.menu.hide();
@@ -188,6 +189,14 @@ export class ConnectionPoint implements IWidget {
         ctx.lineTo(this.xOffset, this.yOffset);
         ctx.stroke();
       }
+    }
+
+    if (Settings.showFieldNames && this.hovered && this._parent.type === GateType.GATE) {
+      ctx.beginPath();
+      const x = this.isInput ? this.left - 16 : this.left + 24;
+      ctx.fillStyle = Theme.fgColour;
+      ctx.textAlign = "right";
+      ctx.fillText(this.name, x, this.top);
     }
   }
 }

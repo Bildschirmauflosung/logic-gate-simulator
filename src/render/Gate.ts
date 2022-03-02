@@ -100,23 +100,23 @@ export class Gate implements IWidget {
 
     if (type === GateType.GATE) {
       for (let i = 0; i < gate.arity; i++) {
-        const point = new ConnectionPoint(true, this.left, this.top + this.height / (gate.arity + 1) * (i + 1), this);
+        const point = new ConnectionPoint(true, this.left, this.top + this.height / (gate.arity + 1) * (i + 1), this, "X");
         this.ipoints.push(point);
         rs.widgets.push(point);
       }
       for (let i = 0; i < gate.outputCount; i++) {
-        const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / (gate.outputCount + 1) * (i + 1), this);
+        const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / (gate.outputCount + 1) * (i + 1), this, "X");
         this.opoints.push(point);
         rs.widgets.push(point);
       }
     } else {
       for (let i = 0; i < gate.arity; i++) {
-        const point = new ConnectionPoint(true, this.left, this.top + this.height / 2, this, bits === BitsNumber.ONE);
+        const point = new ConnectionPoint(true, this.left, this.top + this.height / 2, this, "X", bits === BitsNumber.ONE);
         this.ipoints.push(point);
         rs.widgets.push(point);
       }
       for (let i = 0; i < gate.outputCount; i++) {
-        const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / 2, this, bits === BitsNumber.ONE);
+        const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / 2, this, "X", bits === BitsNumber.ONE);
         this.opoints.push(point);
         rs.widgets.push(point);
       }
