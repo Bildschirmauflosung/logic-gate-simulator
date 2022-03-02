@@ -36,7 +36,7 @@ export class Gate implements IWidget {
   public outputValues: boolean[] = [];
   public enabled: boolean = false;
 
-  constructor(public left: number, public top: number, private id: number, public name: string, public readonly type: GateType, public readonly gate: LogicGate, public readonly bits: BitsNumber = BitsNumber.ONE) {
+  constructor(public left: number, public top: number, private id: number, public name: string, public readonly type: GateType, public readonly gate: LogicGate, public readonly bits: BitsNumber = BitsNumber.ONE, public colour: string = "#d98c8c") {
     const max = gate.arity > gate.outputCount ? gate.arity : gate.outputCount;
     if (type === GateType.GATE) {
       this.width = 96;
@@ -386,6 +386,16 @@ export class Gate implements IWidget {
       }
     }
 
+    if (this.type === GateType.GATE) {
+      ctx.beginPath();
+      ctx.strokeStyle = this.colour;
+      ctx.fillStyle = this.colour;
+      ctx.arc(this.left + this.width - 12, this.top + 12, 5, 0, 2 * Math.PI);
+      ctx.stroke();
+      ctx.fill();
+    }
+    
+    ctx.beginPath();
     ctx.fillStyle = Theme.fgColour;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
