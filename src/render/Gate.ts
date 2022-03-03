@@ -92,23 +92,26 @@ export class Gate implements IWidget {
     }
     this.menu.addItem(new MenuItem("Delete", () => {
       this.menu.destroy();
-      rs.gates.splice(rs.gates.findIndex((v) => v === this), 1);
-      rs.widgets.splice(rs.widgets.findIndex((v) => v === this), 1);
       for (const i of rs.gates) {
         i.updateId();
       }
       for (const i of this.ipoints) {
         i.destroyMenu();
-        rs.widgets.splice(rs.widgets.findIndex((v) => v === i), 1);
+        const index = rs.widgets.findIndex((v) => v === i);
+        rs.widgets.splice(index, index === -1 ? 0 : 1);
       }
       for (const i of this.opoints) {
         i.destroyMenu();
-        rs.widgets.splice(rs.widgets.findIndex((v) => v === i), 1);
+        const index = rs.widgets.findIndex((v) => v === i);
+        rs.widgets.splice(index, index === -1 ? 0 : 1);
       }
       for (const i of this.buttons) {
         i.destroyMenu();
-        rs.widgets.splice(rs.widgets.findIndex((v) => v === i), 1);
+        const index = rs.widgets.findIndex((v) => v === i);
+        rs.widgets.splice(index, index === -1 ? 0 : 1);
       }
+      rs.gates.splice(rs.gates.findIndex((v) => v === this), 1);
+      rs.widgets.splice(rs.widgets.findIndex((v) => v === this), 1);
       updateConnectionData(this.ipoints);
       updateConnectionData(this.opoints);
     }, ItemType.DANGER));
