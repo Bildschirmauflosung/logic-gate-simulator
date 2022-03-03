@@ -6,7 +6,6 @@ import { Theme } from "./render/theme/Theme";
 import { MouseEventType } from "./render/MouseEventType";
 import { GateType } from "./render/GateType";
 import { ProjectsDialog } from "./dialogs/ProjectsDialog";
-import { RenderSimulator } from "./render/RenderSimulator";
 import { SaveDialog } from "./dialogs/SaveDialog";
 import { Project } from "./Project";
 
@@ -16,8 +15,9 @@ export const sidebar: HTMLElement = document.querySelector(".content__sidebar")!
 const sidebarBtn: NodeListOf<HTMLElement> = document.querySelectorAll(".content__sidebar-btn")!;
 let ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
 
-export const rs = new RenderSimulator();
 export const projects = new Map<string, Project>();
+export const currentProject = new Project("New Project");
+export const rs = currentProject.simulators.get("New Gate")?.[0]!;
 
 const addInput = new IOAddButton(true);
 const addOutput = new IOAddButton(false);
