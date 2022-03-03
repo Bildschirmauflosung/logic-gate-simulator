@@ -8,6 +8,7 @@ import { GateType } from "./render/GateType";
 import { ProjectsDialog } from "./dialogs/ProjectsDialog";
 import { RenderSimulator } from "./render/RenderSimulator";
 import { SaveDialog } from "./dialogs/SaveDialog";
+import { Project } from "./Project";
 
 export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 export const nav: HTMLElement = document.querySelector(".navbar")!;
@@ -16,6 +17,7 @@ const sidebarBtn: NodeListOf<HTMLElement> = document.querySelectorAll(".content_
 let ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
 
 export const rs = new RenderSimulator();
+export const projects = new Map<string, Project>();
 
 const addInput = new IOAddButton(true);
 const addOutput = new IOAddButton(false);
