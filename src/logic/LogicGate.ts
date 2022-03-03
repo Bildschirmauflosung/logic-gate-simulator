@@ -2,12 +2,7 @@ import {IValueRequestable} from "./IValueRequestable";
 import {ResolutionFunction} from "./Types";
 import {Gate} from "../render/Gate";
 import {IGateData} from "./IGateData";
-import {GateType} from "../render/GateType";
-import {GateRegistry} from "./GateRegistry";
-import {tap} from "../utils/Helpers";
-import {assert, assertNotNull} from "../utils/Assert";
-import {LogicInput} from "./LogicInput";
-import {LogicOutput} from "./LogicOutput";
+import {assert} from "../utils/Assert";
 
 export class LogicGate implements IValueRequestable {
   private visited: boolean = false;
@@ -33,20 +28,6 @@ export class LogicGate implements IValueRequestable {
     assert(idx < this.children.length);
     this.children[idx] = lGate;
     this.iIndexes[idx] = iIdx;
-  }
-
-  static from(gate: Gate): LogicGate {
-    switch(gate.type) {
-      case GateType.GATE:
-        return new LogicGate(gate, tap(
-          GateRegistry.get(gate.name)!,
-          obj => assertNotNull(obj)
-        ));
-      case GateType.INPUT:
-        return new LogicInput(gate);
-      case GateType.OUTPUT:
-        return new LogicOutput(gate)
-    }
   }
 
   requestValue(): boolean[] {
