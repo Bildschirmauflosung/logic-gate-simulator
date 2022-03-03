@@ -105,6 +105,10 @@ export class Gate implements IWidget {
         i.destroyMenu();
         rs.widgets.splice(rs.widgets.findIndex((v) => v === i), 1);
       }
+      for (const i of this.buttons) {
+        i.destroyMenu();
+        rs.widgets.splice(rs.widgets.findIndex((v) => v === i), 1);
+      }
       updateConnectionData(this.ipoints);
       updateConnectionData(this.opoints);
     }, ItemType.DANGER));
@@ -135,7 +139,7 @@ export class Gate implements IWidget {
         }
       }
       for (let i = 0; i < bits; i++) {
-        this.buttons.push(new BitButton(left + 8, top + (i + 1) * 48, bits - i - 1, type === GateType.INPUT));
+        this.buttons.push(new BitButton(left + 8, top + (i + 1) * 48, bits - i - 1, "X", type === GateType.INPUT));
       }
     }
   }
@@ -264,6 +268,9 @@ export class Gate implements IWidget {
       } else if (this.type !== GateType.GATE && this.bits !== BitsNumber.ONE) {
         this.expanded = !this.expanded;
         this.togglePoints();
+        for (const i of this.buttons) {
+          i.visible = this.expanded;
+        }
       }
     }
 
@@ -394,12 +401,6 @@ export class Gate implements IWidget {
     ctx.stroke();
     ctx.fill();
 
-    if (this.expanded) {
-      for (const i of this.buttons) {
-        i.render(ctx);
-      }
-    }
-
     if (this.type === GateType.GATE) {
       ctx.beginPath();
       ctx.strokeStyle = this.colour;
@@ -407,6 +408,12 @@ export class Gate implements IWidget {
       ctx.arc(this.left + this.width - 12, this.top + 12, 5, 0, 2 * Math.PI);
       ctx.stroke();
       ctx.fill();
+    }
+
+    if (this.expanded) {
+      for (const i of this.buttons) {
+        i.render(ctx);
+      }
     }
     
     ctx.beginPath();
