@@ -1,4 +1,4 @@
-import { cv, rs } from "../main";
+import { cv, ls, rs } from "../main";
 import { isMouseOver } from "../utils/Helpers";
 import { BitsNumber } from "./BitsNumber";
 import { Gate } from "./Gate";
@@ -30,15 +30,19 @@ export class IOAddButton implements IWidget {
     this.menu = new Menu();
     this.menu.addItem(new MenuItem("1", () => {
       this.createGate(BitsNumber.ONE);
+      ls.rebuild();
     }, ItemType.NORMAL));
     this.menu.addItem(new MenuItem("2", () => {
       this.createGate(BitsNumber.TWO);
+      ls.rebuild();
     }, ItemType.NORMAL));
     this.menu.addItem(new MenuItem("4", () => {
       this.createGate(BitsNumber.FOUR);
+      ls.rebuild();
     }, ItemType.NORMAL));
     this.menu.addItem(new MenuItem("8", () => {
       this.createGate(BitsNumber.EIGHT);
+      ls.rebuild();
     }, ItemType.NORMAL));
 
     if (isInput) {

@@ -1,4 +1,5 @@
 import { IConnectionMap } from "../logic/IConnectionMap";
+import { Simulator } from "../logic/Simulator";
 import { ConnectionData } from "./ConnectionData";
 import { Gate } from "./Gate";
 import { IWidget } from "./IWidget";
@@ -8,7 +9,7 @@ export class RenderSimulator {
   public readonly widgets: IWidget[] = [];
   public readonly gates: Gate[] = [];
   public readonly connectionData: ConnectionData[] = [];
-  public readonly connectionMap: IConnectionMap[] = [];
+  public connectionMap: IConnectionMap[] = [];
 
   constructor() {}
 
@@ -28,5 +29,9 @@ export class RenderSimulator {
     for (const i of this.widgets) {
       i.handleEvent(type, event);
     }
+  }
+
+  update(sim: Simulator) {
+    sim.rebuild();
   }
 }

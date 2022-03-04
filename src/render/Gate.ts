@@ -1,6 +1,6 @@
 import { GateRegistry } from "../logic/GateRegistry";
 import { IGateData } from "../logic/IGateData";
-import { cv, nav, rs, sidebar } from "../main";
+import { cv, ls, nav, rs, sidebar } from "../main";
 import { assert } from "../utils/Assert";
 import { clamp, isMouseOver, updateConnectionData } from "../utils/Helpers";
 import { BitButton } from "./BitButton";
@@ -30,8 +30,8 @@ export class Gate implements IWidget {
   private expandHeight: number = 0;
   private buttons: BitButton[] = [];
   
-  private arity: number = -1;
-  private outputCount: number = -1;
+  readonly arity: number = -1;
+  readonly outputCount: number = -1;
 
   private xOffset: number = 0;
   private yOffset: number = 0;
@@ -45,10 +45,10 @@ export class Gate implements IWidget {
     if((gateData = GateRegistry.get(name)!) === undefined) {
       switch (type) {
         case GateType.OUTPUT:
-          gateData = GateRegistry.get('output')!;
+          gateData = {...GateRegistry.get('output')!, arity: bits};
           break;
         case GateType.INPUT:
-          gateData = GateRegistry.get('input')!;
+          gateData = {...GateRegistry.get('input')!, outputCount: bits};
           break;
         default:
           assert(false, "Unknown Gate");
@@ -92,9 +92,6 @@ export class Gate implements IWidget {
     }
     this.menu.addItem(new MenuItem("Delete", () => {
       this.menu.destroy();
-      for (const i of rs.gates) {
-        i.updateId();
-      }
       for (const i of this.ipoints) {
         i.destroyMenu();
         const index = rs.widgets.findIndex((v) => v === i);
@@ -112,8 +109,18 @@ export class Gate implements IWidget {
       }
       rs.gates.splice(rs.gates.findIndex((v) => v === this), 1);
       rs.widgets.splice(rs.widgets.findIndex((v) => v === this), 1);
+      
       updateConnectionData(this.ipoints);
       updateConnectionData(this.opoints);
+      
+      rs.connectionMap = rs.connectionMap.filter((v) => !(id === v.inputGateIndex || id === v.outputGateIndex) );
+      ls.updateConMap(rs.connectionMap);
+
+      for (const i of rs.gates) {
+        i.updateId();
+      }
+
+      rs.update(ls);
     }, ItemType.DANGER));
 
     if (type === GateType.GATE) {
@@ -142,7 +149,7 @@ export class Gate implements IWidget {
         }
       }
       for (let i = 0; i < bits; i++) {
-        this.buttons.push(new BitButton(left + 8, top + (i + 1) * 48, bits - i - 1, "X", type === GateType.INPUT));
+        this.buttons.push(new BitButton(left + 8, top + (i + 1) * 48, i, "X", type === GateType.INPUT));
       }
     }
   }
@@ -268,6 +275,8 @@ export class Gate implements IWidget {
     if (this.entered && !this.moving && e.button === 0) {
       if (this.bits === BitsNumber.ONE && this.type === GateType.INPUT) {
         this.enabled = !this.enabled;
+        this.outputValues[0] = this.enabled;
+        rs.update(ls);
       } else if (this.type !== GateType.GATE && this.bits !== BitsNumber.ONE) {
         this.expanded = !this.expanded;
         this.togglePoints();
@@ -381,14 +390,40 @@ export class Gate implements IWidget {
     }
   }
 
+  updateInputs() {
+    if (this.type === GateType.INPUT && this.bits !== BitsNumber.ONE) {
+      this.buttons.forEach((v, i) => {
+        this.outputValues[i] = v.enabled;
+      });
+    }
+  }
+
+  updateOutputs() {
+    if (this.type === GateType.OUTPUT) {
+      if (this.bits === BitsNumber.ONE){
+        this.enabled = this.inputValues[0];
+      } else {
+        this.buttons.forEach((v, i) => {
+          v.enabled = this.inputValues[i];
+        });
+      }
+    }
+  }
+
   render(ctx: CanvasRenderingContext2D): void {
     const rad: number = 8;
     ctx.beginPath();
     ctx.strokeStyle = Theme.fgColour;
-    if (this.enabled) {
-      ctx.fillStyle = Theme.enabledBgColour;
-    } else {
-      ctx.fillStyle = Theme.bgColour;
+    ctx.fillStyle = Theme.bgColour;
+
+    if (this.type === GateType.INPUT) {
+      if (this.enabled) {
+        ctx.fillStyle = Theme.enabledBgColour;
+      }
+    } else if (this.type === GateType.OUTPUT) {
+      if (this.bits === BitsNumber.ONE && this.inputValues[0]) {
+        ctx.fillStyle = Theme.enabledBgColour;
+      }
     }
 
     const h = this.expanded ? this.expandHeight : this.height;

@@ -10,7 +10,7 @@ import { IWidget } from "./IWidget";
 import { MouseEventType } from "./MouseEventType";
 import { Gate } from "./Gate";
 import { GateType } from "./GateType";
-import { rs } from "../main";
+import { ls, rs } from "../main";
 import { Settings } from "../Settings";
 
 export class ConnectionPoint implements IWidget {
@@ -60,12 +60,12 @@ export class ConnectionPoint implements IWidget {
     if (this.hovered && e.button === 0) {
       this.pressed = true;
       StaticConnectionData.pointFrom = this;
-
-      if (this._parent.type !== GateType.GATE) {
-        StaticMap.outputIndex = 0;
-        StaticMap.outputGateIndex = -(rs.gates.findIndex((v) => v === this._parent) + 1);
-      } else {
+      if (this.isInput) {
         StaticMap.outputIndex = this._parent.getPoints()[0].findIndex((v) => v === this);
+        StaticMap.outputGateIndex = this._parent.getPoints()[0].find((v) => v === this)?._parent.getID()!;
+      } else {
+        StaticMap.outputIndex = this._parent.getPoints()[1].findIndex((v) => v === this);
+        StaticMap.outputGateIndex = this._parent.getPoints()[1].find((v) => v === this)?._parent.getID()!;
       }
     }
   }
@@ -75,11 +75,12 @@ export class ConnectionPoint implements IWidget {
     if (e.button === 0) {
       if (this.hovered && StaticConnectionData.pointFrom !== this && StaticConnectionData.pointFrom.isInput !== this.isInput) {
         StaticConnectionData.pointTo = this;
-        if (this._parent.type !== GateType.GATE) {
-          StaticMap.inputIndex = 0;
-          StaticMap.inputGateIndex = -(rs.gates.findIndex((v) => v === this._parent) + 1);
+        if (this.isInput) {
+          StaticMap.inputIndex = this._parent.getPoints()[0].findIndex((v) => v === this);
+          StaticMap.inputGateIndex = this._parent.getPoints()[0].find((v) => v === this)?._parent.getID()!;
         } else {
           StaticMap.inputIndex = this._parent.getPoints()[1].findIndex((v) => v === this);
+          StaticMap.inputGateIndex = this._parent.getPoints()[1].find((v) => v === this)?._parent.getID()!;
         }
 
         if (StaticConnectionData.pointFrom.isInput) {
@@ -93,16 +94,15 @@ export class ConnectionPoint implements IWidget {
           inputGateIndex: StaticMap.inputGateIndex,
           outputGateIndex: StaticMap.outputGateIndex,
         };
-        if (rs.connectionMap.findIndex((v) => v === map) !== -1) {
-          return;
-        }
 
         const i = rs.connectionData.findIndex((v) => v.pointFrom === StaticConnectionData.pointFrom && v.pointTo === StaticConnectionData.pointTo);
         if (i !== -1) {
           rs.connectionData.splice(i, 1);
-          const j = rs.connectionMap.findIndex((v) => v === map);
+          const j = rs.connectionMap.findIndex((v) => JSON.stringify(v) === JSON.stringify(map));
           if (j !== -1) {
             rs.connectionMap.splice(j, 1);
+            ls.updateConMap(rs.connectionMap);
+            rs.update(ls);
           }
           return;
         }
@@ -115,7 +115,7 @@ export class ConnectionPoint implements IWidget {
 
         rs.connectionData.push(conn);
         rs.connectionMap.push(map);
-        // simulator.rebuild();
+        rs.update(ls);
       }
     }
   }

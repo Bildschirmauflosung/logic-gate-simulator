@@ -1,3 +1,4 @@
+import { ls, rs } from "../main";
 import { isMouseOver } from "../utils/Helpers";
 import { IWidget } from "./IWidget";
 import { Menu } from "./menu/Menu";
@@ -30,6 +31,7 @@ export class BitButton implements IWidget {
   private handleMouseUp(_e: MouseEvent) {
     if (this.isInput && this.pressed) {
       this.enabled = !this.enabled;
+      rs.update(ls);
     }
     this.pressed = false;
   }

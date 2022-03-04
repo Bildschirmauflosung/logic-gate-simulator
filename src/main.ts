@@ -59,7 +59,14 @@ ProjectsDialog.show();
 
 function render() {
   ctx.clearRect(0, 0, cv.width, cv.height);
+  for (const i of rs.gates) {
+    i.updateInputs();
+  }
   ls.tick();
+  for (const i of rs.gates) {
+    i.updateOutputs();
+  }
+
   rs.render(ctx);
   rs.renderWires(ctx);
   requestAnimationFrame(render);

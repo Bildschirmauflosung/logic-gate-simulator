@@ -6,26 +6,29 @@ import {GateType} from "../render/GateType";
 import {LogicGateFrom} from "./LogicGateFrom";
 
 export class Simulator {
-  private gates: LogicGate[] = [];
+  public gates: LogicGate[] = [];
   private outputs: LogicGate[] = [];
 
   rebuild() {
     this.gates = this.fGates.map(LogicGateFrom);
+    this.gates.forEach((v) => {
+      v.reset();
+    });
     this.conMap.forEach((con) => {
       if(this.gates[con.inputGateIndex] !== undefined)
-        this.gates[con.inputGateIndex].connect(
-          con.inputIndex,
-          this.gates[con.outputGateIndex],
-          con.outputIndex
-        );
+      this.gates[con.inputGateIndex].connect(
+        con.inputIndex,
+        this.gates[con.outputGateIndex],
+        con.outputIndex
+      );
     });
-
+      
     this.outputs = this.gates.filter((gate) => gate.gate.type === GateType.OUTPUT);
   }
 
   private constructor(
     private readonly fGates: Gate[],
-    readonly conMap: IConnectionMap[]
+    public conMap: IConnectionMap[]
   ) {
       this.rebuild();
   }
@@ -35,6 +38,10 @@ export class Simulator {
       sim.gates,
       sim.connectionMap
     );
+  }
+
+  updateConMap(connectionMap: IConnectionMap[]): void {
+    this.conMap = connectionMap;
   }
 
   tick(): void {
