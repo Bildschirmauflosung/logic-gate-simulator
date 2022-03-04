@@ -8,6 +8,7 @@ import { GateType } from "./render/GateType";
 import { ProjectsDialog } from "./dialogs/ProjectsDialog";
 import { RenderSimulator } from "./render/RenderSimulator";
 import { SaveDialog } from "./dialogs/SaveDialog";
+import {Simulator} from "./logic/Simulator";
 
 export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 export const nav: HTMLElement = document.querySelector(".navbar")!;
@@ -16,6 +17,7 @@ const sidebarBtn: NodeListOf<HTMLElement> = document.querySelectorAll(".content_
 let ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
 
 export const rs = new RenderSimulator();
+const simulator = Simulator.from(rs);
 
 const addInput = new IOAddButton(true);
 const addOutput = new IOAddButton(false);
@@ -56,6 +58,7 @@ ProjectsDialog.show();
 
 function render() {
   ctx.clearRect(0, 0, cv.width, cv.height);
+  simulator.tick();
   rs.render(ctx);
   rs.renderWires(ctx);
   requestAnimationFrame(render);
