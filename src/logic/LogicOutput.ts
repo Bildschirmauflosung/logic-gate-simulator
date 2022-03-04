@@ -6,7 +6,7 @@ import {GateRegistry} from "./GateRegistry";
 
 export class LogicOutput extends LogicGate {
   constructor(gate: Gate) {
-    assertEqual(gate.type, GateType.INPUT);
+    assertEqual(gate.type, GateType.OUTPUT);
     super(gate, GateRegistry.get('output')!);
   }
 

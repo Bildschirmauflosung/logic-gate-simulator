@@ -18,6 +18,7 @@ let ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
 export const projects = new Map<string, Project>();
 export const currentProject = new Project("New Project");
 export const rs = currentProject.simulators.get("New Gate")?.[0]!;
+export const ls = currentProject.simulators.get("New Gate")?.[1]!;
 
 const addInput = new IOAddButton(true);
 const addOutput = new IOAddButton(false);
@@ -58,6 +59,7 @@ ProjectsDialog.show();
 
 function render() {
   ctx.clearRect(0, 0, cv.width, cv.height);
+  ls.tick();
   rs.render(ctx);
   rs.renderWires(ctx);
   requestAnimationFrame(render);
