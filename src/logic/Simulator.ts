@@ -3,14 +3,13 @@ import {Gate} from "../render/Gate";
 import {IConnectionMap} from "./IConnectionMap";
 import {LogicGate} from "./LogicGate";
 import {GateType} from "../render/GateType";
-import { logicGateFrom } from "./LogicGateFrom";
 
 export class Simulator {
   private gates: LogicGate[] = [];
   private outputs: LogicGate[] = [];
 
   rebuild() {
-    this.gates = this.fGates.map(logicGateFrom);
+    this.gates = this.fGates.map(LogicGate.from);
     this.conMap.forEach((con) => {
       this.gates[con.inputGateIndex].connect(
         con.inputIndex,
