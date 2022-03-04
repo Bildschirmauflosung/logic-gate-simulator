@@ -11,6 +11,6 @@ export class LogicInput extends LogicGate {
   }
 
   override requestValue(): boolean[] {
-    return [this.gate.enabled];
+    return this.gate.outputValues;
   }
 }
