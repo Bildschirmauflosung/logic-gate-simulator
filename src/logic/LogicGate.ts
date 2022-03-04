@@ -2,7 +2,7 @@ import {IValueRequestable} from "./IValueRequestable";
 import {ResolutionFunction} from "./Types";
 import {Gate} from "../render/Gate";
 import {IGateData} from "./IGateData";
-import {assert} from "../utils/Assert";
+import {assert, assertNotNull} from "../utils/Assert";
 
 export class LogicGate implements IValueRequestable {
   private visited: boolean = false;
@@ -33,6 +33,8 @@ export class LogicGate implements IValueRequestable {
   requestValue(): boolean[] {
     if(!this.visited) {
       this.visited = true;
+
+      assertNotNull(this.gate);
 
       this.value = this.resolutionFunc(
         this.gate.inputValues = this.children.map((gate: LogicGate, idx: number) => gate.requestValue()[this.iIndexes[idx]]).flat()
