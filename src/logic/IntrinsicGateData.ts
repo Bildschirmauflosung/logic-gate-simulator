@@ -34,6 +34,6 @@ export const IntrinsicGateData: Map<string, IGateData> = new Map([
     customStructure: null,
     intrinsic: true,
     outputCount: 0,
-    resolutionFunc: (_: boolean[]) => []
+    resolutionFunc: (a: boolean[]) => a
   }]
 ])
