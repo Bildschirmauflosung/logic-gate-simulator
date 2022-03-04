@@ -10,4 +10,7 @@ export class LogicInput extends LogicGate {
     super(gate, GateRegistry.get("input")!);
   }
 
+  override requestValue(): boolean[] {
+    return [this.gate.enabled];
+  }
 }
