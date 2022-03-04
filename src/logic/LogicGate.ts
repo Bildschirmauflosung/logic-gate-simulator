@@ -11,7 +11,7 @@ export class LogicGate implements IValueRequestable {
   readonly arity: number = 2;
   readonly outputCount: number = 1;
   readonly gate: Gate;
-  readonly children: LogicGate[];
+  readonly children: LogicGate[] = [];
   readonly iIndexes: number[];
 
   constructor(gate: Gate, gateData: IGateData) {
@@ -37,7 +37,7 @@ export class LogicGate implements IValueRequestable {
       assertNotNull(this.gate);
 
       this.value = this.resolutionFunc(
-        this.gate.inputValues = this.children.map((gate: LogicGate, idx: number) => gate.requestValue()[this.iIndexes[idx]]).flat()
+        this.gate.inputValues = this.children.map((gate: LogicGate, idx: number) => gate?.requestValue()[this.iIndexes[idx]]).flat()
       )
     }
     return this.gate.outputValues = this.value;
