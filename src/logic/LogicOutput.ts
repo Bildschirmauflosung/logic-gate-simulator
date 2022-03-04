@@ -11,7 +11,6 @@ export class LogicOutput extends LogicGate {
   }
 
   override requestValue(): boolean[] {
-    this.gate.enabled = super.requestValue()[0];
-    return super.requestValue();
+    return this.gate.inputValues = super.requestValue();
   }
 }
