@@ -36,16 +36,8 @@ export class ConnectionPoint implements IWidget {
         rs.connectionData.splice(j, 1);
       }
       
-      const indices: number[] = [];
-      rs.connectionMap.forEach((v, i) => {
-        if (_parent.getID() === v.inputGateIndex && _parent.getPoints()[1].findIndex((v) => v === this) !== -1) {
-          indices.push(i);
-        }
-      });
-      indices.sort((a, b) => a - b).reverse();
-      for (const j of indices) {
-        rs.connectionMap.splice(j, 1);
-      }
+      rs.connectionMap = rs.connectionMap.filter((v) => !(_parent.getID() === v.inputGateIndex || _parent.getID() === v.outputGateIndex) );
+      ls.updateConMap(rs.connectionMap);
     }, ItemType.DANGER));
   }
 
