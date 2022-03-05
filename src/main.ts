@@ -62,6 +62,7 @@ function render() {
   for (const i of rs.gates) {
     i.updateInputs();
   }
+  rs.update(ls);
   ls.tick();
   for (const i of rs.gates) {
     i.updateOutputs();

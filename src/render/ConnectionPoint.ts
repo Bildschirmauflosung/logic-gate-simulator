@@ -102,7 +102,6 @@ export class ConnectionPoint implements IWidget {
           if (j !== -1) {
             rs.connectionMap.splice(j, 1);
             ls.updateConMap(rs.connectionMap);
-            rs.update(ls);
           }
           return;
         }
@@ -115,7 +114,6 @@ export class ConnectionPoint implements IWidget {
 
         rs.connectionData.push(conn);
         rs.connectionMap.push(map);
-        rs.update(ls);
       }
     }
   }

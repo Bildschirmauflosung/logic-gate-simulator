@@ -119,8 +119,6 @@ export class Gate implements IWidget {
       for (const i of rs.gates) {
         i.updateId();
       }
-
-      rs.update(ls);
     }, ItemType.DANGER));
 
     if (type === GateType.GATE) {
