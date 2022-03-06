@@ -148,6 +148,35 @@
       }
     }
 
+    &-list {
+      user-select: none;
+      padding: 0;
+      border: 1px solid var(--fg-colour);
+
+      &-item {
+        margin: 0;
+        padding: 0.8rem;
+        cursor: pointer;
+
+        &:hover {
+          background-color: var(--hover-bg-colour);
+        }
+
+        &:active {
+          background-color: var(--active-bg-colour);
+        }
+
+        &-title {
+          margin: 0;
+        }
+        
+        &-desc {
+          margin: 0;
+          font-size: 1.4rem;
+        }
+      }
+    }
+
     &-text {
       font-size: 1.8rem;
     }
