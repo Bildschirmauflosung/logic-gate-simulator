@@ -26,6 +26,25 @@ export function updateConnectionData(points: ConnectionPoint[]) {
   }
 }
 
+export function getNumberFromBits(bits: boolean[], signed: boolean): number {
+  let num = 0;
+  if (signed) {
+    for (let n = bits.length - 1; n >= 0; n--) {
+      if (n === bits.length - 1 && bits[n]) {
+        num += -Math.pow(2, n);
+      } else {
+        num += (bits[n] ? 1 : 0) * Math.pow(2, n);
+      }
+    }
+  } else {
+    for (let n = bits.length - 1; n >= 0; n--) {
+      num += (bits[n] ? 1 : 0) * Math.pow(2, n);
+    }
+  }
+
+  return num;
+}
+
 export function tap<T>(obj: T, fn: (obj: T) => unknown): T {
   fn(obj);
   return obj;

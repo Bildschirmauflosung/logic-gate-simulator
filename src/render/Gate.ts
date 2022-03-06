@@ -2,7 +2,7 @@ import { GateRegistry } from "../logic/GateRegistry";
 import { IGateData } from "../logic/IGateData";
 import { cv, ls, nav, rs, sidebar } from "../main";
 import { assert } from "../utils/Assert";
-import { clamp, isMouseOver, updateConnectionData } from "../utils/Helpers";
+import { clamp, getNumberFromBits, isMouseOver, updateConnectionData } from "../utils/Helpers";
 import { BitButton } from "./BitButton";
 import { BitsNumber } from "./BitsNumber";
 import { ConnectionPoint } from "./ConnectionPoint";
@@ -14,6 +14,7 @@ import { IWidget } from "./IWidget";
 import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
 import { MouseEventType } from "./MouseEventType";
+import { fgColour } from "./theme/DarkTheme";
 import { Theme } from "./theme/Theme";
 
 export class Gate implements IWidget {
@@ -29,6 +30,9 @@ export class Gate implements IWidget {
   private expanded: boolean = false;
   private expandHeight: number = 0;
   private buttons: BitButton[] = [];
+
+  private numberValue: number = 0;
+  private isSigned: boolean = false;
   
   readonly arity: number = -1;
   readonly outputCount: number = -1;
@@ -74,6 +78,13 @@ export class Gate implements IWidget {
         // TODO: Go to editing mode
       }));
     } else {
+      if (bits !== BitsNumber.ONE) {
+        this.menu.addItem(new MenuItem("Signed Mode", () => {
+          this.menu.hide();
+          this.isSigned = !this.isSigned;
+          console.log(this.isSigned);
+        }));
+      }
       this.menu.addItem(new MenuItem("Rename", () => {
         this.menu.hide();
         const dialog = new Dialog("Rename");
@@ -119,8 +130,6 @@ export class Gate implements IWidget {
       for (const i of rs.gates) {
         i.updateId();
       }
-
-      rs.update(ls);
     }, ItemType.DANGER));
 
     if (type === GateType.GATE) {
@@ -394,10 +403,11 @@ export class Gate implements IWidget {
     if (this.type === GateType.INPUT && this.bits !== BitsNumber.ONE) {
       this.buttons.forEach((v, i) => {
         this.outputValues[i] = v.enabled;
+        this.numberValue = getNumberFromBits(this.outputValues, this.isSigned);
       });
     }
   }
-
+  
   updateOutputs() {
     if (this.type === GateType.OUTPUT) {
       if (this.bits === BitsNumber.ONE){
@@ -405,6 +415,7 @@ export class Gate implements IWidget {
       } else {
         this.buttons.forEach((v, i) => {
           v.enabled = this.inputValues[i];
+          this.numberValue = getNumberFromBits(this.outputValues, this.isSigned);
         });
       }
     }
@@ -446,6 +457,16 @@ export class Gate implements IWidget {
       ctx.arc(this.left + this.width - 12, this.top + 12, 5, 0, 2 * Math.PI);
       ctx.stroke();
       ctx.fill();
+    } else {
+      if (this.isSigned) {
+        ctx.beginPath();
+        ctx.strokeStyle = fgColour;
+        ctx.fillStyle = fgColour;
+        ctx.arc(this.left + this.width / 3, this.top + this.height * 3 / 4, 2, Math.PI / 2, -Math.PI / 2);
+        ctx.rect(this.left + this.width / 3, this.top + this.height * 3 / 4 - 2, this.left + this.width / 3 - 4, 4);
+        ctx.arc(this.left + this.width * 2 / 3, this.top + this.height * 3 / 4, 2, -Math.PI / 2, Math.PI / 2);
+        ctx.fill();
+      }
     }
 
     if (this.expanded) {
@@ -459,7 +480,11 @@ export class Gate implements IWidget {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.font = "normal 1.4rem 'Lato', sans-serif";
-    ctx.fillText(this.name.toUpperCase(), this.left + this.width / 2, this.top + this.height / 2);
+    if (this.type === GateType.GATE) {
+      ctx.fillText(this.name.toUpperCase(), this.left + this.width / 2, this.top + this.height / 2);
+    } else if (this.bits !== BitsNumber.ONE) {
+      ctx.fillText(this.numberValue.toString(), this.left + this.width / 2, this.top + this.height / 2);
+    }
 
     for (const i of this.ipoints) {
       i.render(ctx);
