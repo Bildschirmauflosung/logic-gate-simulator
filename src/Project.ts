@@ -6,7 +6,7 @@ export class Project {
   public simulators: Map<string, [RenderSimulator, Simulator]> = new Map();
 
   constructor(public name: string) {
-    const sim = new RenderSimulator();
+    const sim = new RenderSimulator("New Gate");
     this.simulators.set("New Gate", [sim, Simulator.from(sim)]);
     projects.set(name, this);
   }
