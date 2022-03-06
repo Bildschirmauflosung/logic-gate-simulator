@@ -9,6 +9,7 @@ import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
 import { MouseEventType } from "./MouseEventType";
 import { Theme } from "./theme/Theme";
+import { WidgetType } from "./WidgetType";
 
 export class IOAddButton implements IWidget {
   private left: number;
@@ -98,6 +99,13 @@ export class IOAddButton implements IWidget {
       case MouseEventType.CONTEXTMENU:
         break;
     }
+  }
+
+  getWidgetType(): WidgetType {
+    if (this.isInput) {
+      return WidgetType.ADD_BUTTON_IN;
+    }
+    return WidgetType.ADD_BUTTON_OUT;
   }
 
   render(ctx: CanvasRenderingContext2D): void {

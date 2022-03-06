@@ -5,6 +5,7 @@ import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
 import { MouseEventType } from "./MouseEventType";
 import { Theme } from "./theme/Theme";
+import { WidgetType } from "./WidgetType";
 
 export class BitButton implements IWidget {
   private hovered: boolean = false;
@@ -68,6 +69,10 @@ export class BitButton implements IWidget {
           break;
       }
     }
+  }
+
+  getWidgetType(): WidgetType {
+    return WidgetType.BIT_BUTTON;
   }
 
   render(ctx: CanvasRenderingContext2D): void {

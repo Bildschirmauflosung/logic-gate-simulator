@@ -12,6 +12,7 @@ import { Gate } from "./Gate";
 import { GateType } from "./GateType";
 import { Settings } from "../Settings";
 import { WorkingAreaData } from "../WorkingAreaData";
+import { WidgetType } from "./WidgetType";
 
 export class ConnectionPoint implements IWidget {
   private hovered: boolean = false;
@@ -141,6 +142,10 @@ export class ConnectionPoint implements IWidget {
         this.handleMouseContextMenu(event);
         break;
     }
+  }
+
+  getWidgetType(): WidgetType {
+    return WidgetType.POINT;
   }
 
   render(ctx: CanvasRenderingContext2D): void {

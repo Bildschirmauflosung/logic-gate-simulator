@@ -18,6 +18,7 @@ import { ItemType, MenuItem } from "./menu/MenuItem";
 import { MouseEventType } from "./MouseEventType";
 import { fgColour } from "./theme/DarkTheme";
 import { Theme } from "./theme/Theme";
+import { WidgetType } from "./WidgetType";
 
 export class Gate implements IWidget {
   private grabbed: boolean = false;
@@ -409,6 +410,10 @@ export class Gate implements IWidget {
         });
       }
     }
+  }
+
+  getWidgetType(): WidgetType {
+    return WidgetType.GATE;
   }
 
   render(ctx: CanvasRenderingContext2D): void {
