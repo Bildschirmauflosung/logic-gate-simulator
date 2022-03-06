@@ -11,7 +11,7 @@ export class RenderSimulator {
   public readonly connectionData: ConnectionData[] = [];
   public connectionMap: IConnectionMap[] = [];
 
-  constructor() {}
+  constructor(readonly name: string) {}
 
   render(ctx: CanvasRenderingContext2D) {
     for (const i of this.widgets) {

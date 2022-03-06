@@ -72,12 +72,7 @@ export class Gate implements IWidget {
       this.expandHeight = this.height + (bits) * 48;
     }
     this.menu = new Menu();
-    if (type === GateType.GATE) {
-      this.menu.addItem(new MenuItem("Edit", () => {
-        this.menu.hide();
-        // TODO: Go to editing mode
-      }));
-    } else {
+    if (type !== GateType.GATE) {
       if (bits !== BitsNumber.ONE) {
         this.menu.addItem(new MenuItem("Signed Mode", () => {
           this.menu.hide();
@@ -100,7 +95,7 @@ export class Gate implements IWidget {
         dialog.show();
       }));
     }
-    this.menu.addItem(new MenuItem("Delete", () => {
+    this.menu.addItem(new MenuItem("Remove", () => {
       this.menu.destroy();
       for (const i of this.ipoints) {
         i.destroyMenu();
