@@ -1,5 +1,5 @@
-import { ls, rs } from "../main";
 import { isMouseOver } from "../utils/Helpers";
+import { WorkingAreaData } from "../WorkingAreaData";
 import { IWidget } from "./IWidget";
 import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
@@ -31,7 +31,7 @@ export class BitButton implements IWidget {
   private handleMouseUp(_e: MouseEvent) {
     if (this.isInput && this.pressed) {
       this.enabled = !this.enabled;
-      rs.update(ls);
+      WorkingAreaData.rs.update(WorkingAreaData.ls);
     }
     this.pressed = false;
   }

@@ -10,8 +10,8 @@ import { IWidget } from "./IWidget";
 import { MouseEventType } from "./MouseEventType";
 import { Gate } from "./Gate";
 import { GateType } from "./GateType";
-import { ls, rs } from "../main";
 import { Settings } from "../Settings";
+import { WorkingAreaData } from "../WorkingAreaData";
 
 export class ConnectionPoint implements IWidget {
   private hovered: boolean = false;
@@ -26,18 +26,18 @@ export class ConnectionPoint implements IWidget {
     this.menu.addItem(new MenuItem("Disconnect", () => {
       this.menu.hide();
       const pointIndices: number[] = [];
-      rs.connectionData.forEach((v, i) => {
+      WorkingAreaData.rs.connectionData.forEach((v, i) => {
         if (v.pointFrom === this || v.pointTo === this) {
           pointIndices.push(i);
         }
       });
       pointIndices.sort((a, b) => a - b).reverse();
       for (const j of pointIndices) {
-        rs.connectionData.splice(j, 1);
+        WorkingAreaData.rs.connectionData.splice(j, 1);
       }
       
-      rs.connectionMap = rs.connectionMap.filter((v) => !(_parent.getID() === v.inputGateIndex || _parent.getID() === v.outputGateIndex) );
-      ls.updateConMap(rs.connectionMap);
+      WorkingAreaData.rs.connectionMap = WorkingAreaData.rs.connectionMap.filter((v) => !(_parent.getID() === v.inputGateIndex || _parent.getID() === v.outputGateIndex) );
+      WorkingAreaData.ls.updateConMap(WorkingAreaData.rs.connectionMap);
     }, ItemType.DANGER));
   }
 
@@ -87,25 +87,25 @@ export class ConnectionPoint implements IWidget {
           outputGateIndex: StaticMap.outputGateIndex,
         };
 
-        const i = rs.connectionData.findIndex((v) => v.pointFrom === StaticConnectionData.pointFrom && v.pointTo === StaticConnectionData.pointTo);
+        const i = WorkingAreaData.rs.connectionData.findIndex((v) => v.pointFrom === StaticConnectionData.pointFrom && v.pointTo === StaticConnectionData.pointTo);
         if (i !== -1) {
-          rs.connectionData.splice(i, 1);
-          const j = rs.connectionMap.findIndex((v) => JSON.stringify(v) === JSON.stringify(map));
+          WorkingAreaData.rs.connectionData.splice(i, 1);
+          const j = WorkingAreaData.rs.connectionMap.findIndex((v) => JSON.stringify(v) === JSON.stringify(map));
           if (j !== -1) {
-            rs.connectionMap.splice(j, 1);
-            ls.updateConMap(rs.connectionMap);
+            WorkingAreaData.rs.connectionMap.splice(j, 1);
+            WorkingAreaData.ls.updateConMap(WorkingAreaData.rs.connectionMap);
           }
           return;
         }
         
         const conn = new ConnectionData(StaticConnectionData.pointFrom, StaticConnectionData.pointTo);
-        const pos = rs.connectionData.findIndex((v) => v.pointTo === conn.pointTo);
+        const pos = WorkingAreaData.rs.connectionData.findIndex((v) => v.pointTo === conn.pointTo);
         if (pos !== -1) {
           return;
         }
 
-        rs.connectionData.push(conn);
-        rs.connectionMap.push(map);
+        WorkingAreaData.rs.connectionData.push(conn);
+        WorkingAreaData.rs.connectionMap.push(map);
       }
     }
   }
