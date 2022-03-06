@@ -74,11 +74,13 @@ export class Gate implements IWidget {
     this.menu = new Menu();
     if (type !== GateType.GATE) {
       if (bits !== BitsNumber.ONE) {
-        this.menu.addItem(new MenuItem("Signed Mode", () => {
-          this.menu.hide();
-          this.isSigned = !this.isSigned;
-          console.log(this.isSigned);
-        }));
+        const item = new MenuItem("Signed Mode", () => {});
+          item.onClick = () => {
+            this.menu.hide();
+            this.isSigned = !this.isSigned;
+            item.changeText(this.isSigned ? "Normal Mode" : "Signed Mode");
+          };
+        this.menu.addItem(item);
       }
       this.menu.addItem(new MenuItem("Rename", () => {
         this.menu.hide();
