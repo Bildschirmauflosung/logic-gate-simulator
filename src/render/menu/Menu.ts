@@ -1,5 +1,5 @@
 import { cv } from "../../main";
-import { ItemType, MenuItem } from "./MenuItem";
+import { MenuItem } from "./MenuItem";
 
 export class Menu {
   private html = document.createElement("div");
@@ -7,24 +7,12 @@ export class Menu {
 
   constructor() {
     this.html.className = "context-menu";
+    document.body.appendChild(this.html);
   }
 
   addItem(item: MenuItem) {
-    const out = document.createElement("div");
-    out.textContent = item.text;
-    out.classList.add("context-menu__item");
-    out.addEventListener("click", item.onClick);
-    switch (item.type) {
-      case ItemType.NORMAL:
-        out.classList.add("context-menu__item--normal");
-        break;
-      case ItemType.DANGER:
-        out.classList.add("context-menu__item--danger");
-        break;
-    }
-    this.html.appendChild(out);
+    item.create(this.html);
     this.items.push(item);
-    document.body.appendChild(this.html);
   }
 
   show(left: number, top: number) {

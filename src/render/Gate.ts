@@ -74,10 +74,13 @@ export class Gate implements IWidget {
     this.menu = new Menu();
     if (type !== GateType.GATE) {
       if (bits !== BitsNumber.ONE) {
-        this.menu.addItem(new MenuItem("Signed Mode", () => {
-          this.menu.hide();
-          this.isSigned = !this.isSigned;
-        }));
+        const item = new MenuItem("Signed Mode", () => {});
+          item.onClick = () => {
+            this.menu.hide();
+            this.isSigned = !this.isSigned;
+            item.changeText(this.isSigned ? "Normal Mode" : "Signed Mode");
+          };
+        this.menu.addItem(item);
       }
       this.menu.addItem(new MenuItem("Rename", () => {
         this.menu.hide();
@@ -179,28 +182,19 @@ export class Gate implements IWidget {
     }
     return this.id === max;
   }
-
-  private movePoint(point: ConnectionPoint, index: number) {
-    point.top = this.top + (index + 1) * 48 + 16;
+  
+  private modifyPoint(point: ConnectionPoint, index: number) {
+    point.enabled = !point.enabled;
+    if (point.enabled) {
+      point.top = this.top + (index + 1) * 48 + 16;
+    } else {
+      point.top = this.top + this.height / 2;
+    }
   }
 
   private togglePoints() {
-    this.ipoints.forEach((v, i) => {
-      v.enabled = !v.enabled;
-      if (v.enabled) {
-        this.movePoint(v, i);
-      } else {
-        v.top = this.top + this.height / 2;
-      }
-    });
-    this.opoints.forEach((v, i) => {
-      v.enabled = !v.enabled;
-      if (v.enabled) {
-        this.movePoint(v, i);
-      } else {
-        v.top = this.top + this.height / 2;
-      }
-    });
+    this.ipoints.forEach((v, i) => this.modifyPoint(v, i));
+    this.opoints.forEach((v, i) => this.modifyPoint(v, i));
   }
 
   private handleMouseMove(e: MouseEvent) {
@@ -228,14 +222,14 @@ export class Gate implements IWidget {
         } else {
           this.ipoints.forEach((v, i) => {
             if (v.enabled && this.bits !== BitsNumber.ONE) {
-              this.movePoint(v, i);
+              v.top = this.top + (i + 1) * 48 + 16;
             } else {
               v.top = this.top + this.height / 2;
             }
           });
           this.opoints.forEach((v, i) => {
             if (v.enabled && this.bits !== BitsNumber.ONE) {
-              this.movePoint(v, i);
+              v.top = this.top + (i + 1) * 48 + 16;
             } else {
               v.top = this.top + this.height / 2;
             }

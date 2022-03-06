@@ -5,4 +5,5 @@ export enum DialogFieldType {
   SELECT,
   TEXT,
   FLEX,
+  LIST,
 }
