@@ -6,6 +6,7 @@ import {LogicOutput} from "./LogicOutput";
 import {LogicGate} from "./LogicGate";
 import {IntrinsicGateData} from "./IntrinsicGateData";
 import { WorkingAreaData } from "../WorkingAreaData";
+import {CustomLogicGate} from "./CustomLogicGate";
 
 // @ts-ignore
 export function LogicGateFrom(gate: Gate): LogicGate {
@@ -19,7 +20,7 @@ export function LogicGateFrom(gate: Gate): LogicGate {
         return new LogicGate(gate, IntrinsicGateData.get(gate.name)!);
       } else {
         assert(WorkingAreaData.currentProject.registry.has(gate.name), `Gate "${gate.name}" does not exist, this should be unreachable`);
-//        return new CustomLogicGate(gate, currentProject);
+       return new CustomLogicGate(gate, WorkingAreaData.currentProject.registry.get(gate.name)!, WorkingAreaData.currentProject.gates.get(gate.name)!);
       }
       break;
     case GateType.INPUT:

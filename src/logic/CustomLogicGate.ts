@@ -4,13 +4,14 @@ import {Gate} from "../render/Gate";
 import {IGateData} from "./IGateData";
 import {assertNotNull} from "../utils/Assert";
 import {GateType} from "../render/GateType";
+import {CustomGateDesc} from "./CustomGateDesc";
 
 export class CustomLogicGate extends LogicGate {
   internalSim!: Simulator;
 
-  constructor(gate: Gate, gateData: IGateData) {
+  constructor(gate: Gate, gateData: IGateData, gateDesc: CustomGateDesc) {
     super(gate, {...gateData, resolutionFunc: null});
-    // this.internalSim = Simulator.forCustomGate()
+    this.internalSim = Simulator.forCustomGate(gateDesc);
   }
 
   override requestValue(): boolean[] {
