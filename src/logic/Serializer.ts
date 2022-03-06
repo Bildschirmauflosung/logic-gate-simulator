@@ -21,11 +21,11 @@ export class Serializer {
         return [pair[0], cpy];
       });
 
-    let projs = JSON.parse(ls.getItem("projects") || "[]") as string[];
+    let projs = new Set(JSON.parse(ls.getItem("projects") || "[]") as string[]);
 
-    projs.push(proj.name);
+    projs.add(proj.name);
 
-    ls.setItem("projects", JSON.stringify(projs));
+    ls.setItem("projects", JSON.stringify([...projs]));
 
     ls.setItem(`p:${proj.name}`, JSON.stringify({
       name: proj.name,
