@@ -32,6 +32,25 @@ const addOutput = new IOAddButton(false);
 rs.widgets.push(addInput);
 rs.widgets.push(addOutput);
 
+function createElement(name: string) {
+  const btn = document.createElement("div");
+  btn.className = "content__sidebar-btn";
+  btn.innerText = name.toUpperCase();
+  btn.addEventListener("click", () => {
+    const g: Gate = new Gate(64, 4, rs.gates.length, name, GateType.GATE);
+    rs.gates.push(g);
+    rs.widgets.push(g);
+  });
+  sidebar.appendChild(btn);
+}
+
+export function updateSidebar() {
+  sidebar.replaceChildren();
+  [...currentProject.registry].filter((v) => v[1].gType === GateType.GATE).forEach((v) => {
+    createElement(v[0]);
+  });
+}
+
 function resizeCanvas() {
   cv.width = window.innerWidth - sidebar.offsetWidth;
   cv.height = window.innerHeight - nav.offsetHeight;

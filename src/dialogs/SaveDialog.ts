@@ -1,3 +1,4 @@
+import { currentProject, rs, updateSidebar } from "../main";
 import { Dialog } from "../render/dialog/Dialog";
 import { ButtonType, DialogButton } from "../render/dialog/DialogButton";
 import { DialogColourField } from "../render/dialog/DialogColourField";
@@ -13,7 +14,8 @@ export class SaveDialog {
     this.dialog.addButton(new DialogButton("Cancel", ButtonType.NORMAL, () => { this.dialog.close() }));
     this.dialog.addButton(new DialogButton("Save", ButtonType.NORMAL, () => {
       this.dialog.close();
-      // TODO: Store gate in storage
+      currentProject.updateRegistry(this.dialog.getValueFromField("name") as string, rs);
+      updateSidebar();
     }));
   }
 
