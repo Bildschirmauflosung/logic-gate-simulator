@@ -9,7 +9,7 @@ export class CustomLogicGate extends LogicGate {
   internalSim!: Simulator;
 
   constructor(gate: Gate, gateData: IGateData) {
-    super(gate, {...gateData, resolutionFunc: (_) => []});
+    super(gate, {...gateData, resolutionFunc: null});
     // this.internalSim = Simulator.forCustomGate()
   }
 

@@ -18,7 +18,7 @@ export function LogicGateFrom(gate: Gate): LogicGate {
         return new LogicGate(gate, IntrinsicGateData.get(gate.name)!);
       } else {
         assert(GateRegistry.has(gate.name), `Gate "${gate.name}" does not exist, this should be unreachable`);
-        // return new CustomLogicGate();
+//        return new CustomLogicGate(gate, currentProject);
       }
     case GateType.INPUT:
       return new LogicInput(gate);
