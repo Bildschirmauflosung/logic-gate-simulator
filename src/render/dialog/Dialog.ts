@@ -1,4 +1,4 @@
-import { DialogButton } from "./DialogButton";
+import { ButtonType, DialogButton } from "./DialogButton";
 import { DialogFieldType } from "./DialogFieldType";
 import { IDialogField } from "./IDialogField";
 
@@ -24,7 +24,11 @@ export class Dialog {
     this.html.appendChild(btns);
     for (const i of this.buttons) {
       const btn = document.createElement("div");
-      btn.className = "modal-bg__dialog-btns-btn";
+      if (i.type === ButtonType.DANGER) {
+        btn.className = "modal-bg__dialog-btns-btn modal-bg__dialog-btns-btn--danger";
+      } else {
+        btn.className = "modal-bg__dialog-btns-btn";
+      }
       btn.innerText = i.label;
       btn.addEventListener("click", i.onClick);
       btns.appendChild(btn);
@@ -36,7 +40,7 @@ export class Dialog {
   }
 
   addField(field: IDialogField) {
-    if (field.getType() !== DialogFieldType.CHECK) {
+    if (field.getType() !== DialogFieldType.CHECK && field.getType() !== DialogFieldType.TEXT) {
       const label = document.createElement("p");
       label.className = "modal-bg__dialog-label";
       label.innerText = field.getLabel();

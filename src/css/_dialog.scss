@@ -47,6 +47,10 @@
 
       &-btn {
         @include btn;
+
+        &--danger {
+          color: var(--red-fg-colour);
+        }
       }
     }
 

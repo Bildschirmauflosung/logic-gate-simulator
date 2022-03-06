@@ -8,6 +8,13 @@ import { GateType } from "./render/GateType";
 import { ProjectsDialog } from "./dialogs/ProjectsDialog";
 import { SaveDialog } from "./dialogs/SaveDialog";
 import { Project } from "./Project";
+import { Menu } from "./render/menu/Menu";
+import { ItemType, MenuItem } from "./render/menu/MenuItem";
+import { Dialog } from "./render/dialog/Dialog";
+import { DialogColourField } from "./render/dialog/DialogColourField";
+import { DialogInputField } from "./render/dialog/DialogInputField";
+import { ButtonType, DialogButton } from "./render/dialog/DialogButton";
+import { DialogTextField } from "./render/dialog/DialogTextField";
 
 export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 export const nav: HTMLElement = document.querySelector(".navbar")!;
@@ -79,10 +86,47 @@ window.addEventListener("resize", resizeCanvas);
 
 sidebarBtn.forEach((v) => {
   const gateName = v.innerText.toLowerCase();
+  const menu = new Menu();
+  menu.addItem(new MenuItem("Edit", () => {
+    menu.hide();
+    // TODO: Go to editing mode
+  }));
+  menu.addItem(new MenuItem("Properties", () => {
+    menu.hide();
+    const dialog = new Dialog(`Properties - ${ gateName.toUpperCase() }`);
+    dialog.addField(new DialogColourField("colour", "Colour"));
+    dialog.addField(new DialogInputField("name", "Name (max. 8 chars)", 8));
+    dialog.addButton(new DialogButton("Cancel", ButtonType.NORMAL, () => {
+      dialog.close();
+    }));
+    dialog.addButton(new DialogButton("Save", ButtonType.NORMAL, () => {
+      dialog.close();
+      // TODO: Save changes
+    }));
+    dialog.show();
+  }));
+  menu.addItem(new MenuItem("Delete", () => {
+    menu.hide();
+    const dialog = new Dialog(`Delete Gate`);
+    dialog.addField(new DialogTextField("text", `Are you sure you want to delete ${ gateName.toUpperCase() } gate? \nThis action is irreversible.`));
+    dialog.addButton(new DialogButton("Cancel", ButtonType.NORMAL, () => {
+      dialog.close();
+    }));
+    dialog.addButton(new DialogButton("Delete", ButtonType.DANGER, () => {
+      dialog.close();
+      // TODO: Delete gate from project
+    }));
+    dialog.show();
+  }, ItemType.DANGER));
+
   v.addEventListener("click", () => {
     const g: Gate = new Gate(64, 4, rs.gates.length, gateName, GateType.GATE);
     rs.gates.push(g);
     rs.widgets.push(g);
+    menu.hide();
+  });
+  v.addEventListener("contextmenu", (e) => {
+    menu.show(e.clientX, e.clientY);
   });
 });
 
