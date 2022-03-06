@@ -3,37 +3,37 @@ import {IGateData} from "./IGateData";
 export const IntrinsicGateData: Map<string, IGateData> = new Map([
   ['and', {
     arity: 2,
-    intrinsic: true,
     outputCount: 1,
     resolutionFunc: ([lhs, rhs, ..._]: boolean[]) => [lhs && rhs],
-    customStructure: null,
+    customStructureRef: null,
+    prereqs: new Set(),
   }],
   ['or',  {
     arity: 2,
-    intrinsic: true,
     outputCount: 1,
     resolutionFunc: ([lhs, rhs, ..._]: boolean[]) => [lhs || rhs],
-    customStructure: null,
+    customStructureRef: null,
+    prereqs: new Set(),
   }],
   ['not', {
     arity:1,
-    intrinsic: true,
     outputCount: 1,
     resolutionFunc: ([v, ..._]: boolean[]) => [!v],
-    customStructure: null,
+    customStructureRef: null,
+    prereqs: new Set(),
   }],
   ['input', {
     arity: 0,
-    customStructure: null,
-    intrinsic: true,
+    customStructureRef: null,
     outputCount: 1,
-   resolutionFunc: (_: boolean[]) => [],
+    resolutionFunc: (_: boolean[]) => [],
+    prereqs: new Set(),
   }],
   ['output', {
     arity: 1,
-    customStructure: null,
-    intrinsic: true,
+    customStructureRef: null,
     outputCount: 0,
-    resolutionFunc: (a: boolean[]) => a
+    resolutionFunc: (a: boolean[]) => a,
+    prereqs: new Set(),
   }]
 ])

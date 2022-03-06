@@ -1,6 +1,6 @@
-import {IGateData} from "./IGateData";
 import {IntrinsicGateData} from "./IntrinsicGateData";
+import {GateRegistryT} from "./Types";
 
-export const GateRegistry: Map<string, IGateData> = new Map([
+export const GateRegistry: GateRegistryT = new Map([
   ...IntrinsicGateData,
 ])

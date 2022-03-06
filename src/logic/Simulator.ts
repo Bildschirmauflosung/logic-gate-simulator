@@ -4,10 +4,12 @@ import {IConnectionMap} from "./IConnectionMap";
 import {LogicGate} from "./LogicGate";
 import {GateType} from "../render/GateType";
 import {LogicGateFrom} from "./LogicGateFrom";
+import {CustomGateDesc} from "./CustomGateDesc";
 
 export class Simulator {
   public gates: LogicGate[] = [];
   private outputs: LogicGate[] = [];
+  public prereqs: Set<string> = new Set();
 
   rebuild() {
     this.gates = this.fGates.map(LogicGateFrom);
@@ -31,6 +33,12 @@ export class Simulator {
     public conMap: IConnectionMap[]
   ) {
       this.rebuild();
+  }
+
+  static forCustomGate(desc: CustomGateDesc): Simulator {
+    let ret = new Simulator(desc.gates, desc.conections);
+    ret.prereqs = desc.prereqs;
+    return ret;
   }
 
   static from(sim: RenderSimulator): Simulator {

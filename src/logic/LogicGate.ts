@@ -1,12 +1,11 @@
-import {IValueRequestable} from "./IValueRequestable";
 import {ResolutionFunction} from "./Types";
 import {Gate} from "../render/Gate";
 import {IGateData} from "./IGateData";
 import {assert, assertNotNull} from "../utils/Assert";
 
-export class LogicGate implements IValueRequestable {
-  private visited: boolean = false;
-  private value: boolean[] = [false];
+export class LogicGate {
+  protected visited: boolean = false;
+  protected value: boolean[] = [false];
   readonly resolutionFunc: ResolutionFunction;
   readonly arity: number = 2;
   readonly outputCount: number = 1;
@@ -47,4 +46,6 @@ export class LogicGate implements IValueRequestable {
     }
     return this.gate.outputValues = this.value;
   }
+
+
 }

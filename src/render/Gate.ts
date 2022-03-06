@@ -82,7 +82,6 @@ export class Gate implements IWidget {
         this.menu.addItem(new MenuItem("Signed Mode", () => {
           this.menu.hide();
           this.isSigned = !this.isSigned;
-          console.log(this.isSigned);
         }));
       }
       this.menu.addItem(new MenuItem("Rename", () => {
