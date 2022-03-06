@@ -7,8 +7,8 @@ import { RenderSimulator } from "./render/RenderSimulator";
 
 export class Project {
   public simulators: Map<string, [RenderSimulator, Simulator]> = new Map();
-  readonly gates: Map<string, CustomGateDesc> = new Map();
-  readonly registry: GateRegistryT = new Map([...IntrinsicGateData]);
+  public gates: Map<string, CustomGateDesc> = new Map();
+  public registry: GateRegistryT = new Map([...IntrinsicGateData]);
 
   constructor(public name: string) {
     const sim = new RenderSimulator("New Gate");
