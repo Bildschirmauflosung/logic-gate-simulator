@@ -1,5 +1,6 @@
 import { GateRegistry } from "../logic/GateRegistry";
 import { IGateData } from "../logic/IGateData";
+import { IntrinsicGateData } from "../logic/IntrinsicGateData";
 import { cv, nav, sidebar } from "../main";
 import { assert } from "../utils/Assert";
 import { clamp, getNumberFromBits, isMouseOver, updateConnectionData } from "../utils/Helpers";
@@ -47,16 +48,16 @@ export class Gate implements IWidget {
 
   constructor(public left: number, public top: number, private id: number, public name: string, public readonly type: GateType, public readonly bits: BitsNumber = BitsNumber.ONE, public colour: string  = "#d98c8c") {
     let gateData: IGateData;
-    if((gateData = GateRegistry.get(name)!) === undefined) {
+    if((gateData = WorkingAreaData.currentProject.registry.get(name)!) === undefined) {
       switch (type) {
         case GateType.OUTPUT:
-          gateData = {...GateRegistry.get('output')!, arity: bits};
+          gateData = {...IntrinsicGateData.get('output')!, arity: bits};
           break;
         case GateType.INPUT:
-          gateData = {...GateRegistry.get('input')!, outputCount: bits};
+          gateData = {...IntrinsicGateData.get('input')!, outputCount: bits};
           break;
         default:
-          assert(false, "Unknown Gate");
+          assert(false, `Unknown Gate ${ name }`);
           throw new Error();
       }
     }

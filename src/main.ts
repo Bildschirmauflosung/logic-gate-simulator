@@ -15,6 +15,7 @@ import { DialogInputField } from "./render/dialog/DialogInputField";
 import { ButtonType, DialogButton } from "./render/dialog/DialogButton";
 import { DialogTextField } from "./render/dialog/DialogTextField";
 import { WorkingAreaData } from "./WorkingAreaData";
+import { Project } from "./Project";
 
 export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 export const nav: HTMLElement = document.querySelector(".navbar")!;
@@ -26,6 +27,8 @@ const addInput = new IOAddButton(true);
 const addOutput = new IOAddButton(false);
 WorkingAreaData.rs.widgets.push(addInput);
 WorkingAreaData.rs.widgets.push(addOutput);
+
+WorkingAreaData.projects.set("New Project", new Project("New Project"));
 
 function createElement(name: string) {
   const btn = document.createElement("div");
@@ -98,6 +101,7 @@ document.addEventListener("contextmenu", (e) => e.preventDefault());
 
 window.addEventListener("resize", resizeCanvas);
 
+/*
 sidebarBtn.forEach((v) => {
   const gateName = v.innerText.toLowerCase();
   const menu = new Menu();
@@ -143,6 +147,9 @@ sidebarBtn.forEach((v) => {
     menu.show(e.clientX, e.clientY);
   });
 });
+*/
+
+updateSidebar();
 
 cv.addEventListener("mousemove", (e) => WorkingAreaData.rs.handleEvents(MouseEventType.MOVE, e));
 cv.addEventListener("mousedown", (e) => WorkingAreaData.rs.handleEvents(MouseEventType.DOWN, e));

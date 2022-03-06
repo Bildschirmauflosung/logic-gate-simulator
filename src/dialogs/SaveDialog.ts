@@ -1,8 +1,10 @@
+import { Simulator } from "../logic/Simulator";
 import { updateSidebar } from "../main";
 import { Dialog } from "../render/dialog/Dialog";
 import { ButtonType, DialogButton } from "../render/dialog/DialogButton";
 import { DialogColourField } from "../render/dialog/DialogColourField";
 import { DialogInputField } from "../render/dialog/DialogInputField";
+import { RenderSimulator } from "../render/RenderSimulator";
 import { WorkingAreaData } from "../WorkingAreaData";
 
 export class SaveDialog {
@@ -15,7 +17,12 @@ export class SaveDialog {
     this.dialog.addButton(new DialogButton("Cancel", ButtonType.NORMAL, () => { this.dialog.close() }));
     this.dialog.addButton(new DialogButton("Save", ButtonType.NORMAL, () => {
       this.dialog.close();
-      WorkingAreaData.currentProject.updateRegistry(this.dialog.getValueFromField("name") as string, WorkingAreaData.rs);
+      const name = this.dialog.getValueFromField("name") as string;
+      WorkingAreaData.currentProject.updateRegistry(name, WorkingAreaData.rs);
+      WorkingAreaData.rs.name = name;
+      WorkingAreaData.currentProject.simulators.set(name, [WorkingAreaData.rs, WorkingAreaData.ls]);
+      WorkingAreaData.rs = new RenderSimulator("New Gate");
+      WorkingAreaData.ls = Simulator.from(WorkingAreaData.rs);
       updateSidebar();
     }));
   }

@@ -4,7 +4,6 @@ import { Simulator } from "./logic/Simulator";
 import { GateRegistryT } from "./logic/Types";
 import { GateType } from "./render/GateType";
 import { RenderSimulator } from "./render/RenderSimulator";
-import { WorkingAreaData } from "./WorkingAreaData";
 
 export class Project {
   public simulators: Map<string, [RenderSimulator, Simulator]> = new Map();
@@ -14,7 +13,6 @@ export class Project {
   constructor(public name: string) {
     const sim = new RenderSimulator("New Gate");
     this.simulators.set("New Gate", [sim, Simulator.from(sim)]);
-    WorkingAreaData.projects.set(name, this);
   }
 
   updateRegistry(name: string, simulator: RenderSimulator) {
@@ -34,5 +32,7 @@ export class Project {
       gates: simulator.gates,
       prereqs: new Set(),
     });
+
+    console.log(this.registry);
   }
 }
