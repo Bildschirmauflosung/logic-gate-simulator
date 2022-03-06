@@ -1,5 +1,5 @@
-import { rs } from "../main";
 import { ConnectionPoint } from "../render/ConnectionPoint";
+import { WorkingAreaData } from "../WorkingAreaData";
 
 export function isMouseOver(e: MouseEvent, width: number, height: number, left: number, top: number): boolean {
   return e.offsetX > left && e.offsetX < left + width && e.offsetY > top && e.offsetY < top + height;
@@ -11,7 +11,7 @@ export function clamp(a: number, b: number, c: number): number {
 
 export function updateConnectionData(points: ConnectionPoint[]) {
   const removing: number[] = [];
-  rs.connectionData.forEach((v, i) => {
+  WorkingAreaData.rs.connectionData.forEach((v, i) => {
     for (const p of points) {
       if (v.pointFrom === p || v.pointTo === p) {
         removing.push(i);
@@ -22,7 +22,7 @@ export function updateConnectionData(points: ConnectionPoint[]) {
   removing.sort((a, b) => b - a);
 
   for (const i of removing) {
-    rs.connectionData.splice(i, 1);
+    WorkingAreaData.rs.connectionData.splice(i, 1);
   }
 }
 

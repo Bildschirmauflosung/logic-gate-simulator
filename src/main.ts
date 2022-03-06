@@ -7,7 +7,6 @@ import { MouseEventType } from "./render/MouseEventType";
 import { GateType } from "./render/GateType";
 import { ProjectsDialog } from "./dialogs/ProjectsDialog";
 import { SaveDialog } from "./dialogs/SaveDialog";
-import { Project } from "./Project";
 import { Menu } from "./render/menu/Menu";
 import { ItemType, MenuItem } from "./render/menu/MenuItem";
 import { Dialog } from "./render/dialog/Dialog";
@@ -15,6 +14,7 @@ import { DialogColourField } from "./render/dialog/DialogColourField";
 import { DialogInputField } from "./render/dialog/DialogInputField";
 import { ButtonType, DialogButton } from "./render/dialog/DialogButton";
 import { DialogTextField } from "./render/dialog/DialogTextField";
+import { WorkingAreaData } from "./WorkingAreaData";
 
 export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 export const nav: HTMLElement = document.querySelector(".navbar")!;
@@ -22,31 +22,26 @@ export const sidebar: HTMLElement = document.querySelector(".content__sidebar")!
 const sidebarBtn: NodeListOf<HTMLElement> = document.querySelectorAll(".content__sidebar-btn")!;
 let ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
 
-export const projects = new Map<string, Project>();
-export const currentProject = new Project("New Project");
-export const rs = currentProject.simulators.get("New Gate")?.[0]!;
-export const ls = currentProject.simulators.get("New Gate")?.[1]!;
-
 const addInput = new IOAddButton(true);
 const addOutput = new IOAddButton(false);
-rs.widgets.push(addInput);
-rs.widgets.push(addOutput);
+WorkingAreaData.rs.widgets.push(addInput);
+WorkingAreaData.rs.widgets.push(addOutput);
 
 function createElement(name: string) {
   const btn = document.createElement("div");
   btn.className = "content__sidebar-btn";
   btn.innerText = name.toUpperCase();
   btn.addEventListener("click", () => {
-    const g: Gate = new Gate(64, 4, rs.gates.length, name, GateType.GATE);
-    rs.gates.push(g);
-    rs.widgets.push(g);
+    const g: Gate = new Gate(64, 4, WorkingAreaData.rs.gates.length, name, GateType.GATE);
+    WorkingAreaData.rs.gates.push(g);
+    WorkingAreaData.rs.widgets.push(g);
   });
   sidebar.appendChild(btn);
 }
 
 export function updateSidebar() {
   sidebar.replaceChildren();
-  [...currentProject.registry].filter((v) => v[1].gType === GateType.GATE).forEach((v) => {
+  [...WorkingAreaData.currentProject.registry].filter((v) => v[1].gType === GateType.GATE).forEach((v) => {
     createElement(v[0]);
   });
 }
@@ -58,7 +53,7 @@ function resizeCanvas() {
   ctx.fillRect(0, 0, cv.width, cv.height);
   addInput.align();
   addOutput.align();
-  for (const i of rs.gates) {
+  for (const i of WorkingAreaData.rs.gates) {
     i.align();
   }
 }
@@ -85,17 +80,17 @@ ProjectsDialog.show();
 
 function render() {
   ctx.clearRect(0, 0, cv.width, cv.height);
-  for (const i of rs.gates) {
+  for (const i of WorkingAreaData.rs.gates) {
     i.updateInputs();
   }
-  rs.update(ls);
-  ls.tick();
-  for (const i of rs.gates) {
+  WorkingAreaData.rs.update(WorkingAreaData.ls);
+  WorkingAreaData.ls.tick();
+  for (const i of WorkingAreaData.rs.gates) {
     i.updateOutputs();
   }
 
-  rs.render(ctx);
-  rs.renderWires(ctx);
+  WorkingAreaData.rs.render(ctx);
+  WorkingAreaData.rs.renderWires(ctx);
   requestAnimationFrame(render);
 }
 
@@ -139,9 +134,9 @@ sidebarBtn.forEach((v) => {
   }, ItemType.DANGER));
 
   v.addEventListener("click", () => {
-    const g: Gate = new Gate(64, 4, rs.gates.length, gateName, GateType.GATE);
-    rs.gates.push(g);
-    rs.widgets.push(g);
+    const g: Gate = new Gate(64, 4, WorkingAreaData.rs.gates.length, gateName, GateType.GATE);
+    WorkingAreaData.rs.gates.push(g);
+    WorkingAreaData.rs.widgets.push(g);
     menu.hide();
   });
   v.addEventListener("contextmenu", (e) => {
@@ -149,9 +144,9 @@ sidebarBtn.forEach((v) => {
   });
 });
 
-cv.addEventListener("mousemove", (e) => rs.handleEvents(MouseEventType.MOVE, e));
-cv.addEventListener("mousedown", (e) => rs.handleEvents(MouseEventType.DOWN, e));
-cv.addEventListener("mouseup", (e) => rs.handleEvents(MouseEventType.UP, e));
-cv.addEventListener("contextmenu", (e) => rs.handleEvents(MouseEventType.CONTEXTMENU, e));
+cv.addEventListener("mousemove", (e) => WorkingAreaData.rs.handleEvents(MouseEventType.MOVE, e));
+cv.addEventListener("mousedown", (e) => WorkingAreaData.rs.handleEvents(MouseEventType.DOWN, e));
+cv.addEventListener("mouseup", (e) => WorkingAreaData.rs.handleEvents(MouseEventType.UP, e));
+cv.addEventListener("contextmenu", (e) => WorkingAreaData.rs.handleEvents(MouseEventType.CONTEXTMENU, e));
 
 requestAnimationFrame(render);

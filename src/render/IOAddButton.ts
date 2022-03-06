@@ -1,5 +1,6 @@
-import { cv, ls, rs } from "../main";
+import { cv } from "../main";
 import { isMouseOver } from "../utils/Helpers";
+import { WorkingAreaData } from "../WorkingAreaData";
 import { BitsNumber } from "./BitsNumber";
 import { Gate } from "./Gate";
 import { GateType } from "./GateType";
@@ -21,28 +22,28 @@ export class IOAddButton implements IWidget {
 
   private createGate(bits: BitsNumber) {
     this.menu.hide();
-    const io = new Gate(this.isInput ? 4 : cv.width - this.width - 4, 4, rs.gates.length, "X", this.isInput ? GateType.INPUT : GateType.OUTPUT, bits);
-    rs.gates.push(io);
-    rs.widgets.push(io);
+    const io = new Gate(this.isInput ? 4 : cv.width - this.width - 4, 4, WorkingAreaData.rs.gates.length, "X", this.isInput ? GateType.INPUT : GateType.OUTPUT, bits);
+    WorkingAreaData.rs.gates.push(io);
+    WorkingAreaData.rs.widgets.push(io);
   }
   
   constructor(public readonly isInput: boolean) {    
     this.menu = new Menu();
     this.menu.addItem(new MenuItem("1", () => {
       this.createGate(BitsNumber.ONE);
-      ls.rebuild();
+      WorkingAreaData.ls.rebuild();
     }, ItemType.NORMAL));
     this.menu.addItem(new MenuItem("2", () => {
       this.createGate(BitsNumber.TWO);
-      ls.rebuild();
+      WorkingAreaData.ls.rebuild();
     }, ItemType.NORMAL));
     this.menu.addItem(new MenuItem("4", () => {
       this.createGate(BitsNumber.FOUR);
-      ls.rebuild();
+      WorkingAreaData.ls.rebuild();
     }, ItemType.NORMAL));
     this.menu.addItem(new MenuItem("8", () => {
       this.createGate(BitsNumber.EIGHT);
-      ls.rebuild();
+      WorkingAreaData.ls.rebuild();
     }, ItemType.NORMAL));
 
     if (isInput) {

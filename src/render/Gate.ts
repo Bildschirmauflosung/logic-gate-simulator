@@ -1,8 +1,9 @@
 import { GateRegistry } from "../logic/GateRegistry";
 import { IGateData } from "../logic/IGateData";
-import { cv, ls, nav, rs, sidebar } from "../main";
+import { cv, nav, sidebar } from "../main";
 import { assert } from "../utils/Assert";
 import { clamp, getNumberFromBits, isMouseOver, updateConnectionData } from "../utils/Helpers";
+import { WorkingAreaData } from "../WorkingAreaData";
 import { BitButton } from "./BitButton";
 import { BitsNumber } from "./BitsNumber";
 import { ConnectionPoint } from "./ConnectionPoint";
@@ -102,29 +103,29 @@ export class Gate implements IWidget {
       this.menu.destroy();
       for (const i of this.ipoints) {
         i.destroyMenu();
-        const index = rs.widgets.findIndex((v) => v === i);
-        rs.widgets.splice(index, index === -1 ? 0 : 1);
+        const index = WorkingAreaData.rs.widgets.findIndex((v) => v === i);
+        WorkingAreaData.rs.widgets.splice(index, index === -1 ? 0 : 1);
       }
       for (const i of this.opoints) {
         i.destroyMenu();
-        const index = rs.widgets.findIndex((v) => v === i);
-        rs.widgets.splice(index, index === -1 ? 0 : 1);
+        const index = WorkingAreaData.rs.widgets.findIndex((v) => v === i);
+        WorkingAreaData.rs.widgets.splice(index, index === -1 ? 0 : 1);
       }
       for (const i of this.buttons) {
         i.destroyMenu();
-        const index = rs.widgets.findIndex((v) => v === i);
-        rs.widgets.splice(index, index === -1 ? 0 : 1);
+        const index = WorkingAreaData.rs.widgets.findIndex((v) => v === i);
+        WorkingAreaData.rs.widgets.splice(index, index === -1 ? 0 : 1);
       }
-      rs.gates.splice(rs.gates.findIndex((v) => v === this), 1);
-      rs.widgets.splice(rs.widgets.findIndex((v) => v === this), 1);
+      WorkingAreaData.rs.gates.splice(WorkingAreaData.rs.gates.findIndex((v) => v === this), 1);
+      WorkingAreaData.rs.widgets.splice(WorkingAreaData.rs.widgets.findIndex((v) => v === this), 1);
       
       updateConnectionData(this.ipoints);
       updateConnectionData(this.opoints);
       
-      rs.connectionMap = rs.connectionMap.filter((v) => !(id === v.inputGateIndex || id === v.outputGateIndex) );
-      ls.updateConMap(rs.connectionMap);
+      WorkingAreaData.rs.connectionMap = WorkingAreaData.rs.connectionMap.filter((v) => !(id === v.inputGateIndex || id === v.outputGateIndex) );
+      WorkingAreaData.ls.updateConMap(WorkingAreaData.rs.connectionMap);
 
-      for (const i of rs.gates) {
+      for (const i of WorkingAreaData.rs.gates) {
         i.updateId();
       }
     }, ItemType.DANGER));
@@ -133,25 +134,25 @@ export class Gate implements IWidget {
       for (let i = 0; i < this.arity; i++) {
         const point = new ConnectionPoint(true, this.left, this.top + this.height / (this.arity + 1) * (i + 1), this, "X");
         this.ipoints.push(point);
-        rs.widgets.push(point);
+        WorkingAreaData.rs.widgets.push(point);
       }
       for (let i = 0; i < this.outputCount; i++) {
         const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / (this.outputCount + 1) * (i + 1), this, "X");
         this.opoints.push(point);
-        rs.widgets.push(point);
+        WorkingAreaData.rs.widgets.push(point);
       }
     } else {
       if (type === GateType.OUTPUT) {
         for (let i = 0; i < bits; i++) {
           const point = new ConnectionPoint(true, this.left, this.top + this.height / 2, this, "X", bits === BitsNumber.ONE);
           this.ipoints.push(point);
-          rs.widgets.push(point);
+          WorkingAreaData.rs.widgets.push(point);
         }
       } else {
         for (let i = 0; i < bits; i++) {
           const point = new ConnectionPoint(false, this.left + this.width, this.top + this.height / 2, this, "X", bits === BitsNumber.ONE);
           this.opoints.push(point);
-          rs.widgets.push(point);
+          WorkingAreaData.rs.widgets.push(point);
         }
       }
       for (let i = 0; i < bits; i++) {
@@ -162,7 +163,7 @@ export class Gate implements IWidget {
 
   private isMaxId(onEnter: boolean = false): boolean {
     let max = -1;
-    for (const i of rs.gates) {
+    for (const i of WorkingAreaData.rs.gates) {
       if (onEnter) {
         if (i.entered) {
           if (i.id > max) {
@@ -273,7 +274,7 @@ export class Gate implements IWidget {
       if (this.bits === BitsNumber.ONE && this.type === GateType.INPUT) {
         this.enabled = !this.enabled;
         this.outputValues[0] = this.enabled;
-        rs.update(ls);
+        WorkingAreaData.rs.update(WorkingAreaData.ls);
       } else if (this.type !== GateType.GATE && this.bits !== BitsNumber.ONE) {
         this.expanded = !this.expanded;
         this.togglePoints();
@@ -308,7 +309,7 @@ export class Gate implements IWidget {
   }
 
   updateId(): void {
-    this.id = rs.gates.findIndex((v) => v === this);
+    this.id = WorkingAreaData.rs.gates.findIndex((v) => v === this);
   }
 
   getPoints(): [ConnectionPoint[], ConnectionPoint[]] {

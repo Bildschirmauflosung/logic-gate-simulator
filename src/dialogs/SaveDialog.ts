@@ -1,8 +1,9 @@
-import { currentProject, rs, updateSidebar } from "../main";
+import { updateSidebar } from "../main";
 import { Dialog } from "../render/dialog/Dialog";
 import { ButtonType, DialogButton } from "../render/dialog/DialogButton";
 import { DialogColourField } from "../render/dialog/DialogColourField";
 import { DialogInputField } from "../render/dialog/DialogInputField";
+import { WorkingAreaData } from "../WorkingAreaData";
 
 export class SaveDialog {
   private static dialog: Dialog;
@@ -14,7 +15,7 @@ export class SaveDialog {
     this.dialog.addButton(new DialogButton("Cancel", ButtonType.NORMAL, () => { this.dialog.close() }));
     this.dialog.addButton(new DialogButton("Save", ButtonType.NORMAL, () => {
       this.dialog.close();
-      currentProject.updateRegistry(this.dialog.getValueFromField("name") as string, rs);
+      WorkingAreaData.currentProject.updateRegistry(this.dialog.getValueFromField("name") as string, WorkingAreaData.rs);
       updateSidebar();
     }));
   }

@@ -2,9 +2,9 @@ import { CustomGateDesc } from "./logic/CustomGateDesc";
 import { IntrinsicGateData } from "./logic/IntrinsicGateData";
 import { Simulator } from "./logic/Simulator";
 import { GateRegistryT } from "./logic/Types";
-import { projects } from "./main";
 import { GateType } from "./render/GateType";
 import { RenderSimulator } from "./render/RenderSimulator";
+import { WorkingAreaData } from "./WorkingAreaData";
 
 export class Project {
   public simulators: Map<string, [RenderSimulator, Simulator]> = new Map();
@@ -14,7 +14,7 @@ export class Project {
   constructor(public name: string) {
     const sim = new RenderSimulator("New Gate");
     this.simulators.set("New Gate", [sim, Simulator.from(sim)]);
-    projects.set(name, this);
+    WorkingAreaData.projects.set(name, this);
   }
 
   updateRegistry(name: string, simulator: RenderSimulator) {
