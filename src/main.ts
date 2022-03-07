@@ -9,8 +9,6 @@ import { SaveDialog } from "./dialogs/SaveDialog";
 import { Menu } from "./render/menu/Menu";
 import { ItemType, MenuItem } from "./render/menu/MenuItem";
 import { Dialog } from "./render/dialog/Dialog";
-import { DialogColourField } from "./render/dialog/DialogColourField";
-import { DialogInputField } from "./render/dialog/DialogInputField";
 import { ButtonType, DialogButton } from "./render/dialog/DialogButton";
 import { DialogTextField } from "./render/dialog/DialogTextField";
 import { WorkingAreaData } from "./WorkingAreaData";
@@ -18,9 +16,12 @@ import { Project } from "./Project";
 import { buildWorkArea } from "./utils/Helpers";
 import { BitsNumber } from "./render/BitsNumber";
 import { ErrorDialog } from "./dialogs/ErrorDialog";
+import { RenderSimulator } from "./render/RenderSimulator";
+import { Simulator } from "./logic/Simulator";
 
 export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 export const nav: HTMLElement = document.querySelector(".navbar")!;
+export const title: HTMLElement = document.querySelector(".navbar__title")!;
 export const sidebar: HTMLElement = document.querySelector(".content__sidebar")!;
 let ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
 
@@ -40,23 +41,13 @@ function createElement(name: string) {
   btn.addEventListener("contextmenu", (e) => {
     if (name !== "and" && name !== "not") {
       const menu = new Menu();
+      menu.addItem(new MenuItem("Close", () => menu.hide()));
       menu.addItem(new MenuItem("Edit", () => {
         menu.hide();
-        // TODO: Go to editing mode
-      }));
-      menu.addItem(new MenuItem("Properties", () => {
-        menu.hide();
-        const dialog = new Dialog(`Properties - ${ name.toUpperCase() }`);
-        dialog.addField(new DialogColourField("colour", "Colour"));
-        dialog.addField(new DialogInputField("name", "Name (max. 8 chars)", 8));
-        dialog.addButton(new DialogButton("Cancel", ButtonType.NORMAL, () => {
-          dialog.close();
-        }));
-        dialog.addButton(new DialogButton("Save", ButtonType.NORMAL, () => {
-          dialog.close();
-          // TODO: Save changes
-        }));
-        dialog.show();
+        WorkingAreaData.rs = WorkingAreaData.currentProject.simulators.get(name)?.[0]!;
+        WorkingAreaData.ls = WorkingAreaData.currentProject.simulators.get(name)?.[1]!;
+        title.innerText = name.toUpperCase();
+        buildWorkArea();
       }));
       menu.addItem(new MenuItem("Delete", () => {
         menu.hide();
@@ -113,6 +104,18 @@ document.querySelector("#save-btn")!.addEventListener("click", () => {
   SaveDialog.build();
   SaveDialog.show();
 });
+document.querySelector("#clear-btn")!.addEventListener("click", () => {
+  const dialog = new Dialog("Clear");
+  dialog.addField(new DialogTextField("text", "This will clear your work area.\nAll unsaved changes will be lost."));
+  dialog.addButton(new DialogButton("Cancel", ButtonType.NORMAL, () => dialog.close()));
+  dialog.addButton(new DialogButton("Clear", ButtonType.DANGER, () => {
+    dialog.close();
+    WorkingAreaData.rs = new RenderSimulator("New Gate");
+    WorkingAreaData.ls = Simulator.from(WorkingAreaData.rs);
+    buildWorkArea();
+  }));
+  dialog.show();
+});
 
 Theme.setSystemTheme();
 
@@ -138,22 +141,6 @@ function render() {
 document.addEventListener("contextmenu", (e) => e.preventDefault());
 
 window.addEventListener("resize", resizeCanvas);
-
-/*
-sidebarBtn.forEach((v) => {
-  const gateName = v.innerText.toLowerCase();
-
-  v.addEventListener("click", () => {
-    const g: Gate = new Gate(64, 4, WorkingAreaData.rs.gates.length, gateName, GateType.GATE);
-    WorkingAreaData.rs.gates.push(g);
-    WorkingAreaData.rs.widgets.push(g);
-    menu.hide();
-  });
-  v.addEventListener("contextmenu", (e) => {
-    menu.show(e.clientX, e.clientY);
-  });
-});
-*/
 
 updateSidebar();
 
