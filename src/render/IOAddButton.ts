@@ -111,6 +111,9 @@ export class IOAddButton implements IWidget {
       isInput: this.isInput,
       bitIndex: null,
       gateRef: null,
+      name: null,
+      top: null,
+      left: null,
     };
   }
 

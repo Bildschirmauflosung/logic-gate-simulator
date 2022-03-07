@@ -80,6 +80,9 @@ export class BitButton implements IWidget {
       type: WidgetType.BIT_BUTTON,
       bitIndex: this.bit,
       isInput: this.isInput,
+      name: this.name,
+      top: this.top,
+      left: this.left,
       gateRef: null,
     };
   }

@@ -153,6 +153,9 @@ export class ConnectionPoint implements IWidget {
       type: WidgetType.POINT,
       gateRef: this._parent,
       isInput: this.isInput,
+      name: this.name,
+      top: this.top,
+      left: this.left,
       bitIndex: null,
     };
   }

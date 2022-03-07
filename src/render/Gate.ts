@@ -419,8 +419,11 @@ export class Gate implements IWidget {
     return {
       type: WidgetType.GATE,
       gateRef: this,
+      name: this.name,
       bitIndex: null,
       isInput: null,
+      top: null,
+      left: null,
     };
   }
 

@@ -15,9 +15,30 @@ export class WidgetData {
   /**
    * Reference to gate.
    * 
-   * Applies for every widget type except `WidgetType.ADD_BUTTON`.
+   * Applies only for `WidgetType.GATE` and `WidgetType.POINT`.
    */
   public gateRef: Gate | null = null;
+
+  /**
+   * Name. Its usage depends of type of the widget.
+   * 
+   * Applies for every widget type except `WidgetType.ADD_BUTTON`.
+   */
+  public name: string | null = null;
+
+  /**
+   * X coordinate of widget.
+   * 
+   * Applies only for `WidgetType.POINT` and `WidgetType.BIT_BUTTON`.
+   */
+  public left: number | null = null;
+
+  /**
+   * Y coordinate of widget.
+   * 
+   * Applies only for `WidgetType.POINT` and `WidgetType.BIT_BUTTON`.
+   */
+  public top: number | null = null;
 
   /**
    * Defines if widget is input or output.
