@@ -16,7 +16,7 @@ npm run build
 ```
 
 ```js
-npm run serve
+npm run preview
 ```
 
 ## Działanie bramek
