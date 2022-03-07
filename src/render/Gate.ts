@@ -254,12 +254,12 @@ export class Gate implements IWidget {
     this.menu.hide();
     if (e.button == 0) {
       for (const i of this.ipoints) {
-        if (isMouseOver(e, 8, 8, i.left - 4, i.top - 4)) {
+        if (isMouseOver(e, 12, 12, i.left - 6, i.top - 6)) {
           return;
         }
       }
       for (const i of this.opoints) {
-        if (isMouseOver(e, 8, 8, i.left - 4, i.top - 4)) {
+        if (isMouseOver(e, 12, 12, i.left - 6, i.top - 6)) {
           return;
         }
       }

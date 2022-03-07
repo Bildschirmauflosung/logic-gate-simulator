@@ -47,7 +47,7 @@ export class ConnectionPoint implements IWidget {
   }
 
   private handleMouseMove(e: MouseEvent): void {
-    this.hovered = isMouseOver(e, 8, 8, this.left - 4, this.top - 4);
+    this.hovered = isMouseOver(e, 12, 12, this.left - 6, this.top - 6);
     this.xOffset = e.offsetX;
     this.yOffset = e.offsetY;
   }
@@ -169,11 +169,11 @@ export class ConnectionPoint implements IWidget {
       ctx.strokeStyle = Theme.fgColour;
       ctx.fillStyle = Theme.fgColour;
     }
-    ctx.moveTo(this.left, this.top - 4);
-    ctx.arcTo(this.left + 4, this.top - 4, this.left + 4, this.top, 4);
-    ctx.arcTo(this.left + 4, this.top + 4, this.left, this.top + 4, 4);
-    ctx.arcTo(this.left - 4, this.top + 4, this.left - 4, this.top, 4);
-    ctx.arcTo(this.left - 4, this.top - 4, this.left, this.top - 4, 4);
+    ctx.moveTo(this.left, this.top - 5);
+    ctx.arcTo(this.left + 5, this.top - 5, this.left + 5, this.top, 5);
+    ctx.arcTo(this.left + 5, this.top + 5, this.left, this.top + 5, 5);
+    ctx.arcTo(this.left - 5, this.top + 5, this.left - 5, this.top, 5);
+    ctx.arcTo(this.left - 5, this.top - 5, this.left, this.top - 5, 5);
     ctx.stroke();
     ctx.fill();
 
