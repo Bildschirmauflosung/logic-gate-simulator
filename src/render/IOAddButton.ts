@@ -12,6 +12,9 @@ import { Theme } from "./theme/Theme";
 import { WidgetData } from "./WidgetData";
 import { WidgetType } from "./WidgetType";
 
+/**
+ * Class for button which adds I/O ports to the project.
+ */
 export class IOAddButton implements IWidget {
   private left: number;
   private top: number;

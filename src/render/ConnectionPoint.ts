@@ -15,6 +15,9 @@ import { WorkingAreaData } from "../WorkingAreaData";
 import { WidgetType } from "./WidgetType";
 import { WidgetData } from "./WidgetData";
 
+/**
+ * Class for connection point in gates.
+ */
 export class ConnectionPoint implements IWidget {
   private hovered: boolean = false;
   private pressed: boolean = false;

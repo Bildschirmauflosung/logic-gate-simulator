@@ -5,6 +5,9 @@ import { Gate } from "./Gate";
 import { IWidget } from "./IWidget";
 import { MouseEventType } from "./MouseEventType";
 
+/**
+ * Simulator responsible for rendering project.
+ */
 export class RenderSimulator {
   public readonly widgets: IWidget[] = [];
   public readonly gates: Gate[] = [];

@@ -20,6 +20,9 @@ import { Theme } from "./theme/Theme";
 import { WidgetData } from "./WidgetData";
 import { WidgetType } from "./WidgetType";
 
+/**
+ * Class for rendering gate.
+ */
 export class Gate implements IWidget {
   private grabbed: boolean = false;
   private entered: boolean = false;

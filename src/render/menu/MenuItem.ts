@@ -3,6 +3,9 @@ export enum ItemType {
   DANGER,
 }
 
+/**
+ * Context menu item.
+ */
 export class MenuItem {
   private html = document.createElement("div");
 

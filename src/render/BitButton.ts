@@ -8,6 +8,9 @@ import { Theme } from "./theme/Theme";
 import { WidgetData } from "./WidgetData";
 import { WidgetType } from "./WidgetType";
 
+/**
+ * Class used as bit button in multiple-bit I/O ports.
+ */
 export class BitButton implements IWidget {
   private hovered: boolean = false;
   private pressed: boolean = false;

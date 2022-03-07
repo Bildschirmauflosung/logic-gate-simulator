@@ -1,6 +1,9 @@
 import { cv } from "../../main";
 import { MenuItem } from "./MenuItem";
 
+/**
+ * Class for creating and rendering context menus.
+ */
 export class Menu {
   private html = document.createElement("div");
   private items: MenuItem[] = [];
