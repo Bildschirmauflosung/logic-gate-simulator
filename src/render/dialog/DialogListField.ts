@@ -22,15 +22,10 @@ export class DialogListField implements IDialogField {
       itemTitle.className = "modal-bg__dialog-list-item-title";
       itemTitle.innerText = i.getName();
       
-      const itemDescription = document.createElement("p");
-      itemDescription.className = "modal-bg__dialog-list-item-desc";
-      itemDescription.innerText = i.getDescription();
-      
       const item = document.createElement("div");
       item.className = "modal-bg__dialog-list-item";
       item.appendChild(itemTitle);
-      item.appendChild(itemDescription);
-      item.addEventListener("click", () => i.onClick);
+      item.addEventListener("click", (e) => i.onClick(e));
 
       list.appendChild(item);
     }
