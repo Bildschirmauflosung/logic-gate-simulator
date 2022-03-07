@@ -24,7 +24,7 @@ export class CustomLogicGate extends LogicGate {
 
       this.internalSim.gates
         .filter(gate => gate.gate.type === GateType.INPUT)
-        .forEach((gate, idx) => gate.gate.enabled = this.gate.inputValues[idx]);
+        .forEach((gate, idx) => gate.gate.outputValues = [this.gate.inputValues[idx]]);
 
       this.internalSim.tick()
       this.gate.outputValues = this.value = this.internalSim.gates
