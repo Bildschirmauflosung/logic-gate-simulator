@@ -112,6 +112,7 @@ document.querySelector("#clear-btn")!.addEventListener("click", () => {
     dialog.close();
     WorkingAreaData.rs = new RenderSimulator("New Gate");
     WorkingAreaData.ls = Simulator.from(WorkingAreaData.rs);
+    title.innerText = "New Gate";
     buildWorkArea();
   }));
   dialog.show();

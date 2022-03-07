@@ -1,6 +1,6 @@
 import { IntrinsicGateData } from "../logic/IntrinsicGateData";
 import { Simulator } from "../logic/Simulator";
-import { updateSidebar } from "../main";
+import { title, updateSidebar } from "../main";
 import { Dialog } from "../render/dialog/Dialog";
 import { ButtonType, DialogButton } from "../render/dialog/DialogButton";
 import { DialogColourField } from "../render/dialog/DialogColourField";
@@ -19,7 +19,14 @@ export class SaveDialog {
     this.dialog.addButton(new DialogButton("Cancel", ButtonType.NORMAL, () => { this.dialog.close() }));
     this.dialog.addButton(new DialogButton("Save", ButtonType.NORMAL, () => {
       const name = this.dialog.getValueFromField("name") as string;
-      if ([...IntrinsicGateData].findIndex((v) => v[0].toLowerCase() === name.toLowerCase()) !== -1) {
+      if (name.toLowerCase() === "and" || name.toLowerCase() === "not") {
+        return;
+      }
+      const i = [...IntrinsicGateData].findIndex((v) => v[0].toLowerCase() === name.toLowerCase());
+      if (i !== -1) {
+        WorkingAreaData.currentProject.simulators.delete(name);
+        WorkingAreaData.currentProject.simulators.set(name, [WorkingAreaData.rs, WorkingAreaData.ls]);
+        title.innerText = "New Gate";
         return;
       }
       this.dialog.close();
@@ -28,6 +35,7 @@ export class SaveDialog {
       WorkingAreaData.currentProject.simulators.set(name, [WorkingAreaData.rs, WorkingAreaData.ls]);
       WorkingAreaData.rs = new RenderSimulator("New Gate");
       WorkingAreaData.ls = Simulator.from(WorkingAreaData.rs);
+      title.innerText = "New Gate";
       updateSidebar();
       buildWorkArea();
     }));

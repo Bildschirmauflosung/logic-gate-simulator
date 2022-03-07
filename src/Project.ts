@@ -32,7 +32,5 @@ export class Project {
       gates: simulator.gates,
       prereqs: new Set(),
     });
-
-    console.log(this.registry);
   }
 }
