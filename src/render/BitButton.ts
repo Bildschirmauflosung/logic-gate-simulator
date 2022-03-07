@@ -5,6 +5,7 @@ import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
 import { MouseEventType } from "./MouseEventType";
 import { Theme } from "./theme/Theme";
+import { WidgetData } from "./WidgetData";
 import { WidgetType } from "./WidgetType";
 
 export class BitButton implements IWidget {
@@ -71,8 +72,13 @@ export class BitButton implements IWidget {
     }
   }
 
-  getWidgetType(): WidgetType {
-    return WidgetType.BIT_BUTTON;
+  createWidgetData(): WidgetData {
+    return {
+      type: WidgetType.BIT_BUTTON,
+      bitIndex: this.bit,
+      isInput: this.isInput,
+      gateRef: null,
+    };
   }
 
   render(ctx: CanvasRenderingContext2D): void {

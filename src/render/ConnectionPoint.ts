@@ -13,6 +13,7 @@ import { GateType } from "./GateType";
 import { Settings } from "../Settings";
 import { WorkingAreaData } from "../WorkingAreaData";
 import { WidgetType } from "./WidgetType";
+import { WidgetData } from "./WidgetData";
 
 export class ConnectionPoint implements IWidget {
   private hovered: boolean = false;
@@ -144,8 +145,13 @@ export class ConnectionPoint implements IWidget {
     }
   }
 
-  getWidgetType(): WidgetType {
-    return WidgetType.POINT;
+  createWidgetData(): WidgetData {
+    return {
+      type: WidgetType.POINT,
+      gateRef: this._parent,
+      isInput: this.isInput,
+      bitIndex: null,
+    };
   }
 
   render(ctx: CanvasRenderingContext2D): void {

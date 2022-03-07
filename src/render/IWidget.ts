@@ -1,8 +1,8 @@
 import { MouseEventType } from "./MouseEventType";
-import { WidgetType } from "./WidgetType";
+import { WidgetData } from "./WidgetData";
 
 export interface IWidget {
-  getWidgetType(): WidgetType;
+  createWidgetData(): WidgetData;
   handleEvent(type: MouseEventType, event: MouseEvent): void;
   render(ctx: CanvasRenderingContext2D): void;
 }

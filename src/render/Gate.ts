@@ -1,4 +1,3 @@
-import { GateRegistry } from "../logic/GateRegistry";
 import { IGateData } from "../logic/IGateData";
 import { IntrinsicGateData } from "../logic/IntrinsicGateData";
 import { cv, nav, sidebar } from "../main";
@@ -18,6 +17,7 @@ import { ItemType, MenuItem } from "./menu/MenuItem";
 import { MouseEventType } from "./MouseEventType";
 import { fgColour } from "./theme/DarkTheme";
 import { Theme } from "./theme/Theme";
+import { WidgetData } from "./WidgetData";
 import { WidgetType } from "./WidgetType";
 
 export class Gate implements IWidget {
@@ -412,8 +412,13 @@ export class Gate implements IWidget {
     }
   }
 
-  getWidgetType(): WidgetType {
-    return WidgetType.GATE;
+  createWidgetData(): WidgetData {
+    return {
+      type: WidgetType.GATE,
+      gateRef: this,
+      bitIndex: null,
+      isInput: null,
+    };
   }
 
   render(ctx: CanvasRenderingContext2D): void {

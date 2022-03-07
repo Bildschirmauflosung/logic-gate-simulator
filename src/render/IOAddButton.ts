@@ -9,6 +9,7 @@ import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
 import { MouseEventType } from "./MouseEventType";
 import { Theme } from "./theme/Theme";
+import { WidgetData } from "./WidgetData";
 import { WidgetType } from "./WidgetType";
 
 export class IOAddButton implements IWidget {
@@ -101,11 +102,13 @@ export class IOAddButton implements IWidget {
     }
   }
 
-  getWidgetType(): WidgetType {
-    if (this.isInput) {
-      return WidgetType.ADD_BUTTON_IN;
-    }
-    return WidgetType.ADD_BUTTON_OUT;
+  createWidgetData(): WidgetData {
+    return {
+      type: WidgetType.ADD_BUTTON,
+      isInput: this.isInput,
+      bitIndex: null,
+      gateRef: null,
+    };
   }
 
   render(ctx: CanvasRenderingContext2D): void {
