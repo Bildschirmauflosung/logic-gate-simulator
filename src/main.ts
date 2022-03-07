@@ -16,6 +16,8 @@ import { DialogTextField } from "./render/dialog/DialogTextField";
 import { WorkingAreaData } from "./WorkingAreaData";
 import { Project } from "./Project";
 import { buildWorkArea } from "./utils/Helpers";
+import { BitsNumber } from "./render/BitsNumber";
+import { ErrorDialog } from "./dialogs/ErrorDialog";
 
 export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 export const nav: HTMLElement = document.querySelector(".navbar")!;
@@ -104,6 +106,10 @@ document.querySelector("#projects-btn")!.addEventListener("click", () => {
   ProjectsDialog.show();
 });
 document.querySelector("#save-btn")!.addEventListener("click", () => {
+  if (WorkingAreaData.rs.gates.filter((v) => v.type !== GateType.GATE && v.bits !== BitsNumber.ONE).length > 0) {
+    ErrorDialog.show("Cannot save gates with multiple-bit I/O ports.\nMultiple-bit I/O ports are intended only for testing puropses.", "Save Error");
+    return;
+  }
   SaveDialog.build();
   SaveDialog.show();
 });
