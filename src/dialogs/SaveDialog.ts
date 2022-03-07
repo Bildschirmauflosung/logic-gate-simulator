@@ -26,7 +26,7 @@ export class SaveDialog {
       if (i !== -1) {
         WorkingAreaData.currentProject.simulators.delete(name);
         WorkingAreaData.currentProject.simulators.set(name, [WorkingAreaData.rs, WorkingAreaData.ls]);
-        title.innerText = "New Gate";
+        title.innerText = `${ WorkingAreaData.currentProject.name } / New Gate`;
         return;
       }
       this.dialog.close();
@@ -35,7 +35,7 @@ export class SaveDialog {
       WorkingAreaData.currentProject.simulators.set(name, [WorkingAreaData.rs, WorkingAreaData.ls]);
       WorkingAreaData.rs = new RenderSimulator("New Gate");
       WorkingAreaData.ls = Simulator.from(WorkingAreaData.rs);
-      title.innerText = "New Gate";
+      title.innerText = `${ WorkingAreaData.currentProject.name } / New Gate`;
       updateSidebar();
       buildWorkArea();
     }));

@@ -12,7 +12,6 @@ import { Dialog } from "./render/dialog/Dialog";
 import { ButtonType, DialogButton } from "./render/dialog/DialogButton";
 import { DialogTextField } from "./render/dialog/DialogTextField";
 import { WorkingAreaData } from "./WorkingAreaData";
-import { Project } from "./Project";
 import { buildWorkArea } from "./utils/Helpers";
 import { BitsNumber } from "./render/BitsNumber";
 import { ErrorDialog } from "./dialogs/ErrorDialog";
@@ -24,10 +23,6 @@ export const nav: HTMLElement = document.querySelector(".navbar")!;
 export const title: HTMLElement = document.querySelector(".navbar__title")!;
 export const sidebar: HTMLElement = document.querySelector(".content__sidebar")!;
 let ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
-
-buildWorkArea();
-
-WorkingAreaData.projects.set("New Project", new Project("New Project"));
 
 function createElement(name: string) {
   const btn = document.createElement("div");
@@ -46,7 +41,7 @@ function createElement(name: string) {
         menu.hide();
         WorkingAreaData.rs = WorkingAreaData.currentProject.simulators.get(name)?.[0]!;
         WorkingAreaData.ls = WorkingAreaData.currentProject.simulators.get(name)?.[1]!;
-        title.innerText = name.toUpperCase();
+        title.innerText = `${ WorkingAreaData.currentProject.name } / ${ name.toUpperCase() }`;
         buildWorkArea();
       }));
       menu.addItem(new MenuItem("Delete", () => {
@@ -112,7 +107,7 @@ document.querySelector("#clear-btn")!.addEventListener("click", () => {
     dialog.close();
     WorkingAreaData.rs = new RenderSimulator("New Gate");
     WorkingAreaData.ls = Simulator.from(WorkingAreaData.rs);
-    title.innerText = "New Gate";
+    title.innerText = `${ WorkingAreaData.currentProject.name } / New Gate`;
     buildWorkArea();
   }));
   dialog.show();

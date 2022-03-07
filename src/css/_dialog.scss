@@ -151,6 +151,7 @@
     &-list {
       user-select: none;
       padding: 0;
+      min-height: 2.4rem;
       border: 1px solid var(--fg-colour);
 
       &-item {
