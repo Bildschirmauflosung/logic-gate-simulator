@@ -5,6 +5,7 @@ import { ButtonType, DialogButton } from "../render/dialog/DialogButton";
 import { DialogColourField } from "../render/dialog/DialogColourField";
 import { DialogInputField } from "../render/dialog/DialogInputField";
 import { RenderSimulator } from "../render/RenderSimulator";
+import { buildWorkArea } from "../utils/Helpers";
 import { WorkingAreaData } from "../WorkingAreaData";
 
 export class SaveDialog {
@@ -24,6 +25,7 @@ export class SaveDialog {
       WorkingAreaData.rs = new RenderSimulator("New Gate");
       WorkingAreaData.ls = Simulator.from(WorkingAreaData.rs);
       updateSidebar();
+      buildWorkArea();
     }));
   }
 

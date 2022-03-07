@@ -109,6 +109,7 @@ export class IOAddButton implements IWidget {
   }
 
   render(ctx: CanvasRenderingContext2D): void {
+    this.align();
     ctx.strokeStyle = Theme.fgColour;
     ctx.lineWidth = 1;
     ctx.beginPath();

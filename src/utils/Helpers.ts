@@ -1,4 +1,5 @@
 import { ConnectionPoint } from "../render/ConnectionPoint";
+import { IOAddButton } from "../render/IOAddButton";
 import { WorkingAreaData } from "../WorkingAreaData";
 
 export function isMouseOver(e: MouseEvent, width: number, height: number, left: number, top: number): boolean {
@@ -43,6 +44,11 @@ export function getNumberFromBits(bits: boolean[], signed: boolean): number {
   }
 
   return num;
+}
+
+export function buildWorkArea() {
+  WorkingAreaData.rs.widgets.push(new IOAddButton(true));
+  WorkingAreaData.rs.widgets.push(new IOAddButton(false));
 }
 
 export function tap<T>(obj: T, fn: (obj: T) => unknown): T {

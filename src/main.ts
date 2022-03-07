@@ -16,17 +16,15 @@ import { ButtonType, DialogButton } from "./render/dialog/DialogButton";
 import { DialogTextField } from "./render/dialog/DialogTextField";
 import { WorkingAreaData } from "./WorkingAreaData";
 import { Project } from "./Project";
+import { buildWorkArea } from "./utils/Helpers";
 
 export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 export const nav: HTMLElement = document.querySelector(".navbar")!;
 export const sidebar: HTMLElement = document.querySelector(".content__sidebar")!;
-const sidebarBtn: NodeListOf<HTMLElement> = document.querySelectorAll(".content__sidebar-btn")!;
+// const sidebarBtn: NodeListOf<HTMLElement> = document.querySelectorAll(".content__sidebar-btn")!;
 let ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
 
-const addInput = new IOAddButton(true);
-const addOutput = new IOAddButton(false);
-WorkingAreaData.rs.widgets.push(addInput);
-WorkingAreaData.rs.widgets.push(addOutput);
+buildWorkArea();
 
 WorkingAreaData.projects.set("New Project", new Project("New Project"));
 
@@ -54,8 +52,6 @@ function resizeCanvas() {
   cv.height = window.innerHeight - nav.offsetHeight;
   ctx.fillStyle = "#fff";
   ctx.fillRect(0, 0, cv.width, cv.height);
-  addInput.align();
-  addOutput.align();
   for (const i of WorkingAreaData.rs.gates) {
     i.align();
   }
