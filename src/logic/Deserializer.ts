@@ -1,7 +1,7 @@
 export class Deserializer {
   private constructor() {  }
 
-  static loadProject(name: string) {
+  static loadProject(_name: string) {
 
   }
 }

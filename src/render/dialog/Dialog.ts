@@ -2,6 +2,9 @@ import { ButtonType, DialogButton } from "./DialogButton";
 import { DialogFieldType } from "./DialogFieldType";
 import { IDialogField } from "./IDialogField";
 
+/**
+ * Class for creating and rendering dialog windows.
+ */
 export class Dialog {
   private modalBg: HTMLDivElement = document.querySelector(".modal-bg")!;
   private html = document.createElement("div");

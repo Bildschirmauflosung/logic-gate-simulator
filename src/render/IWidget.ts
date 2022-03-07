@@ -1,8 +1,20 @@
 import { MouseEventType } from "./MouseEventType";
-import { WidgetType } from "./WidgetType";
+import { WidgetData } from "./WidgetData";
 
+/**
+ * Interface for widgets rendered on canvas.
+ */
 export interface IWidget {
-  getWidgetType(): WidgetType;
+  /**
+   * Creates `WidgetData` for serialisation.
+   */
+  createWidgetData(): WidgetData;
+
+  /**
+   * Handles specified event.
+   * @param type Type of mouse event.
+   * @param event Reference to `MouseEvent`.
+   */
   handleEvent(type: MouseEventType, event: MouseEvent): void;
   render(ctx: CanvasRenderingContext2D): void;
 }

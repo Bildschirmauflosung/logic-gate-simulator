@@ -9,14 +9,7 @@ export const IntrinsicGateData: Map<string, IGateData> = new Map([
     customStructureRef: null,
     prereqs: new Set(),
     gType: GateType.GATE,
-  }],
-  ['or',  {
-    arity: 2,
-    outputCount: 1,
-    resolutionFunc: ([lhs, rhs, ..._]: boolean[]) => [lhs || rhs],
-    customStructureRef: null,
-    prereqs: new Set(),
-    gType: GateType.GATE,
+    colour: "#dfae9f",
   }],
   ['not', {
     arity:1,
@@ -25,6 +18,7 @@ export const IntrinsicGateData: Map<string, IGateData> = new Map([
     customStructureRef: null,
     prereqs: new Set(),
     gType: GateType.GATE,
+    colour: "#b5df9f",
   }],
   ['input', {
     arity: 0,
@@ -33,6 +27,7 @@ export const IntrinsicGateData: Map<string, IGateData> = new Map([
     resolutionFunc: (_: boolean[]) => [],
     prereqs: new Set(),
     gType: GateType.INPUT,
+    colour: "#000000",
   }],
   ['output', {
     arity: 1,
@@ -41,5 +36,6 @@ export const IntrinsicGateData: Map<string, IGateData> = new Map([
     resolutionFunc: (a: boolean[]) => a,
     prereqs: new Set(),
     gType: GateType.OUTPUT,
+    colour: "#000000",
   }]
 ])

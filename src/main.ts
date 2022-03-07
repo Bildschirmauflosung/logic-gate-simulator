@@ -9,52 +9,40 @@ import { SaveDialog } from "./dialogs/SaveDialog";
 import { Menu } from "./render/menu/Menu";
 import { ItemType, MenuItem } from "./render/menu/MenuItem";
 import { Dialog } from "./render/dialog/Dialog";
-import { DialogColourField } from "./render/dialog/DialogColourField";
-import { DialogInputField } from "./render/dialog/DialogInputField";
 import { ButtonType, DialogButton } from "./render/dialog/DialogButton";
 import { DialogTextField } from "./render/dialog/DialogTextField";
 import { WorkingAreaData } from "./WorkingAreaData";
-import { Project } from "./Project";
 import { buildWorkArea } from "./utils/Helpers";
+import { BitsNumber } from "./render/BitsNumber";
+import { ErrorDialog } from "./dialogs/ErrorDialog";
+import { RenderSimulator } from "./render/RenderSimulator";
+import { Simulator } from "./logic/Simulator";
 
 export const cv : HTMLCanvasElement = document.querySelector(".content__canvas")!;
 export const nav: HTMLElement = document.querySelector(".navbar")!;
+export const title: HTMLElement = document.querySelector(".navbar__title")!;
 export const sidebar: HTMLElement = document.querySelector(".content__sidebar")!;
 let ctx : CanvasRenderingContext2D = cv.getContext("2d")!;
-
-buildWorkArea();
-
-WorkingAreaData.projects.set("New Project", new Project("New Project"));
 
 function createElement(name: string) {
   const btn = document.createElement("div");
   btn.className = "content__sidebar-btn";
   btn.innerText = name.toUpperCase();
   btn.addEventListener("click", () => {
-    const g: Gate = new Gate(64, 4, WorkingAreaData.rs.gates.length, name, GateType.GATE);
+    const g: Gate = new Gate(64, 4, WorkingAreaData.rs.gates.length, name, GateType.GATE, BitsNumber.ONE, WorkingAreaData.currentProject.registry.get(name)?.colour!);
     WorkingAreaData.rs.gates.push(g);
     WorkingAreaData.rs.widgets.push(g);
   });
   btn.addEventListener("contextmenu", (e) => {
     if (name !== "and" && name !== "not") {
       const menu = new Menu();
+      menu.addItem(new MenuItem("Close", () => menu.hide()));
       menu.addItem(new MenuItem("Edit", () => {
         menu.hide();
-        // TODO: Go to editing mode
-      }));
-      menu.addItem(new MenuItem("Properties", () => {
-        menu.hide();
-        const dialog = new Dialog(`Properties - ${ name.toUpperCase() }`);
-        dialog.addField(new DialogColourField("colour", "Colour"));
-        dialog.addField(new DialogInputField("name", "Name (max. 8 chars)", 8));
-        dialog.addButton(new DialogButton("Cancel", ButtonType.NORMAL, () => {
-          dialog.close();
-        }));
-        dialog.addButton(new DialogButton("Save", ButtonType.NORMAL, () => {
-          dialog.close();
-          // TODO: Save changes
-        }));
-        dialog.show();
+        WorkingAreaData.rs = WorkingAreaData.currentProject.simulators.get(name)?.[0]!;
+        WorkingAreaData.ls = WorkingAreaData.currentProject.simulators.get(name)?.[1]!;
+        title.innerText = `${ WorkingAreaData.currentProject.name } / ${ name.toUpperCase() }`;
+        buildWorkArea();
       }));
       menu.addItem(new MenuItem("Delete", () => {
         menu.hide();
@@ -104,8 +92,25 @@ document.querySelector("#projects-btn")!.addEventListener("click", () => {
   ProjectsDialog.show();
 });
 document.querySelector("#save-btn")!.addEventListener("click", () => {
+  if (WorkingAreaData.rs.gates.filter((v) => v.type !== GateType.GATE && v.bits !== BitsNumber.ONE).length > 0) {
+    ErrorDialog.show("Cannot save gates with multiple-bit I/O ports.\nMultiple-bit I/O ports are intended only for testing puropses.", "Save Error");
+    return;
+  }
   SaveDialog.build();
   SaveDialog.show();
+});
+document.querySelector("#clear-btn")!.addEventListener("click", () => {
+  const dialog = new Dialog("Clear");
+  dialog.addField(new DialogTextField("text", "This will clear your work area.\nAll unsaved changes will be lost."));
+  dialog.addButton(new DialogButton("Cancel", ButtonType.NORMAL, () => dialog.close()));
+  dialog.addButton(new DialogButton("Clear", ButtonType.DANGER, () => {
+    dialog.close();
+    WorkingAreaData.rs = new RenderSimulator("New Gate");
+    WorkingAreaData.ls = Simulator.from(WorkingAreaData.rs);
+    title.innerText = `${ WorkingAreaData.currentProject.name } / New Gate`;
+    buildWorkArea();
+  }));
+  dialog.show();
 });
 
 Theme.setSystemTheme();
@@ -132,22 +137,6 @@ function render() {
 document.addEventListener("contextmenu", (e) => e.preventDefault());
 
 window.addEventListener("resize", resizeCanvas);
-
-/*
-sidebarBtn.forEach((v) => {
-  const gateName = v.innerText.toLowerCase();
-
-  v.addEventListener("click", () => {
-    const g: Gate = new Gate(64, 4, WorkingAreaData.rs.gates.length, gateName, GateType.GATE);
-    WorkingAreaData.rs.gates.push(g);
-    WorkingAreaData.rs.widgets.push(g);
-    menu.hide();
-  });
-  v.addEventListener("contextmenu", (e) => {
-    menu.show(e.clientX, e.clientY);
-  });
-});
-*/
 
 updateSidebar();
 

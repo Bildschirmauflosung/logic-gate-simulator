@@ -1,4 +1,3 @@
-import { GateRegistry } from "../logic/GateRegistry";
 import { IGateData } from "../logic/IGateData";
 import { IntrinsicGateData } from "../logic/IntrinsicGateData";
 import { cv, nav, sidebar } from "../main";
@@ -18,8 +17,12 @@ import { ItemType, MenuItem } from "./menu/MenuItem";
 import { MouseEventType } from "./MouseEventType";
 import { fgColour } from "./theme/DarkTheme";
 import { Theme } from "./theme/Theme";
+import { WidgetData } from "./WidgetData";
 import { WidgetType } from "./WidgetType";
 
+/**
+ * Class for rendering gate.
+ */
 export class Gate implements IWidget {
   private grabbed: boolean = false;
   private entered: boolean = false;
@@ -251,12 +254,12 @@ export class Gate implements IWidget {
     this.menu.hide();
     if (e.button == 0) {
       for (const i of this.ipoints) {
-        if (isMouseOver(e, 8, 8, i.left - 4, i.top - 4)) {
+        if (isMouseOver(e, 12, 12, i.left - 6, i.top - 6)) {
           return;
         }
       }
       for (const i of this.opoints) {
-        if (isMouseOver(e, 8, 8, i.left - 4, i.top - 4)) {
+        if (isMouseOver(e, 12, 12, i.left - 6, i.top - 6)) {
           return;
         }
       }
@@ -412,8 +415,16 @@ export class Gate implements IWidget {
     }
   }
 
-  getWidgetType(): WidgetType {
-    return WidgetType.GATE;
+  createWidgetData(): WidgetData {
+    return {
+      type: WidgetType.GATE,
+      gateRef: this,
+      name: this.name,
+      bitIndex: null,
+      isInput: null,
+      top: null,
+      left: null,
+    };
   }
 
   render(ctx: CanvasRenderingContext2D): void {

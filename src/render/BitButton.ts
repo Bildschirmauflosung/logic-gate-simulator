@@ -5,8 +5,12 @@ import { Menu } from "./menu/Menu";
 import { ItemType, MenuItem } from "./menu/MenuItem";
 import { MouseEventType } from "./MouseEventType";
 import { Theme } from "./theme/Theme";
+import { WidgetData } from "./WidgetData";
 import { WidgetType } from "./WidgetType";
 
+/**
+ * Class used as bit button in multiple-bit I/O ports.
+ */
 export class BitButton implements IWidget {
   private hovered: boolean = false;
   private pressed: boolean = false;
@@ -71,8 +75,16 @@ export class BitButton implements IWidget {
     }
   }
 
-  getWidgetType(): WidgetType {
-    return WidgetType.BIT_BUTTON;
+  createWidgetData(): WidgetData {
+    return {
+      type: WidgetType.BIT_BUTTON,
+      bitIndex: this.bit,
+      isInput: this.isInput,
+      name: this.name,
+      top: this.top,
+      left: this.left,
+      gateRef: null,
+    };
   }
 
   render(ctx: CanvasRenderingContext2D): void {

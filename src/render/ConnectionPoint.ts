@@ -13,7 +13,11 @@ import { GateType } from "./GateType";
 import { Settings } from "../Settings";
 import { WorkingAreaData } from "../WorkingAreaData";
 import { WidgetType } from "./WidgetType";
+import { WidgetData } from "./WidgetData";
 
+/**
+ * Class for connection point in gates.
+ */
 export class ConnectionPoint implements IWidget {
   private hovered: boolean = false;
   private pressed: boolean = false;
@@ -43,7 +47,7 @@ export class ConnectionPoint implements IWidget {
   }
 
   private handleMouseMove(e: MouseEvent): void {
-    this.hovered = isMouseOver(e, 8, 8, this.left - 4, this.top - 4);
+    this.hovered = isMouseOver(e, 12, 12, this.left - 6, this.top - 6);
     this.xOffset = e.offsetX;
     this.yOffset = e.offsetY;
   }
@@ -144,8 +148,16 @@ export class ConnectionPoint implements IWidget {
     }
   }
 
-  getWidgetType(): WidgetType {
-    return WidgetType.POINT;
+  createWidgetData(): WidgetData {
+    return {
+      type: WidgetType.POINT,
+      gateRef: this._parent,
+      isInput: this.isInput,
+      name: this.name,
+      top: this.top,
+      left: this.left,
+      bitIndex: null,
+    };
   }
 
   render(ctx: CanvasRenderingContext2D): void {
@@ -157,11 +169,11 @@ export class ConnectionPoint implements IWidget {
       ctx.strokeStyle = Theme.fgColour;
       ctx.fillStyle = Theme.fgColour;
     }
-    ctx.moveTo(this.left, this.top - 4);
-    ctx.arcTo(this.left + 4, this.top - 4, this.left + 4, this.top, 4);
-    ctx.arcTo(this.left + 4, this.top + 4, this.left, this.top + 4, 4);
-    ctx.arcTo(this.left - 4, this.top + 4, this.left - 4, this.top, 4);
-    ctx.arcTo(this.left - 4, this.top - 4, this.left, this.top - 4, 4);
+    ctx.moveTo(this.left, this.top - 5);
+    ctx.arcTo(this.left + 5, this.top - 5, this.left + 5, this.top, 5);
+    ctx.arcTo(this.left + 5, this.top + 5, this.left, this.top + 5, 5);
+    ctx.arcTo(this.left - 5, this.top + 5, this.left - 5, this.top, 5);
+    ctx.arcTo(this.left - 5, this.top - 5, this.left, this.top - 5, 5);
     ctx.stroke();
     ctx.fill();
 

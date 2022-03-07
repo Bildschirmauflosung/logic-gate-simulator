@@ -15,13 +15,14 @@ export class Project {
     this.simulators.set("New Gate", [sim, Simulator.from(sim)]);
   }
 
-  updateRegistry(name: string, simulator: RenderSimulator) {
+  updateRegistry(name: string, colour: string, simulator: RenderSimulator) {
     const inputs = simulator.gates.filter((v) => v.type === GateType.INPUT).length;
     const outputs = simulator.gates.filter((v) => v.type === GateType.OUTPUT).length;
     this.registry.set(name, {
       arity: inputs,
       outputCount: outputs,
       customStructureRef: name,
+      colour: colour,
       gType: GateType.GATE,
       prereqs: new Set(),
       resolutionFunc: null,
@@ -32,7 +33,5 @@ export class Project {
       gates: simulator.gates,
       prereqs: new Set(),
     });
-
-    console.log(this.registry);
   }
 }
