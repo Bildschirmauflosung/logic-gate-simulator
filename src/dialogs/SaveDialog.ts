@@ -1,3 +1,4 @@
+import { IntrinsicGateData } from "../logic/IntrinsicGateData";
 import { Simulator } from "../logic/Simulator";
 import { updateSidebar } from "../main";
 import { Dialog } from "../render/dialog/Dialog";
@@ -17,8 +18,11 @@ export class SaveDialog {
     this.dialog.addField(new DialogInputField("name", "Name (max. 8 characters)", 8));
     this.dialog.addButton(new DialogButton("Cancel", ButtonType.NORMAL, () => { this.dialog.close() }));
     this.dialog.addButton(new DialogButton("Save", ButtonType.NORMAL, () => {
-      this.dialog.close();
       const name = this.dialog.getValueFromField("name") as string;
+      if ([...IntrinsicGateData].findIndex((v) => v[0].toLowerCase() === name.toLowerCase()) !== -1) {
+        return;
+      }
+      this.dialog.close();
       WorkingAreaData.currentProject.updateRegistry(name, WorkingAreaData.rs);
       WorkingAreaData.rs.name = name;
       WorkingAreaData.currentProject.simulators.set(name, [WorkingAreaData.rs, WorkingAreaData.ls]);
