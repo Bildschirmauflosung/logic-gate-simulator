@@ -1,7 +1,7 @@
 # Project - Logic Gate Simulator
 
 Własna implementacja programu umożliwiającego symulację sygnału przechodzącego przez bramki od Inputa do Outputa. Projekt został napisany w Typescript przy użyciu Vite.
----
+
 Po utworzeniu nowego projektu dostępne są dwie bramki: `AND` i `NOT`. Użytkownik z wykorzystaniem tych bramek może stworzyć customowe bramki.
 
 ## Uruchomienie programu
