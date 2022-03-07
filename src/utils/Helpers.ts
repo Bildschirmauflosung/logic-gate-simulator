@@ -5,8 +5,14 @@ export function isMouseOver(e: MouseEvent, width: number, height: number, left: 
   return e.offsetX > left && e.offsetX < left + width && e.offsetY > top && e.offsetY < top + height;
 }
 
-export function clamp(a: number, b: number, c: number): number {
-  return Math.min(Math.max(a, b), c);
+/**
+ * Function returning a {@link number} guaranteed to satisfy `min <= num <= max`
+ * @param num the number to clamp
+ * @param min the minimal value to return
+ * @param max the max value to return
+ */
+export function clamp(num: number, min: number, max: number): number {
+  return Math.min(Math.max(num, min), max);
 }
 
 export function updateConnectionData(points: ConnectionPoint[]) {
@@ -45,6 +51,12 @@ export function getNumberFromBits(bits: boolean[], signed: boolean): number {
   return num;
 }
 
+/**
+ * Function that takes an object and a callback, calls {@link fn} with the argument being the object
+ * @returns obj
+ * @param obj any object
+ * @param {(unknown) => unknown} fn the function to be called
+ */
 export function tap<T>(obj: T, fn: (obj: T) => unknown): T {
   fn(obj);
   return obj;
