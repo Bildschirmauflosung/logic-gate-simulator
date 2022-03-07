@@ -29,7 +29,7 @@ function createElement(name: string) {
   btn.className = "content__sidebar-btn";
   btn.innerText = name.toUpperCase();
   btn.addEventListener("click", () => {
-    const g: Gate = new Gate(64, 4, WorkingAreaData.rs.gates.length, name, GateType.GATE);
+    const g: Gate = new Gate(64, 4, WorkingAreaData.rs.gates.length, name, GateType.GATE, BitsNumber.ONE, WorkingAreaData.currentProject.gates.get(name)?.colour!);
     WorkingAreaData.rs.gates.push(g);
     WorkingAreaData.rs.widgets.push(g);
   });

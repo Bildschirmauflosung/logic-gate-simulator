@@ -30,7 +30,8 @@ export class SaveDialog {
         return;
       }
       this.dialog.close();
-      WorkingAreaData.currentProject.updateRegistry(name, WorkingAreaData.rs);
+      const colour = `hsl(${ this.dialog.getValueFromField("colour") }, 50%, 75%)`;
+      WorkingAreaData.currentProject.updateRegistry(name, colour, WorkingAreaData.rs);
       WorkingAreaData.rs.name = name;
       WorkingAreaData.currentProject.simulators.set(name, [WorkingAreaData.rs, WorkingAreaData.ls]);
       WorkingAreaData.rs = new RenderSimulator("New Gate");

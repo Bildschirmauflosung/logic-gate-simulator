@@ -15,7 +15,7 @@ export class Project {
     this.simulators.set("New Gate", [sim, Simulator.from(sim)]);
   }
 
-  updateRegistry(name: string, simulator: RenderSimulator) {
+  updateRegistry(name: string, colour: string, simulator: RenderSimulator) {
     const inputs = simulator.gates.filter((v) => v.type === GateType.INPUT).length;
     const outputs = simulator.gates.filter((v) => v.type === GateType.OUTPUT).length;
     this.registry.set(name, {
@@ -30,6 +30,7 @@ export class Project {
     this.gates.set(name, {
       conections: simulator.connectionMap,
       gates: simulator.gates,
+      colour: colour,
       prereqs: new Set(),
     });
   }
