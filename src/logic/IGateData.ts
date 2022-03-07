@@ -6,6 +6,7 @@ export interface IGateData {
   readonly outputCount: number,
   readonly customStructureRef: string | null,
   readonly gType: GateType,
+  readonly colour: string,
   readonly resolutionFunc: ResolutionFunction | null,
   readonly prereqs: Set<string>,
 }

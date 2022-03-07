@@ -22,6 +22,7 @@ export class Project {
       arity: inputs,
       outputCount: outputs,
       customStructureRef: name,
+      colour: colour,
       gType: GateType.GATE,
       prereqs: new Set(),
       resolutionFunc: null,
@@ -30,7 +31,6 @@ export class Project {
     this.gates.set(name, {
       conections: simulator.connectionMap,
       gates: simulator.gates,
-      colour: colour,
       prereqs: new Set(),
     });
   }
