@@ -6,7 +6,7 @@ import {assert, assertNotNull} from "../utils/Assert";
 export class LogicGate {
   protected visited: boolean = false;
   protected value: boolean[] = [false];
-  readonly resolutionFunc: ResolutionFunction;
+  readonly resolutionFunc: ResolutionFunction | null;
   readonly arity: number = 2;
   readonly outputCount: number = 1;
   readonly gate: Gate;
@@ -40,7 +40,7 @@ export class LogicGate {
 
       assertNotNull(this.gate);
 
-      this.value = this.resolutionFunc(
+      this.value = this.resolutionFunc!(
         this.gate.inputValues = this.children.map((gate: LogicGate | null, idx: number) => gate?.requestValue()[this.iIndexes[idx]]).flat() as boolean[]
       );
     }
